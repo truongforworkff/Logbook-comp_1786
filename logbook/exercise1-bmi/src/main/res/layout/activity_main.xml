@@ -1,0 +1,17 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/root" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="24dp">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/heading" android:textSize="28sp" android:textStyle="bold" android:accessibilityHeading="true" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/intro" />
+        <TextView style="@style/FieldLabel" android:text="@string/weight" android:labelFor="@id/weightInput" />
+        <EditText android:id="@+id/weightInput" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="numberDecimal" android:minHeight="48dp" android:maxLength="16" />
+        <TextView style="@style/FieldLabel" android:text="@string/weight_unit" android:labelFor="@id/weightUnit" />
+        <Spinner android:id="@+id/weightUnit" android:layout_width="match_parent" android:layout_height="48dp" android:entries="@array/weight_units" />
+        <TextView style="@style/FieldLabel" android:text="@string/height" android:labelFor="@id/heightInput" />
+        <EditText android:id="@+id/heightInput" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="numberDecimal" android:minHeight="48dp" android:maxLength="16" />
+        <TextView style="@style/FieldLabel" android:text="@string/height_unit" android:labelFor="@id/heightUnit" />
+        <Spinner android:id="@+id/heightUnit" android:layout_width="match_parent" android:layout_height="48dp" android:entries="@array/height_units" />
+        <Button android:id="@+id/calculate" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/calculate" android:layout_marginTop="20dp" />
+        <TextView android:id="@+id/result" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/empty_result" android:textSize="22sp" android:padding="16dp" android:accessibilityLiveRegion="polite" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/disclaimer" android:layout_marginTop="16dp" />
+    </LinearLayout>
+</ScrollView>

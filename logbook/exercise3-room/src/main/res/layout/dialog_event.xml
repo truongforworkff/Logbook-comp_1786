@@ -1,0 +1,15 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="wrap_content"><LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp">
+<TextView style="@style/FieldLabel" android:text="@string/name" android:labelFor="@id/nameInput" />
+<EditText android:id="@+id/nameInput" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:inputType="textCapSentences" android:maxLength="120" />
+<TextView style="@style/FieldLabel" android:text="@string/date" android:labelFor="@id/dateInput" />
+<EditText android:id="@+id/dateInput" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:inputType="text" android:maxLength="10" android:hint="@string/date_hint" />
+<Button android:id="@+id/pickDate" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pick_date" />
+<TextView style="@style/FieldLabel" android:text="@string/location" android:labelFor="@id/locationInput" />
+<EditText android:id="@+id/locationInput" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:inputType="textCapSentences" android:maxLength="120" />
+<TextView style="@style/FieldLabel" android:text="@string/organiser" android:labelFor="@id/organiserInput" />
+<EditText android:id="@+id/organiserInput" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:inputType="textCapSentences" android:maxLength="120" />
+<TextView style="@style/FieldLabel" android:text="@string/type" android:labelFor="@id/typeInput" />
+<Spinner android:id="@+id/typeInput" android:layout_width="match_parent" android:layout_height="48dp" android:entries="@array/types" />
+<TextView style="@style/FieldLabel" android:text="@string/status" android:labelFor="@id/statusInput" />
+<Spinner android:id="@+id/statusInput" android:layout_width="match_parent" android:layout_height="48dp" android:entries="@array/statuses" />
+</LinearLayout></ScrollView>

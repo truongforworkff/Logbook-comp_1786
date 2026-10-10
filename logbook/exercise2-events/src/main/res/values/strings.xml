@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">CW2 · Event Manager</string>
+    <string name="heading">Event Manager</string>
+    <string name="intro">Events are held in memory and clear when the app process ends.</string>
+    <string name="add">Add event</string>
+    <string name="edit">Edit event</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="delete_title">Delete event?</string>
+    <string name="delete_message">Delete “%1$s”? This cannot be undone.</string>
+    <string name="empty">No events yet. Add your first event.</string>
+    <string name="name">Event name</string>
+    <string name="date">Event date</string>
+    <string name="date_hint">YYYY-MM-DD</string>
+    <string name="pick_date">Choose date</string>
+    <string name="location">Location</string>
+    <string name="organiser">Organiser</string>
+    <string name="type">Event type</string>
+    <string name="status">Event status</string>
+    <string name="required">Required; maximum 120 characters.</string>
+    <string name="invalid_date">Enter a real date using YYYY-MM-DD (year 1900–2100).</string>
+    <string name="storage_error">Could not access stored events. Please try again.</string>
+    <string name="details">Date: %1$s
+Location: %2$s
+Organiser: %3$s
+Type: %4$s</string>
+    <string name="status_detail">
+Status: %1$s</string>
+    <string-array name="types"><item>Conference</item><item>Workshop</item><item>Seminar</item><item>Social</item><item>Other</item></string-array>
+    <string-array name="statuses"><item>Upcoming</item><item>Completed</item><item>Cancelled</item></string-array>
+</resources>

@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">CW2 · BMI Calculator</string>
+    <string name="heading">BMI Calculator</string>
+    <string name="intro">Enter weight and height, then choose their units.</string>
+    <string name="weight">Weight</string>
+    <string name="height">Height</string>
+    <string name="weight_unit">Weight unit</string>
+    <string name="height_unit">Height unit</string>
+    <string name="calculate">Calculate BMI</string>
+    <string name="result">BMI: %1$.2f
+Category: %2$s</string>
+    <string name="empty_result">Your BMI result will appear here.</string>
+    <string name="invalid_number">Enter a valid finite number.</string>
+    <string name="weight_range">Weight must be between 10 and 500 kg after conversion.</string>
+    <string name="height_range">Height must be between 0.5 and 2.5 m after conversion.</string>
+    <string name="disclaimer">Adult BMI categories are general feedback. BMI alone does not assess individual health.</string>
+    <string-array name="weight_units"><item>kg</item><item>lb</item><item>stone</item></string-array>
+    <string-array name="height_units"><item>cm</item><item>m</item><item>in</item><item>ft (decimal)</item></string-array>
+    <string name="underweight">Underweight</string>
+    <string name="healthy">Healthy weight</string>
+    <string name="overweight">Overweight</string>
+    <string name="obese">Obese</string>
+</resources>

@@ -1,0 +1,7 @@
+<resources>
+    <color name="underweight">#DCEBFF</color>
+    <color name="healthy">#D4F4DC</color>
+    <color name="overweight">#FFF0BF</color>
+    <color name="obese">#FFDADB</color>
+    <color name="result_text">#172026</color>
+</resources>
