@@ -46,11 +46,13 @@ public class DesignScreenshotTest {
     }
     private void screenshot(Instrumentation instrumentation,Context context,String name) throws Exception {
         instrumentation.getUiAutomation().waitForIdle(500,5000);
-        try(java.io.InputStream output=new android.os.ParcelFileDescriptor.AutoCloseInputStream(
-                instrumentation.getUiAutomation().executeShellCommand(
-                "mkdir -p /data/local/tmp/eventa-screenshots && screencap -p /data/local/tmp/eventa-screenshots/"+name))) {
-            byte[] buffer=new byte[1024];
-            while(output.read(buffer)!=-1) { }
+        for(String command:new String[]{"mkdir -p /data/local/tmp/eventa-screenshots",
+                "screencap -p /data/local/tmp/eventa-screenshots/"+name}) {
+            try(java.io.InputStream output=new android.os.ParcelFileDescriptor.AutoCloseInputStream(
+                    instrumentation.getUiAutomation().executeShellCommand(command))) {
+                byte[] buffer=new byte[1024];
+                while(output.read(buffer)!=-1) { }
+            }
         }
     }
 }

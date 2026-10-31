@@ -39,6 +39,7 @@ jobs:
         with:
           name: eventa-ui-screenshots
           path: screenshots/
+          if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
           name: eventa-admin-debug
