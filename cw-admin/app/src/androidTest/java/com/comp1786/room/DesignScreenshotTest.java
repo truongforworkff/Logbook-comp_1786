@@ -46,9 +46,9 @@ public class DesignScreenshotTest {
     }
     private void screenshot(Instrumentation instrumentation,Context context,String name) throws Exception {
         instrumentation.getUiAutomation().waitForIdle(500,5000);
-        try(android.os.ParcelFileDescriptor descriptor=instrumentation.getUiAutomation().executeShellCommand(
-                "mkdir -p /data/local/tmp/eventa-screenshots && screencap -p /data/local/tmp/eventa-screenshots/"+name);
-            java.io.FileInputStream output=new java.io.FileInputStream(descriptor.getFileDescriptor())) {
+        try(java.io.InputStream output=new android.os.ParcelFileDescriptor.AutoCloseInputStream(
+                instrumentation.getUiAutomation().executeShellCommand(
+                "mkdir -p /data/local/tmp/eventa-screenshots && screencap -p /data/local/tmp/eventa-screenshots/"+name))) {
             byte[] buffer=new byte[1024];
             while(output.read(buffer)!=-1) { }
         }
