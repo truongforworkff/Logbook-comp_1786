@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(state);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        styleSystemBars(getWindow());
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (view, insets) -> {
             androidx.core.graphics.Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             int padding = 0;
@@ -122,9 +123,16 @@ public class MainActivity extends AppCompatActivity {
         return input;
     }
     private int dp(int value) { return (int)(value * getResources().getDisplayMetrics().density); }
+    private void styleSystemBars(android.view.Window window) {
+        window.setStatusBarColor(getColor(R.color.canvas));
+        window.setNavigationBarColor(getColor(R.color.canvas));
+        androidx.core.view.WindowInsetsControllerCompat bars = new androidx.core.view.WindowInsetsControllerCompat(window,window.getDecorView());
+        bars.setAppearanceLightStatusBars(true); bars.setAppearanceLightNavigationBars(true);
+    }
     private void fullScreen(AlertDialog dialog,View root) {
         android.view.Window window = dialog.getWindow();
         if (window == null) return;
+        styleSystemBars(window);
         window.setLayout(android.view.ViewGroup.LayoutParams.MATCH_PARENT,android.view.ViewGroup.LayoutParams.MATCH_PARENT);
         window.setBackgroundDrawableResource(R.color.canvas);
         window.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);

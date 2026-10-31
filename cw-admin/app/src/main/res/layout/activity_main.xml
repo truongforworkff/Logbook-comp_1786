@@ -5,14 +5,14 @@
 <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/brand" android:textSize="27sp" android:textStyle="bold" android:fontFamily="sans-serif-medium" android:letterSpacing="-0.04" android:textColor="@color/ink"/>
 <TextView android:layout_width="38dp" android:layout_height="38dp" android:gravity="center" android:background="@drawable/avatar" android:text="@string/admin_initials" android:textColor="@color/rose" android:textSize="12sp" android:textStyle="bold" android:contentDescription="@string/admin_role"/>
 </LinearLayout>
-<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/heading" android:textSize="27sp" android:fontFamily="sans-serif-medium" android:letterSpacing="-0.03" android:accessibilityHeading="true"/>
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/heading" android:textColor="@color/ink" android:textSize="27sp" android:fontFamily="sans-serif-medium" android:letterSpacing="-0.03" android:accessibilityHeading="true"/>
 <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/intro" android:textColor="@color/muted" android:textSize="13sp" android:layout_marginTop="6dp" android:layout_marginBottom="22dp"/>
 <LinearLayout android:layout_width="match_parent" android:layout_height="52dp" android:background="@drawable/soft_surface" android:gravity="center_vertical" android:paddingStart="14dp">
 <EditText android:id="@+id/search" android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:background="@null" android:inputType="text" android:singleLine="true" android:imeOptions="actionSearch" android:textSize="14sp" android:hint="@string/search_hint" android:drawableStart="@drawable/ic_search" android:drawablePadding="10dp" android:paddingEnd="4dp"/>
 <ImageButton android:id="@+id/filter" android:layout_width="48dp" android:layout_height="48dp" android:src="@drawable/ic_filter" android:background="?attr/selectableItemBackgroundBorderless" android:contentDescription="@string/filter_title"/>
 </LinearLayout>
 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:layout_marginTop="24dp" android:layout_marginBottom="14dp">
-<TextView android:id="@+id/listTitle" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="@string/events_section" android:textSize="15sp" android:textStyle="bold"/>
+<TextView android:id="@+id/listTitle" android:textColor="@color/ink" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="@string/events_section" android:textSize="15sp" android:textStyle="bold"/>
 <TextView android:id="@+id/count" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/muted" android:textSize="12sp" android:accessibilityLiveRegion="polite"/>
 </LinearLayout>
 </LinearLayout>
