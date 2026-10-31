@@ -1,4 +1,5 @@
-package com.comp1786.room;
+package com.comp1786.room.features.events.logic;
+import com.comp1786.room.features.events.data.model.Event;
 import org.junit.Test;
 import static org.junit.Assert.*;
 public class EventValidationTest {

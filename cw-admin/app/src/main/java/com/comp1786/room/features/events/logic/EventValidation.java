@@ -1,4 +1,5 @@
-package com.comp1786.room;
+package com.comp1786.room.features.events.logic;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;

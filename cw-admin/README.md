@@ -2,6 +2,10 @@
 
 Ứng dụng Android native Java + XML Views, palette trắng ấm/hồng dịu theo bản thiết kế Eventa. Đây là project coursework riêng; các bài trong logbook vẫn được giữ.
 
+## Đọc và sửa mã
+
+Xem [bản đồ thư mục và luồng từng chức năng](CODE_MAP.md). UI nằm tại `features/events/ui`, xử lý tại `logic`, SQLite tại `data`. Các layout XML được đặt tên theo màn hình trong `res/layout`.
+
 ## Clone và chạy
 
 ```sh

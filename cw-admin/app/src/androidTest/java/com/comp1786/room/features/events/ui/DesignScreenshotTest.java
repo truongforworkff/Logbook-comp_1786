@@ -1,4 +1,9 @@
-package com.comp1786.room;
+package com.comp1786.room.features.events.ui;
+import com.comp1786.room.R;
+import com.comp1786.room.features.events.ui.list.MainActivity;
+import com.comp1786.room.features.events.data.model.Event;
+import com.comp1786.room.features.events.data.local.EventDao;
+import com.comp1786.room.features.events.data.local.EventDatabase;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;

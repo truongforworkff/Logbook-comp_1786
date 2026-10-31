@@ -1,4 +1,8 @@
-package com.comp1786.room;
+package com.comp1786.room.features.events.ui.list;
+import com.comp1786.room.R;
+import com.comp1786.room.features.events.data.model.Event;
+import com.comp1786.room.features.events.logic.EventValidation;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -6,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
-import com.comp1786.room.databinding.ItemEventBinding;
+import com.comp1786.room.databinding.EventListItemBinding;
 import java.time.LocalDate;
 public class EventAdapter extends ListAdapter<Event, EventAdapter.Holder> {
     public interface OnEventClick { void onClick(Event event); }
@@ -22,11 +26,11 @@ public class EventAdapter extends ListAdapter<Event, EventAdapter.Holder> {
         return context.getString("Completed".equals(status)?R.string.status_completed:"Cancelled".equals(status)?R.string.status_cancelled:R.string.status_upcoming);
     }
     public static class Holder extends RecyclerView.ViewHolder {
-        final ItemEventBinding binding;
-        Holder(ItemEventBinding binding) { super(binding.getRoot()); this.binding=binding; }
+        final EventListItemBinding binding;
+        Holder(EventListItemBinding binding) { super(binding.getRoot()); this.binding=binding; }
     }
     @NonNull @Override public Holder onCreateViewHolder(@NonNull ViewGroup parent,int type) {
-        return new Holder(ItemEventBinding.inflate(LayoutInflater.from(parent.getContext()),parent,false));
+        return new Holder(EventListItemBinding.inflate(LayoutInflater.from(parent.getContext()),parent,false));
     }
     @Override public void onBindViewHolder(@NonNull Holder holder,int position) {
         Event event=getItem(position);

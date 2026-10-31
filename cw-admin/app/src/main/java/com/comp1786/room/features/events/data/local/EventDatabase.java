@@ -1,4 +1,6 @@
-package com.comp1786.room;
+package com.comp1786.room.features.events.data.local;
+import com.comp1786.room.features.events.data.model.Event;
+
 import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;

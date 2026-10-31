@@ -1,4 +1,8 @@
-package com.comp1786.room;
+package com.comp1786.room.features.events.logic;
+import com.comp1786.room.features.events.data.model.Event;
+import com.comp1786.room.features.events.data.local.EventDao;
+import com.comp1786.room.features.events.data.local.EventDatabase;
+
 import android.app.Application;
 import android.os.Handler;
 import android.os.Looper;

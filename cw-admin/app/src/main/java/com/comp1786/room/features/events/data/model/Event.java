@@ -1,4 +1,5 @@
-package com.comp1786.room;
+package com.comp1786.room.features.events.data.model;
+
 import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
