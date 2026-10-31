@@ -1,0 +1,8 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/root" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="20dp">
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/brand" android:textColor="@color/rose" android:textSize="24sp" android:textStyle="bold" android:layout_marginBottom="28dp"/>
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/heading" android:textSize="28sp" android:textStyle="bold" android:accessibilityHeading="true"/>
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/intro" android:textColor="@color/muted" android:layout_marginTop="8dp" android:layout_marginBottom="20dp"/>
+<Button android:id="@+id/add" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="52dp" android:text="@string/add" android:textAllCaps="false" android:backgroundTint="@color/rose" android:textColor="#FFFFFF" android:layout_marginBottom="16dp"/>
+<TextView android:id="@+id/empty" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/empty" android:padding="24dp" android:gravity="center" android:textColor="@color/muted" android:accessibilityLiveRegion="polite"/>
+<androidx.recyclerview.widget.RecyclerView android:id="@+id/list" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:clipToPadding="false" android:paddingBottom="16dp"/>
+</LinearLayout>

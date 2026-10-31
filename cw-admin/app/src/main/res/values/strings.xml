@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">Eventa Admin</string>
+    <string name="heading">Sự kiện của bạn</string>
+    <string name="intro">Mọi kế hoạch, gọn trong một nơi.</string>
+    <string name="add">Thêm sự kiện</string>
+    <string name="edit">Chỉnh sửa</string>
+    <string name="save">Lưu sự kiện</string>
+    <string name="cancel">Hủy</string>
+    <string name="delete">Xóa</string>
+    <string name="delete_title">Xóa sự kiện?</string>
+    <string name="delete_message">Xóa “%1$s”? Thao tác này không thể hoàn tác.</string>
+    <string name="empty">Chưa có sự kiện nào.\nTạo sự kiện đầu tiên của bạn.</string>
+    <string name="name">Tên sự kiện *</string>
+    <string name="date">Ngày diễn ra *</string>
+    <string name="date_hint">DD/MM/YYYY</string>
+    <string name="pick_date">Chọn ngày</string>
+    <string name="location">Địa điểm *</string>
+    <string name="organiser">Người tổ chức *</string>
+    <string name="type">Loại sự kiện</string>
+    <string name="status">Trạng thái</string>
+    <string name="required">Bắt buộc; tối đa 120 ký tự.</string>
+    <string name="invalid_date">Nhập ngày có thật theo DD/MM/YYYY (1900–2100).</string>
+    <string name="storage_error">Không thể lưu dữ liệu. Vui lòng thử lại.</string>
+    <string name="details">%1$s · %2$s</string>
+    <string name="status_detail">\n%1$s</string>
+    <string-array name="types"><item>Conference</item><item>Workshop</item><item>Seminar</item><item>Social</item><item>Other</item></string-array>
+    <string-array name="statuses"><item>Upcoming</item><item>Completed</item><item>Cancelled</item></string-array>
+
+<string name="brand">eventa.</string>
+<string name="close">Đóng</string>
+<string name="description">Mô tả (tùy chọn)</string>
+<string name="email">Email liên hệ (tùy chọn)</string>
+<string name="phone">Điện thoại liên hệ (tùy chọn)</string>
+<string name="duplicate_event">Đã có sự kiện trùng tên và ngày. Hãy chỉnh lại.</string>
+<string name="invalid_email">Nhập email hợp lệ hoặc để trống.</string>
+<string name="invalid_phone">Nhập số điện thoại có 7–15 chữ số hoặc để trống.</string>
+<string name="review_title">Xem lại sự kiện</string>
+<string name="back_edit">Quay lại sửa</string>
+<string name="not_provided">Chưa cung cấp</string>
+<string name="review_details">Tên: %1$s\nNgày: %2$s\nĐịa điểm: %3$s\nNgười tổ chức: %4$s\nLoại: %5$s\nTrạng thái: %6$s\n\nMô tả: %7$s\nEmail: %8$s\nĐiện thoại: %9$s</string>
+</resources>

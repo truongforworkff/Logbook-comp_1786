@@ -1,0 +1,10 @@
+<resources>
+<style name="Theme.Coursework" parent="Theme.AppCompat.Light.NoActionBar">
+<item name="colorAccent">@color/rose</item><item name="android:fontFamily">sans</item>
+<item name="android:windowBackground">@color/canvas</item><item name="android:colorBackground">@color/canvas</item>
+<item name="android:textColorPrimary">@color/ink</item><item name="android:textColorSecondary">@color/muted</item>
+<item name="android:statusBarColor">@color/canvas</item><item name="android:navigationBarColor">@color/canvas</item>
+<item name="android:windowLightStatusBar">true</item>
+</style>
+<style name="FieldLabel"><item name="android:layout_width">match_parent</item><item name="android:layout_height">wrap_content</item><item name="android:textSize">14sp</item><item name="android:layout_marginTop">16dp</item></style>
+</resources>
