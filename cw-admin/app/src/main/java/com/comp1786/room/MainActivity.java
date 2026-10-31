@@ -138,7 +138,9 @@ public class MainActivity extends AppCompatActivity {
         window.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         ViewCompat.setOnApplyWindowInsetsListener(root,(view,insets)-> {
             androidx.core.graphics.Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            view.setPadding(bars.left,bars.top,bars.right,bars.bottom);
+            int statusBar = getResources().getIdentifier("status_bar_height","dimen","android");
+            int safeTop = statusBar == 0 ? dp(24) : getResources().getDimensionPixelSize(statusBar);
+            view.setPadding(bars.left,Math.max(bars.top,safeTop),bars.right,bars.bottom);
             return insets;
         });
         ViewCompat.requestApplyInsets(root);
