@@ -2,12 +2,9 @@ package com.comp1786.room;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
-import java.io.File;
-import java.io.FileOutputStream;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
@@ -49,12 +46,11 @@ public class DesignScreenshotTest {
     }
     private void screenshot(Instrumentation instrumentation,Context context,String name) throws Exception {
         instrumentation.getUiAutomation().waitForIdle(500,5000);
-        Bitmap bitmap=instrumentation.getUiAutomation().takeScreenshot();
-        assertNotNull("Screenshot must be available",bitmap);
-        File directory=new File(context.getExternalFilesDir(null),"screenshots");
-        assertTrue(directory.isDirectory() || directory.mkdirs());
-        try(FileOutputStream output=new FileOutputStream(new File(directory,name))) {
-            assertTrue(bitmap.compress(Bitmap.CompressFormat.PNG,100,output));
-        } finally { bitmap.recycle(); }
+        try(android.os.ParcelFileDescriptor descriptor=instrumentation.getUiAutomation().executeShellCommand(
+                "mkdir -p /data/local/tmp/eventa-screenshots && screencap -p /data/local/tmp/eventa-screenshots/"+name);
+            java.io.FileInputStream output=new java.io.FileInputStream(descriptor.getFileDescriptor())) {
+            byte[] buffer=new byte[1024];
+            while(output.read(buffer)!=-1) { }
+        }
     }
 }

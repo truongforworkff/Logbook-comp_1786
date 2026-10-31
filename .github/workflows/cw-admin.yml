@@ -32,7 +32,7 @@ jobs:
           disable-animations: true
           script: |
             ./cw-admin/gradlew -p cw-admin connectedDebugAndroidTest
-            adb pull /sdcard/Android/data/com.comp1786.eventa.admin/files/screenshots screenshots
+            adb pull /data/local/tmp/eventa-screenshots screenshots
       - name: Upload UI screenshots
         if: always()
         uses: actions/upload-artifact@v4
