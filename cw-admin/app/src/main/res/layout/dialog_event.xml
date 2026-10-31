@@ -17,9 +17,9 @@
 
 <Button android:id="@+id/moreOptions" style="@style/Widget.AppCompat.Button.Borderless" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="@string/more_options" android:textAllCaps="false" android:textColor="@color/rose" android:layout_marginTop="16dp"/>
 <LinearLayout android:id="@+id/optionalFields" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:visibility="gone"><TextView style="@style/FieldLabel" android:text="@string/type" android:labelFor="@id/typeInput" />
-<Spinner android:background="@drawable/event_card" android:padding="12dp" android:id="@+id/typeInput" android:layout_width="match_parent" android:layout_height="48dp" android:entries="@array/types" />
+<Spinner android:spinnerMode="dropdown" android:popupBackground="@drawable/dropdown_surface" android:dropDownVerticalOffset="8dp" android:background="@drawable/event_card" android:padding="12dp" android:id="@+id/typeInput" android:layout_width="match_parent" android:layout_height="48dp" android:entries="@array/types" />
 <TextView style="@style/FieldLabel" android:text="@string/status" android:labelFor="@id/statusInput" />
-<Spinner android:background="@drawable/event_card" android:padding="12dp" android:id="@+id/statusInput" android:layout_width="match_parent" android:layout_height="48dp" android:entries="@array/statuses" />
+<Spinner android:spinnerMode="dropdown" android:popupBackground="@drawable/dropdown_surface" android:dropDownVerticalOffset="8dp" android:background="@drawable/event_card" android:padding="12dp" android:id="@+id/statusInput" android:layout_width="match_parent" android:layout_height="48dp" android:entries="@array/statuses" />
 
 <TextView style="@style/FieldLabel" android:text="@string/description" android:labelFor="@id/descriptionInput"/>
 <EditText style="@style/EventField" android:id="@+id/descriptionInput" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="64dp" android:inputType="textCapSentences|textMultiLine" android:maxLength="2000"/>

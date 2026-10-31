@@ -42,7 +42,54 @@ public class DesignScreenshotTest {
             instrumentation.runOnMainSync(()->activity.findViewById(R.id.add).performClick());
             instrumentation.waitForIdleSync();
             screenshot(instrumentation,context,"03-create.png");
+            click(instrumentation,"pickDate");
+            screenshot(instrumentation,context,"04-date-popup.png");
+            instrumentation.sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK);
+            setText(instrumentation,"nameInput","Gặp gỡ cuối năm");
+            setText(instrumentation,"dateInput","25/12/2026");
+            setText(instrumentation,"locationInput","Greenwich Campus");
+            setText(instrumentation,"organiserInput","Greenwich Community");
+            click(instrumentation,"reviewAction");
+            screenshot(instrumentation,context,"05-review-popup.png");
+            click(instrumentation,"secondary");
+            instrumentation.sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK);
+            instrumentation.waitForIdleSync();
+            instrumentation.runOnMainSync(()->activity.findViewById(R.id.filter).performClick());
+            screenshot(instrumentation,context,"06-filter-popup.png");
+            instrumentation.sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK);
+            instrumentation.waitForIdleSync();
+            instrumentation.runOnMainSync(()->((RecyclerView)activity.findViewById(R.id.list)).getChildAt(0).performClick());
+            click(instrumentation,"editAction");
+            click(instrumentation,"deleteAction");
+            screenshot(instrumentation,context,"07-delete-popup.png");
+            click(instrumentation,"secondary");
+            instrumentation.sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK);
+            instrumentation.waitForIdleSync();
+            instrumentation.runOnMainSync(()->activity.findViewById(R.id.add).performClick());
+            click(instrumentation,"reviewAction");
+            screenshot(instrumentation,context,"08-validation-notice.png");
         } finally { instrumentation.runOnMainSync(activity::finish); }
+    }
+    private android.view.accessibility.AccessibilityNodeInfo node(Instrumentation instrumentation,String id) throws Exception {
+        android.accessibilityservice.AccessibilityServiceInfo info=instrumentation.getUiAutomation().getServiceInfo();
+        info.flags|=android.accessibilityservice.AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS;
+        instrumentation.getUiAutomation().setServiceInfo(info);
+        instrumentation.waitForIdleSync();
+        instrumentation.getUiAutomation().waitForIdle(300,5000);
+        android.view.accessibility.AccessibilityNodeInfo root=instrumentation.getUiAutomation().getRootInActiveWindow();
+        assertNotNull(root);
+        java.util.List<android.view.accessibility.AccessibilityNodeInfo> matches=root.findAccessibilityNodeInfosByViewId("com.comp1786.eventa.admin:id/"+id);
+        assertFalse("Missing visible control: "+id,matches.isEmpty());
+        return matches.get(0);
+    }
+    private void click(Instrumentation instrumentation,String id) throws Exception {
+        assertTrue("Control must be clickable: "+id,node(instrumentation,id).performAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK));
+        instrumentation.waitForIdleSync();
+    }
+    private void setText(Instrumentation instrumentation,String id,String value) throws Exception {
+        android.os.Bundle args=new android.os.Bundle();
+        args.putCharSequence(android.view.accessibility.AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE,value);
+        assertTrue(node(instrumentation,id).performAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_SET_TEXT,args));
     }
     private void screenshot(Instrumentation instrumentation,Context context,String name) throws Exception {
         instrumentation.getUiAutomation().waitForIdle(500,5000);

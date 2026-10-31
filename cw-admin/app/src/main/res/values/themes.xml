@@ -1,6 +1,6 @@
 <resources>
 <style name="Theme.Coursework" parent="Theme.AppCompat.Light.NoActionBar">
-<item name="colorAccent">@color/rose</item><item name="android:fontFamily">sans</item>
+<item name="colorAccent">@color/rose</item><item name="android:colorAccent">@color/rose</item><item name="android:fontFamily">sans</item>
 <item name="android:windowBackground">@color/canvas</item><item name="android:colorBackground">@color/canvas</item>
 <item name="android:textColorPrimary">@color/ink</item><item name="android:textColorSecondary">@color/muted</item>
 <item name="android:statusBarColor">@color/canvas</item><item name="android:navigationBarColor">@color/canvas</item>
@@ -10,4 +10,4 @@
 <style name="EventField">
 <item name="android:background">@drawable/event_card</item><item name="android:padding">12dp</item>
 <item name="android:textSize">14sp</item><item name="android:layout_marginTop">7dp</item>
-</style></resources>
+</style><style name="PopupAnimation"><item name="android:windowEnterAnimation">@anim/popup_enter</item><item name="android:windowExitAnimation">@anim/popup_exit</item></style></resources>
