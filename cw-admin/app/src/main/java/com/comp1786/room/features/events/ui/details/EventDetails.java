@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import com.comp1786.room.R;
 import com.comp1786.room.databinding.EventDetailsScreenBinding;
 import com.comp1786.room.features.events.data.model.Event;
+import com.comp1786.room.features.events.logic.EventValidation;
 import com.comp1786.room.features.events.ui.list.EventAdapter;
 import com.comp1786.room.shared.ui.AppUi;
 public final class EventDetails {
