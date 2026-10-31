@@ -17,6 +17,8 @@ jobs:
           java-version: '17'
       - run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36" "build-tools;36.0.0"'
       - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
       - run: ./gradlew assembleDebug testDebugUnitTest lintDebug
         working-directory: cw-admin
       - name: Enable emulator acceleration
@@ -29,9 +31,8 @@ jobs:
           profile: pixel_3a
           disable-animations: true
           script: |
-            cd cw-admin
-            ./gradlew connectedDebugAndroidTest
-            adb pull /sdcard/Android/data/com.comp1786.eventa.admin/files/screenshots ../screenshots
+            ./cw-admin/gradlew -p cw-admin connectedDebugAndroidTest
+            adb pull /sdcard/Android/data/com.comp1786.eventa.admin/files/screenshots screenshots
       - name: Upload UI screenshots
         if: always()
         uses: actions/upload-artifact@v4
