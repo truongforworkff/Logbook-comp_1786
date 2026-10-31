@@ -38,4 +38,21 @@
 <string name="back_edit">Quay lại sửa</string>
 <string name="not_provided">Chưa cung cấp</string>
 <string name="review_details">Tên: %1$s\nNgày: %2$s\nĐịa điểm: %3$s\nNgười tổ chức: %4$s\nLoại: %5$s\nTrạng thái: %6$s\n\nMô tả: %7$s\nEmail: %8$s\nĐiện thoại: %9$s</string>
+
+<string name="admin_initials">QL</string><string name="admin_role">Người quản lý sự kiện</string>
+<string name="search_hint">Tìm tên sự kiện…</string><string name="filter_title">Lọc sự kiện</string>
+<string name="events_section">Sự kiện</string><string name="filtered_section">Kết quả tìm kiếm</string>
+<string name="local_note">Lưu trên thiết bị</string><string name="view_details">Xem chi tiết</string>
+<string name="month_short">TH %1$d</string><string name="event_count">%1$d sự kiện</string>
+<string name="status_upcoming">Sắp diễn ra</string><string name="status_completed">Đã hoàn thành</string><string name="status_cancelled">Đã hủy</string>
+<string name="empty_search">Không tìm thấy sự kiện phù hợp.\nThử đổi từ khóa hoặc xóa bộ lọc.</string>
+<string name="back_label">Quay lại</string><string name="back_events">Sự kiện</string>
+<string name="create_title">Tạo sự kiện</string><string name="edit_title">Sửa sự kiện</string>
+<string name="form_subtitle">Bắt đầu với những thông tin quan trọng.</string>
+<string name="more_options">Thêm mô tả và thông tin khác  +</string><string name="less_options">Thu gọn thông tin bổ sung  −</string>
+<string name="review_action">Xem lại thông tin  →</string>
+<string name="about_event">Về sự kiện</string><string name="contact_heading">Thông tin liên hệ</string>
+<string name="organised_by">Tổ chức bởi %1$s</string><string name="no_description">Chưa có mô tả cho sự kiện này.</string>
+<string name="filter_date">Ngày diễn ra (không bắt buộc)</string><string name="filter_organiser">Người tổ chức (không bắt buộc)</string>
+<string name="apply_filter">Áp dụng bộ lọc</string><string name="clear_filter">Xóa bộ lọc</string>
 </resources>

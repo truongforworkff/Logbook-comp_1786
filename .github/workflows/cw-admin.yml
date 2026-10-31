@@ -19,6 +19,25 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - run: ./gradlew assembleDebug testDebugUnitTest lintDebug
         working-directory: cw-admin
+      - name: Enable emulator acceleration
+        run: sudo chmod 666 /dev/kvm
+      - name: Verify screens and SQLite on emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          arch: x86_64
+          profile: pixel_3a
+          disable-animations: true
+          script: |
+            cd cw-admin
+            ./gradlew connectedDebugAndroidTest
+            adb pull /sdcard/Android/data/com.comp1786.eventa.admin/files/screenshots ../screenshots
+      - name: Upload UI screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eventa-ui-screenshots
+          path: screenshots/
       - uses: actions/upload-artifact@v4
         with:
           name: eventa-admin-debug

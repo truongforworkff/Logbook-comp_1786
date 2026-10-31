@@ -1,8 +1,28 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/root" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="20dp">
-<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/brand" android:textColor="@color/rose" android:textSize="24sp" android:textStyle="bold" android:layout_marginBottom="28dp"/>
-<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/heading" android:textSize="28sp" android:textStyle="bold" android:accessibilityHeading="true"/>
-<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/intro" android:textColor="@color/muted" android:layout_marginTop="8dp" android:layout_marginBottom="20dp"/>
-<Button android:id="@+id/add" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="52dp" android:text="@string/add" android:textAllCaps="false" android:backgroundTint="@color/rose" android:textColor="#FFFFFF" android:layout_marginBottom="16dp"/>
-<TextView android:id="@+id/empty" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/empty" android:padding="24dp" android:gravity="center" android:textColor="@color/muted" android:accessibilityLiveRegion="polite"/>
-<androidx.recyclerview.widget.RecyclerView android:id="@+id/list" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:clipToPadding="false" android:paddingBottom="16dp"/>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/root" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/canvas">
+<LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical">
+<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:paddingStart="24dp" android:paddingEnd="24dp" android:paddingTop="18dp">
+<LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:gravity="center_vertical" android:layout_marginBottom="24dp">
+<TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/brand" android:textSize="27sp" android:textStyle="bold" android:fontFamily="sans-serif-medium" android:letterSpacing="-0.04" android:textColor="@color/ink"/>
+<TextView android:layout_width="38dp" android:layout_height="38dp" android:gravity="center" android:background="@drawable/avatar" android:text="@string/admin_initials" android:textColor="@color/rose" android:textSize="12sp" android:textStyle="bold" android:contentDescription="@string/admin_role"/>
 </LinearLayout>
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/heading" android:textSize="27sp" android:fontFamily="sans-serif-medium" android:letterSpacing="-0.03" android:accessibilityHeading="true"/>
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/intro" android:textColor="@color/muted" android:textSize="13sp" android:layout_marginTop="6dp" android:layout_marginBottom="22dp"/>
+<LinearLayout android:layout_width="match_parent" android:layout_height="52dp" android:background="@drawable/soft_surface" android:gravity="center_vertical" android:paddingStart="14dp">
+<EditText android:id="@+id/search" android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:background="@null" android:inputType="text" android:singleLine="true" android:imeOptions="actionSearch" android:textSize="14sp" android:hint="@string/search_hint" android:drawableStart="@drawable/ic_search" android:drawablePadding="10dp" android:paddingEnd="4dp"/>
+<ImageButton android:id="@+id/filter" android:layout_width="48dp" android:layout_height="48dp" android:src="@drawable/ic_filter" android:background="?attr/selectableItemBackgroundBorderless" android:contentDescription="@string/filter_title"/>
+</LinearLayout>
+<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:layout_marginTop="24dp" android:layout_marginBottom="14dp">
+<TextView android:id="@+id/listTitle" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="@string/events_section" android:textSize="15sp" android:textStyle="bold"/>
+<TextView android:id="@+id/count" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/muted" android:textSize="12sp" android:accessibilityLiveRegion="polite"/>
+</LinearLayout>
+</LinearLayout>
+<TextView android:id="@+id/empty" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/empty" android:padding="28dp" android:gravity="center" android:textColor="@color/muted" android:accessibilityLiveRegion="polite"/>
+<androidx.recyclerview.widget.RecyclerView android:id="@+id/list" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:paddingStart="24dp" android:paddingEnd="24dp" android:paddingBottom="80dp" android:clipToPadding="false"/>
+<View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/stroke"/>
+<LinearLayout android:layout_width="match_parent" android:layout_height="72dp" android:background="#FFFFFF" android:gravity="center_vertical" android:paddingStart="28dp" android:paddingEnd="28dp">
+<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/events_section" android:textColor="@color/rose" android:textSize="11sp" android:drawableTop="@drawable/ic_calendar" android:drawablePadding="5dp" android:gravity="center"/>
+<TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="@string/local_note" android:gravity="end" android:textSize="11sp" android:textColor="@color/muted"/>
+</LinearLayout>
+</LinearLayout>
+<androidx.appcompat.widget.AppCompatButton android:id="@+id/add" android:layout_width="54dp" android:layout_height="54dp" android:layout_gravity="bottom|end" android:layout_marginEnd="24dp" android:layout_marginBottom="90dp" android:background="@drawable/fab_button" app:backgroundTint="@null" android:foreground="?attr/selectableItemBackground" android:text="+" android:textColor="#FFFFFF" android:textSize="30sp" android:contentDescription="@string/add" android:elevation="3dp"/>
+</FrameLayout>

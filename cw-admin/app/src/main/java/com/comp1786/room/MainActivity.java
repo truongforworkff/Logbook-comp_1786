@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.comp1786.room.databinding.ActivityMainBinding;
 import com.comp1786.room.databinding.DialogEventBinding;
+import com.comp1786.room.databinding.DialogDetailsBinding;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Locale;
@@ -22,25 +23,35 @@ public class MainActivity extends AppCompatActivity {
     private AlertDialog editor;
     private DialogEventBinding editorFields;
     private Event editingEvent;
+    private EventAdapter adapter;
+    private java.util.List<Event> allEvents = java.util.Collections.emptyList();
+    private String dateFilter = "", organiserFilter = "";
     @Override protected void onCreate(Bundle state) {
         super.onCreate(state);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (view, insets) -> {
             androidx.core.graphics.Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            int padding = (int) (20 * getResources().getDisplayMetrics().density);
+            int padding = 0;
             view.setPadding(padding + bars.left, padding + bars.top, padding + bars.right, padding + bars.bottom);
             return insets;
         });
         model = new ViewModelProvider(this).get(EventViewModel.class);
-        EventAdapter adapter = new EventAdapter(this::showDetails);
+        adapter = new EventAdapter(this::showDetails);
+        if (state != null) { dateFilter = state.getString("filterDate", ""); organiserFilter = state.getString("filterOrganiser", ""); }
         binding.list.setLayoutManager(new LinearLayoutManager(this));
         binding.list.setAdapter(adapter);
         binding.add.setOnClickListener(view -> showEditor(null, null));
         model.getEvents().observe(this, events -> {
-            adapter.submitList(events);
-            binding.empty.setVisibility(events == null || events.isEmpty() ? View.VISIBLE : View.GONE);
+            allEvents = events == null ? java.util.Collections.emptyList() : events;
+            renderEvents();
         });
+        binding.search.addTextChangedListener(new android.text.TextWatcher() {
+            public void beforeTextChanged(CharSequence s,int start,int count,int after) {}
+            public void onTextChanged(CharSequence s,int start,int before,int count) { renderEvents(); }
+            public void afterTextChanged(android.text.Editable value) {}
+        });
+        binding.filter.setOnClickListener(view -> showFilters());
 
         if (state != null && state.getBoolean("editorOpen")) {
             Event draft = new Event(state.getLong("eventId"), state.getString("name", ""),
@@ -67,16 +78,86 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+    private void renderEvents() {
+        String query = binding.search.getText().toString().trim().toLowerCase(Locale.ROOT);
+        java.util.List<Event> shown = new java.util.ArrayList<>();
+        for (Event event : allEvents) {
+            if (event.name.toLowerCase(Locale.ROOT).contains(query)
+                && (dateFilter.isEmpty() || event.date.equals(dateFilter))
+                && event.organiser.toLowerCase(Locale.ROOT).contains(organiserFilter.toLowerCase(Locale.ROOT))) shown.add(event);
+        }
+        adapter.submitList(shown);
+        boolean filtered = !query.isEmpty() || !dateFilter.isEmpty() || !organiserFilter.isEmpty();
+        binding.listTitle.setText(filtered ? R.string.filtered_section : R.string.events_section);
+        binding.count.setText(getString(R.string.event_count,shown.size()));
+        binding.empty.setText(filtered ? R.string.empty_search : R.string.empty);
+        binding.empty.setVisibility(shown.isEmpty() ? View.VISIBLE : View.GONE);
+    }
+    private void showFilters() {
+        android.widget.LinearLayout fields = new android.widget.LinearLayout(this);
+        fields.setOrientation(android.widget.LinearLayout.VERTICAL); fields.setPadding(dp(24),dp(8),dp(24),dp(16));
+        EditText date = filterField(fields,getString(R.string.filter_date),dateFilter.isEmpty() ? "" : EventValidation.displayDate(dateFilter));
+        date.setHint(R.string.date_hint); date.setInputType(android.text.InputType.TYPE_CLASS_DATETIME | android.text.InputType.TYPE_DATETIME_VARIATION_DATE);
+        EditText organiser = filterField(fields,getString(R.string.filter_organiser),organiserFilter);
+        AlertDialog filter = new AlertDialog.Builder(this).setTitle(R.string.filter_title).setView(fields)
+            .setNegativeButton(R.string.cancel,null).setNeutralButton(R.string.clear_filter,null).setPositiveButton(R.string.apply_filter,null).create();
+        filter.setOnShowListener(ignored -> {
+            filter.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view -> {
+                String entered = date.getText().toString().trim();
+                if (!entered.isEmpty() && !EventValidation.validDate(entered)) { date.setError(getString(R.string.invalid_date)); return; }
+                dateFilter = entered.isEmpty() ? "" : EventValidation.storageDate(entered);
+                organiserFilter = organiser.getText().toString().trim();
+                renderEvents(); filter.dismiss();
+            });
+            filter.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(view -> {
+                dateFilter = ""; organiserFilter = ""; binding.search.setText(""); renderEvents(); filter.dismiss();
+            });
+        });
+        filter.show();
+    }
+    private EditText filterField(android.widget.LinearLayout parent,String label,String value) {
+        android.widget.TextView text = new android.widget.TextView(this); text.setText(label); parent.addView(text);
+        EditText input = new EditText(this); input.setText(value); input.setSingleLine(true); input.setMinHeight(dp(48));
+        input.setId(View.generateViewId()); text.setLabelFor(input.getId()); parent.addView(input);
+        return input;
+    }
+    private int dp(int value) { return (int)(value * getResources().getDisplayMetrics().density); }
+    private void fullScreen(AlertDialog dialog,View root) {
+        android.view.Window window = dialog.getWindow();
+        if (window == null) return;
+        window.setLayout(android.view.ViewGroup.LayoutParams.MATCH_PARENT,android.view.ViewGroup.LayoutParams.MATCH_PARENT);
+        window.setBackgroundDrawableResource(R.color.canvas);
+        window.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        ViewCompat.setOnApplyWindowInsetsListener(root,(view,insets)-> {
+            androidx.core.graphics.Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            view.setPadding(bars.left,bars.top,bars.right,0);
+            return insets;
+        });
+        ViewCompat.requestApplyInsets(root);
+        android.widget.Button primary = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        primary.setTextColor(android.graphics.Color.WHITE); primary.setAllCaps(false);
+        primary.setBackgroundResource(R.drawable.primary_button); ViewCompat.setBackgroundTintList(primary,null);
+        primary.setMinHeight(dp(52)); primary.setPadding(dp(20),dp(12),dp(20),dp(12));
+    }
     private void showDetails(Event event) {
-        String text = getString(R.string.review_details, event.name, EventValidation.displayDate(event.date), event.location, event.organiser, event.type, event.status, event.description, event.contactEmail, event.contactPhone);
-        new AlertDialog.Builder(this).setTitle(event.name).setMessage(text)
-            .setPositiveButton(R.string.edit, (d, w) -> showEditor(event, event))
-            .setNegativeButton(R.string.close, null).show();
+        DialogDetailsBinding page = DialogDetailsBinding.inflate(getLayoutInflater());
+        page.title.setText(event.name); page.category.setText(event.type+" · "+EventAdapter.statusLabel(this,event.status));
+        page.date.setText(EventValidation.displayDate(event.date)); page.location.setText(event.location);
+        page.organiser.setText(getString(R.string.organised_by,event.organiser));
+        page.description.setText(event.description.isEmpty()?getString(R.string.no_description):event.description);
+        page.contacts.setVisibility(event.contactEmail.isEmpty() && event.contactPhone.isEmpty()?View.GONE:View.VISIBLE);
+        page.email.setText(event.contactEmail); page.email.setVisibility(event.contactEmail.isEmpty()?View.GONE:View.VISIBLE);
+        page.phone.setText(event.contactPhone); page.phone.setVisibility(event.contactPhone.isEmpty()?View.GONE:View.VISIBLE);
+        AlertDialog details = new AlertDialog.Builder(this).setView(page.getRoot())
+            .setPositiveButton(R.string.edit,(dialog,which)->showEditor(event,event)).create();
+        page.back.setOnClickListener(view->details.dismiss());
+        details.show(); fullScreen(details,page.getRoot());
     }
     private void showEditor(Event existing, Event draft) {
         DialogEventBinding form = DialogEventBinding.inflate(getLayoutInflater());
         editorFields = form;
         editingEvent = existing;
+        form.editorTitle.setText(existing == null ? R.string.create_title : R.string.edit_title);
         if (draft != null) {
             form.descriptionInput.setText(draft.description);
             form.emailInput.setText(draft.contactEmail);
@@ -95,13 +176,20 @@ public class MainActivity extends AppCompatActivity {
                     form.dateInput.setText(String.format(Locale.ROOT, "%02d/%02d/%04d", day, month + 1, year)),
                     initial.getYear(), initial.getMonthValue() - 1, initial.getDayOfMonth()).show();
         });
+        form.moreOptions.setOnClickListener(view -> {
+            boolean expand = form.optionalFields.getVisibility() != View.VISIBLE;
+            form.optionalFields.setVisibility(expand ? View.VISIBLE : View.GONE);
+            form.moreOptions.setText(expand ? R.string.less_options : R.string.more_options);
+        });
+        if (draft != null && (!draft.description.isEmpty() || !draft.contactEmail.isEmpty() || !draft.contactPhone.isEmpty())) {
+            form.optionalFields.setVisibility(View.VISIBLE); form.moreOptions.setText(R.string.less_options);
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setTitle(existing == null ? R.string.add : R.string.edit)
-                .setView(form.getRoot()).setNegativeButton(R.string.cancel, null)
-                .setPositiveButton(R.string.save, null);
+                .setView(form.getRoot()).setPositiveButton(R.string.review_action, null);
         if (existing != null) builder.setNeutralButton(R.string.delete, null);
         AlertDialog dialog = builder.create();
         editor = dialog;
+        form.back.setOnClickListener(view -> dialog.dismiss());
         dialog.setOnDismissListener(ignored -> { editor = null; editorFields = null; editingEvent = null; });
         dialog.setOnShowListener(ignored -> {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view -> {
@@ -146,8 +234,10 @@ public class MainActivity extends AppCompatActivity {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(!model.isBusy());
         });
         dialog.show();
+        fullScreen(dialog,form.getRoot());
     }
     @Override protected void onSaveInstanceState(Bundle state) {
+        state.putString("filterDate",dateFilter); state.putString("filterOrganiser",organiserFilter);
         if (editorFields != null) {
             state.putString("description", editorFields.descriptionInput.getText().toString());
             state.putString("email", editorFields.emailInput.getText().toString());
