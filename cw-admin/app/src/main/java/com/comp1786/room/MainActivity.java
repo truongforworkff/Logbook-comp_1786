@@ -65,11 +65,11 @@ public class MainActivity extends AppCompatActivity {
         model.getOperation().observe(this, operation -> {
             if (operation == EventViewModel.Operation.DUPLICATE) {
                 Toast.makeText(this, R.string.duplicate_event, Toast.LENGTH_LONG).show();
-                if (editor != null) editor.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                if (editorFields != null) editorFields.reviewAction.setEnabled(true);
                 model.consumeOperation();
             } else if (operation == EventViewModel.Operation.ERROR) {
                 Toast.makeText(this, R.string.storage_error, Toast.LENGTH_LONG).show();
-                if (editor != null) editor.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                if (editorFields != null) editorFields.reviewAction.setEnabled(true);
                 model.consumeOperation();
             } else if (operation == EventViewModel.Operation.SUCCESS) {
                 if (editor != null) editor.dismiss();
@@ -130,11 +130,12 @@ public class MainActivity extends AppCompatActivity {
         window.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         ViewCompat.setOnApplyWindowInsetsListener(root,(view,insets)-> {
             androidx.core.graphics.Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            view.setPadding(bars.left,bars.top,bars.right,0);
+            view.setPadding(bars.left,bars.top,bars.right,bars.bottom);
             return insets;
         });
         ViewCompat.requestApplyInsets(root);
         android.widget.Button primary = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        if (primary == null) return;
         primary.setTextColor(android.graphics.Color.WHITE); primary.setAllCaps(false);
         primary.setBackgroundResource(R.drawable.primary_button); ViewCompat.setBackgroundTintList(primary,null);
         primary.setMinHeight(dp(52)); primary.setPadding(dp(20),dp(12),dp(20),dp(12));
@@ -148,8 +149,8 @@ public class MainActivity extends AppCompatActivity {
         page.contacts.setVisibility(event.contactEmail.isEmpty() && event.contactPhone.isEmpty()?View.GONE:View.VISIBLE);
         page.email.setText(event.contactEmail); page.email.setVisibility(event.contactEmail.isEmpty()?View.GONE:View.VISIBLE);
         page.phone.setText(event.contactPhone); page.phone.setVisibility(event.contactPhone.isEmpty()?View.GONE:View.VISIBLE);
-        AlertDialog details = new AlertDialog.Builder(this).setView(page.getRoot())
-            .setPositiveButton(R.string.edit,(dialog,which)->showEditor(event,event)).create();
+        AlertDialog details = new AlertDialog.Builder(this).setView(page.getRoot()).create();
+        page.editAction.setOnClickListener(view -> { details.dismiss(); showEditor(event,event); });
         page.back.setOnClickListener(view->details.dismiss());
         details.show(); fullScreen(details,page.getRoot());
     }
@@ -185,14 +186,14 @@ public class MainActivity extends AppCompatActivity {
             form.optionalFields.setVisibility(View.VISIBLE); form.moreOptions.setText(R.string.less_options);
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setView(form.getRoot()).setPositiveButton(R.string.review_action, null);
-        if (existing != null) builder.setNeutralButton(R.string.delete, null);
+                .setView(form.getRoot());
+        form.deleteAction.setVisibility(existing == null ? View.GONE : View.VISIBLE);
         AlertDialog dialog = builder.create();
         editor = dialog;
         form.back.setOnClickListener(view -> dialog.dismiss());
         dialog.setOnDismissListener(ignored -> { editor = null; editorFields = null; editingEvent = null; });
         dialog.setOnShowListener(ignored -> {
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view -> {
+            form.reviewAction.setOnClickListener(view -> {
                 EditText[] fields = {form.nameInput, form.locationInput, form.organiserInput};
                 for (EditText field : fields) {
                     field.setError(EventValidation.validText(field.getText().toString()) ? null : getString(R.string.required));
@@ -222,16 +223,16 @@ public class MainActivity extends AppCompatActivity {
                 new AlertDialog.Builder(this).setTitle(R.string.review_title).setMessage(review)
                     .setNegativeButton(R.string.back_edit, null)
                     .setPositiveButton(R.string.save, (confirmation, button) -> {
-                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                        form.reviewAction.setEnabled(false);
                         model.save(event);
                     }).show();
             });
-            if (existing != null) dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(view ->
+            if (existing != null) form.deleteAction.setOnClickListener(view ->
                     new AlertDialog.Builder(this).setTitle(R.string.delete_title)
                             .setMessage(getString(R.string.delete_message, existing.name))
                             .setNegativeButton(R.string.cancel, null)
                             .setPositiveButton(R.string.delete, (confirmation, button) -> model.delete(existing)).show());
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(!model.isBusy());
+            form.reviewAction.setEnabled(!model.isBusy());
         });
         dialog.show();
         fullScreen(dialog,form.getRoot());
