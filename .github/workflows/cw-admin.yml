@@ -19,7 +19,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: false
-      - run: ./gradlew assembleDebug testDebugUnitTest lintDebug
+      - run: ./gradlew assembleDebug assembleDebugAndroidTest testDebugUnitTest lintDebug
         working-directory: cw-admin
       - name: Enable emulator acceleration
         run: sudo chmod 666 /dev/kvm

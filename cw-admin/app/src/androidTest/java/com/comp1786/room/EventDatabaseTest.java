@@ -11,7 +11,8 @@ public class EventDatabaseTest {
     private Event event(String name,String date) { return new Event(0,name,date,"Campus","Manager","Workshop","Upcoming"); }
     @Test public void optionalFieldsPersistAndDuplicatePairIsRejected() {
         Context context=InstrumentationRegistry.getInstrumentation().getTargetContext();
-        try(EventDatabase db=Room.inMemoryDatabaseBuilder(context,EventDatabase.class).build()) {
+        EventDatabase db=Room.inMemoryDatabaseBuilder(context,EventDatabase.class).build();
+        try {
             Event first=event("  Workshop  ","2026-11-08");
             first.description="Design together"; first.contactEmail="manager@example.com"; first.contactPhone="+84912345678";
             first.id=db.events().insert(first);
@@ -26,6 +27,6 @@ public class EventDatabaseTest {
             assertEquals(2,db.events().getAll().size());
             assertEquals("Updated",db.events().getAll().get(0).description);
             db.events().delete(loaded); assertEquals(1,db.events().getAll().size());
-        }
+        } finally { db.close(); }
     }
 }
