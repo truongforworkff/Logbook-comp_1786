@@ -27,7 +27,7 @@ public class EventAdapter extends ListAdapter<Event, EventAdapter.Holder> {
         Event event = getItem(position);
         holder.binding.name.setText(event.name);
         holder.binding.details.setText(holder.itemView.getContext().getString(R.string.details,
-                EventValidation.displayDate(event.date), event.location, event.organiser, event.type) + holder.itemView.getContext().getString(R.string.status_detail, event.status));
+                EventValidation.displayDate(event.date), event.location) + holder.itemView.getContext().getString(R.string.status_detail, event.status));
         holder.itemView.setClickable(onClick != null);
         holder.itemView.setFocusable(onClick != null);
         holder.itemView.setOnClickListener(view -> { if (onClick != null) onClick.onClick(event); });
