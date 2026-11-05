@@ -42,6 +42,11 @@ public class DesignScreenshotTest {
             instrumentation.runOnMainSync(()->((RecyclerView)activity.findViewById(R.id.list)).getChildAt(0).performClick());
             instrumentation.waitForIdleSync();
             screenshot(instrumentation,context,"02-details.png");
+            click(instrumentation,"addSessionAction");
+            assertTrue(node(instrumentation,"eventName").getText().toString().contains(names[0]));
+            screenshot(instrumentation,context,"12-quick-add-session.png");
+            instrumentation.sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK);
+            instrumentation.waitForIdleSync();
             instrumentation.sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK);
             instrumentation.waitForIdleSync();
             instrumentation.runOnMainSync(()->activity.findViewById(R.id.add).performClick());
