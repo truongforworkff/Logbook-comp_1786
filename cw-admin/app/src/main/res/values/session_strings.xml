@@ -7,7 +7,6 @@
     <string name="session_empty">Chưa có session. Nhấn + để thêm hoạt động đầu tiên.</string>
     <string name="session_add">Thêm session</string>
     <string name="session_edit">Chỉnh sửa session</string>
-    <string name="session_form_hint">Tên và giờ là bắt buộc. Các thông tin khác có thể bổ sung sau.</string>
     <string name="session_name">Tên session *</string>
     <string name="session_time">Giờ bắt đầu *</string>
     <string name="session_time_hint">HH:mm, ví dụ 09:30</string>
@@ -25,5 +24,4 @@
     <string name="session_deleted">Đã xóa session.</string>
     <string name="session_edit_hint">Chạm để xem hoặc chỉnh sửa</string>
     <string name="session_more">Thông tin bổ sung</string>
-    <string name="session_time_label">Giờ bắt đầu</string>
 </resources>
