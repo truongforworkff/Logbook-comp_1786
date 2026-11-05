@@ -54,3 +54,5 @@ Phát triển tiếp từ mã Java/Room trong logbook của repository này. Tha
 Mục B: Chi tiết event → Session hỗ trợ thêm/sửa/xóa nhiều session trong SQLite; ID tự sinh, giờ HH:mm, sáu loại và các trường tùy chọn. Database v1 → v2 có migration giữ event cũ. Chi tiết file/hàm xem CODE_MAP.md. Mục C đã liên kết session theo từng event, có số lượng và cascade delete.
 
 Mục C: mở Chi tiết event → Session. Session mới tự thuộc event đang mở. Với session tạo ở bản B, mở event đích → Gắn session cũ → chọn session → Lưu. Migration v1/v2 lên v3 giữ dữ liệu. Quy tắc clean code áp dụng cho mọi task: AGENTS.md.
+
+Mục D: tìm event theo tên/mô tả; lọc ngày/người tổ chức; tìm session theo tên/mô tả trong event và tab Session. Hỗ trợ hoa/thường, tiếng Việt có/không dấu, số kết quả, trạng thái rỗng và mở đầy đủ chi tiết. Dữ liệu đọc từ SQLite qua Room; không đổi schema.

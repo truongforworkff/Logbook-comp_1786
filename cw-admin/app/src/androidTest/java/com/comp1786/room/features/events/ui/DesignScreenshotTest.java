@@ -24,7 +24,9 @@ public class DesignScreenshotTest {
         String[] dates={"2026-11-08","2026-11-15","2026-11-22"};
         String[] places={"Greenwich · Cơ sở Hà Nội","Studio 02 · Tầng 3","The Workshop Space"};
         for(int i=0;i<names.length;i++) {
-            long eventId = dao.insert(new Event(0,names[i],dates[i],places[i],"Greenwich Community","Workshop","Upcoming"));
+            Event sample = new Event(0,names[i],dates[i],places[i],"Greenwich Community","Workshop","Upcoming");
+            if (i == 0) sample.description = "Nghiên cứu trí tuệ D1786";
+            long eventId = dao.insert(sample);
             if (i == 0) EventDatabase.get(context).sessions().insert(
                     new com.comp1786.room.features.sessions.data.model.Session(
                             0, eventId, "Chào mừng và kết nối", "09:00", "Nguyễn Minh Anh",
@@ -45,6 +47,23 @@ public class DesignScreenshotTest {
             }
             assertTrue("Three event cards must render",ready[0]);
             screenshot(instrumentation,context,"01-home.png");
+            instrumentation.runOnMainSync(() -> ((android.widget.EditText) activity.findViewById(R.id.search)).setText("TRI TUE D1786"));
+            awaitCards(instrumentation, activity, 1);
+            screenshot(instrumentation,context,"17-event-description-search.png");
+            instrumentation.runOnMainSync(() -> activity.findViewById(R.id.filter).performClick());
+            setText(instrumentation,"filterDate","08/11/2026");
+            setText(instrumentation,"filterOrganiser","GREENWICH");
+            click(instrumentation,"primary");
+            awaitCards(instrumentation, activity, 1);
+            instrumentation.runOnMainSync(() -> activity.findViewById(R.id.filter).performClick());
+            setText(instrumentation,"filterDate","09/11/2026");
+            click(instrumentation,"primary");
+            awaitCards(instrumentation, activity, 0);
+            instrumentation.runOnMainSync(() -> activity.findViewById(R.id.filter).performClick());
+            click(instrumentation,"tertiary");
+            awaitCards(instrumentation, activity, 3);
+            instrumentation.runOnMainSync(() -> ((android.widget.EditText) activity.findViewById(R.id.search)).setText("TRI TUE D1786"));
+            awaitCards(instrumentation, activity, 1);
             instrumentation.runOnMainSync(()->((RecyclerView)activity.findViewById(R.id.list)).getChildAt(0).performClick());
             instrumentation.waitForIdleSync();
             screenshot(instrumentation,context,"02-details.png");
@@ -94,6 +113,18 @@ public class DesignScreenshotTest {
             screenshot(instrumentation,context,"08-validation-notice.png");
         } finally { instrumentation.runOnMainSync(activity::finish); }
     }
+    private void awaitCards(Instrumentation test, MainActivity activity, int expected) throws Exception {
+        long deadline = android.os.SystemClock.uptimeMillis() + 10000;
+        boolean[] ready = {false};
+        while (!ready[0] && android.os.SystemClock.uptimeMillis() < deadline) {
+            test.runOnMainSync(() -> ready[0] = ((RecyclerView) activity.findViewById(R.id.list))
+                    .getAdapter().getItemCount() == expected);
+            if (!ready[0]) Thread.sleep(50);
+        }
+        assertTrue("Search result count: " + expected, ready[0]);
+        test.waitForIdleSync();
+    }
+
     private android.view.accessibility.AccessibilityNodeInfo node(Instrumentation instrumentation,String id) throws Exception {
         android.accessibilityservice.AccessibilityServiceInfo info=instrumentation.getUiAutomation().getServiceInfo();
         info.flags|=android.accessibilityservice.AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS;

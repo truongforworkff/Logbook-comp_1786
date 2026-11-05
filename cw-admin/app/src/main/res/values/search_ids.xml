@@ -1,0 +1,4 @@
+<resources>
+    <item name="filterDate" type="id"/>
+    <item name="filterOrganiser" type="id"/>
+</resources>

@@ -71,6 +71,12 @@
                     android:spinnerMode="dropdown" android:background="@drawable/event_card"
                     android:popupBackground="@drawable/dropdown_surface" android:padding="12dp"/>
             </LinearLayout>
+            <include
+                android:id="@+id/sessionSearch"
+                layout="@layout/shared_session_search"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="16dp"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

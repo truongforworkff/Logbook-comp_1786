@@ -49,4 +49,8 @@
     <string name="session_choose_event_hint">Chọn sự kiện để xem và thêm session.</string>
     <string name="session_no_events">Chưa có sự kiện. Hãy tạo sự kiện ở tab Sự kiện trước.</string>
     <string name="session_event_option">%1$s · %2$s</string>
+    <string name="session_search_hint">Tìm tên hoặc mô tả session…</string>
+    <string name="clear_search">Xóa từ khóa tìm kiếm</string>
+    <string name="session_search_empty">Không tìm thấy session phù hợp. Thử đổi hoặc xóa từ khóa.</string>
+    <string name="session_search_count">%1$d / %2$d session</string>
 </resources>

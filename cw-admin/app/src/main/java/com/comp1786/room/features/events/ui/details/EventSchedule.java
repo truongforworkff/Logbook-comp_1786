@@ -20,6 +20,7 @@ import java.util.List;
 public final class EventSchedule {
     private final AppCompatActivity activity;
     private final long eventId;
+    private List<Session> allSessions = java.util.Collections.emptyList();
 
     public EventSchedule(AppCompatActivity activity, long eventId) {
         this.activity = activity;
@@ -27,13 +28,17 @@ public final class EventSchedule {
     }
 
     public void bind(EventDetailsScreenBinding page, AlertDialog dialog) {
+        com.comp1786.room.shared.ui.SessionSearchField.bind(page.sessionSearch, query -> render(page));
         page.addSessionAction.setOnClickListener(view -> openEditor());
         page.legacySessions.setOnClickListener(view ->
                 activity.startActivity(SessionActivity.intent(activity, eventId, true)));
         SessionDao dao = EventDatabase.get(activity).sessions();
         LiveData<List<Session>> sessions = dao.observeForEvent(eventId);
         Observer<List<Session>> scheduleObserver = rows -> {
-            if (rows != null) render(page, rows);
+            if (rows == null) return;
+            allSessions = rows;
+            page.sessionSearch.getRoot().setVisibility(rows.isEmpty() ? View.GONE : View.VISIBLE);
+            render(page);
         };
         LiveData<Integer> unassigned = dao.observeUnassignedCount();
         Observer<Integer> legacyObserver = count ->
@@ -46,8 +51,14 @@ public final class EventSchedule {
         });
     }
 
-    private void render(EventDetailsScreenBinding page, List<Session> sessions) {
-        page.sessionCount.setText(activity.getString(R.string.session_count, sessions.size()));
+    private void render(EventDetailsScreenBinding page) {
+        String query = page.sessionSearch.query.getText().toString();
+        List<Session> sessions = com.comp1786.room.features.sessions.logic.SessionSearch.filter(allSessions, query);
+        boolean searching = !query.trim().isEmpty();
+        page.sessionCount.setText(searching
+                ? activity.getString(R.string.session_search_count, sessions.size(), allSessions.size())
+                : activity.getString(R.string.session_count, allSessions.size()));
+        page.scheduleEmpty.setText(searching ? R.string.session_search_empty : R.string.event_schedule_empty);
         page.scheduleEmpty.setVisibility(sessions.isEmpty() ? View.VISIBLE : View.GONE);
         page.scheduleItems.removeAllViews();
         for (Session session : sessions) {

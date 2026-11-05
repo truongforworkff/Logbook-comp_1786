@@ -13,7 +13,7 @@ public final class AppUi {
     private View notice;
     private final android.os.Handler noticeHandler=new android.os.Handler(android.os.Looper.getMainLooper());
     public AppUi(AppCompatActivity activity) { this.activity=activity; }
-    public EditText filterField(android.widget.LinearLayout parent,String label,String value) {
+    public EditText filterField(android.widget.LinearLayout parent,String label,String value,int id) {
         android.widget.TextView text = new android.widget.TextView(activity);
         text.setText(label); text.setTextSize(12); text.setTextColor(activity.getColor(R.color.muted)); parent.addView(text);
         EditText input = new EditText(activity); input.setText(value); input.setSingleLine(true);
@@ -21,7 +21,7 @@ public final class AppUi {
         input.setTextSize(14); input.setMinHeight(dp(50)); input.setBackgroundResource(R.drawable.event_card); input.setPadding(dp(12),dp(12),dp(12),dp(12));
         android.widget.LinearLayout.LayoutParams size = new android.widget.LinearLayout.LayoutParams(-1,-2);
         size.topMargin=dp(7); size.bottomMargin=dp(16); input.setLayoutParams(size);
-        input.setId(View.generateViewId()); text.setLabelFor(input.getId()); parent.addView(input);
+        input.setId(id); text.setLabelFor(input.getId()); parent.addView(input);
         return input;
     }
     public boolean inlineValidation(EditText field,boolean valid,int message) {

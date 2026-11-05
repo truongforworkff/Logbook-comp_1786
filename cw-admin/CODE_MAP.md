@@ -91,3 +91,16 @@ Thêm session: chọn event → SessionEditorActivity.readForm → SessionValida
 - demo-data/technology-events.json: sự kiện công nghệ có nguồn; phiên mang nhãn Demo là lịch minh họa. File không tự nạp vào app khi clone Git.
 
 Quy tắc clean code áp dụng cho mọi task nằm ở AGENTS.md tại gốc repo.
+
+## Mục D — tìm kiếm (10%)
+
+- Event: ô tìm theo tên hoặc mô tả, khớp một phần từ khóa, không phân biệt hoa/thường và dấu tiếng Việt.
+- Lọc nâng cao: ngày chính xác và người tổ chức; kết hợp với từ khóa theo AND. Popup có xóa bộ lọc/từ khóa.
+- Session: tìm theo tên/mô tả trong lịch của event và trong tab Session sau khi chọn event. Không tìm lẫn event khác.
+- Hiển thị số kết quả, trạng thái không có kết quả và nút xóa từ khóa session. Chạm kết quả mở đầy đủ chi tiết.
+- EventSearch.java, SessionSearch.java: các hàm lọc riêng trong logic của từng tính năng.
+- shared/logic/SearchText.java: chuẩn hóa tiếng Việt, chữ hoa/thường và khoảng trắng đầu/cuối.
+- shared/ui/SessionSearchField.java + shared_session_search.xml: ô tìm dùng chung cho lịch và màn quản lý session.
+- Dữ liệu lấy từ Room/SQLite qua LiveData rồi lọc trong bộ nhớ; cập nhật kết quả khi dữ liệu thay đổi. Không có thay đổi schema.
+- Unit test kiểm tra tên/mô tả, từ khóa một phần, dấu tiếng Việt, tổ hợp ngày/người tổ chức, rỗng và ký tự đặc biệt.
+- Kiểm thử UI kiểm tra tìm theo mô tả, lọc ngày/người tổ chức, xóa lọc, mở kết quả; tìm session không lẫn event khác.

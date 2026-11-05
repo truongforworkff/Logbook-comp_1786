@@ -26,7 +26,7 @@ public class SessionScreenTest {
         com.comp1786.room.features.events.data.model.Event other =
                 new com.comp1786.room.features.events.data.model.Event(0, "Other UI event", "2026-12-21", "Hall", "Team", "Workshop", "Upcoming");
         other.id = EventDatabase.get(context).events().insert(other);
-        dao.insert(new Session(0, other.id, "Hidden in other event", "12:00", "", "", "Workshop", ""));
+        dao.insert(new Session(0, other.id, "Hidden in other event", "12:00", "", "", "Workshop", "Optional details"));
         verifySessionTab(test, context);
         SessionEditorActivity activity = launch(test, context, 0);
         long id = 0;
@@ -156,8 +156,27 @@ public class SessionScreenTest {
             }
             assertTrue("Only the selected event's session appears", ready[0]);
             screenshot(test, "11-event-sessions.png");
+            test.runOnMainSync(() -> ((EditText) list.findViewById(R.id.query)).setText("OPTIONAL"));
+            awaitSessionCount(test, list, "1 / 1 session");
+            test.runOnMainSync(() -> ((EditText) list.findViewById(R.id.query)).setText("No match%"));
+            awaitSessionCount(test, list, "0 / 1 session");
+            screenshot(test, "18-session-no-search-result.png");
+            test.runOnMainSync(() -> list.findViewById(R.id.clearQuery).performClick());
+            awaitSessionCount(test, list, "1 session");
             verifyReadOnlyDetails(test, list);
         } finally { test.runOnMainSync(list::finish); }
+    }
+
+    private void awaitSessionCount(Instrumentation test, android.app.Activity page, String expected) throws Exception {
+        long deadline = android.os.SystemClock.uptimeMillis() + 10000;
+        boolean[] ready = {false};
+        while (!ready[0] && android.os.SystemClock.uptimeMillis() < deadline) {
+            test.runOnMainSync(() -> ready[0] = expected.contentEquals(
+                    ((android.widget.TextView) page.findViewById(R.id.count)).getText()));
+            if (!ready[0]) Thread.sleep(50);
+        }
+        assertTrue("Session search count: " + expected, ready[0]);
+        test.waitForIdleSync();
     }
 
     private void verifyReadOnlyDetails(Instrumentation test,

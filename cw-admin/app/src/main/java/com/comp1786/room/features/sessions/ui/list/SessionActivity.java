@@ -22,6 +22,7 @@ public class SessionActivity extends AppCompatActivity {
     private SessionViewModel model;
     private SessionAdapter adapter;
     private LiveData<List<Session>> sessionsSource;
+    private List<Session> allSessions = Collections.emptyList();
     private long eventId;
     private boolean global;
     private boolean unassigned;
@@ -47,6 +48,7 @@ public class SessionActivity extends AppCompatActivity {
         model = new ViewModelProvider(this).get(SessionViewModel.class);
         setupList();
         setupNavigation();
+        setupSearch();
         observeLegacySessions();
         if (global) setupEventPicker();
         else {
@@ -82,6 +84,11 @@ public class SessionActivity extends AppCompatActivity {
         binding.add.setOnClickListener(view -> openEditor(0));
     }
 
+    private void setupSearch() {
+        binding.sessionSearch.query.setEnabled(eventId > 0);
+        com.comp1786.room.shared.ui.SessionSearchField.bind(binding.sessionSearch, query -> applySearch());
+    }
+
     private void setupList() {
         adapter = new SessionAdapter(session -> {
             if (unassigned) openEditor(session.id);
@@ -107,6 +114,8 @@ public class SessionActivity extends AppCompatActivity {
         if (sessionsSource != null) sessionsSource.removeObservers(this);
         eventId = id;
         binding.add.setEnabled(id > 0);
+        binding.sessionSearch.query.setEnabled(id > 0);
+        allSessions = Collections.emptyList();
         updateLegacyAction();
         adapter.submitList(Collections.emptyList());
         binding.count.setText(getString(R.string.session_count, 0));
@@ -120,9 +129,22 @@ public class SessionActivity extends AppCompatActivity {
 
     private void renderSessions(List<Session> sessions) {
         if (sessions == null) return;
-        adapter.submitList(sessions);
-        binding.count.setText(getString(R.string.session_count, sessions.size()));
-        binding.empty.setVisibility(sessions.isEmpty() ? View.VISIBLE : View.GONE);
+        allSessions = sessions;
+        applySearch();
+    }
+
+    private void applySearch() {
+        if (eventId <= 0) return;
+        String query = binding.sessionSearch.query.getText().toString();
+        List<Session> shown = com.comp1786.room.features.sessions.logic.SessionSearch.filter(allSessions, query);
+        boolean searching = !query.trim().isEmpty();
+        adapter.submitList(shown);
+        binding.count.setText(searching
+                ? getString(R.string.session_search_count, shown.size(), allSessions.size())
+                : getString(R.string.session_count, shown.size()));
+        binding.empty.setText(searching ? R.string.session_search_empty
+                : unassigned ? R.string.session_assign_hint : R.string.session_empty);
+        binding.empty.setVisibility(shown.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
     private void observeParent() {

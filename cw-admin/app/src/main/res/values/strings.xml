@@ -40,7 +40,7 @@
 <string name="review_details">Tên: %1$s\nNgày: %2$s\nĐịa điểm: %3$s\nNgười tổ chức: %4$s\nLoại: %5$s\nTrạng thái: %6$s\n\nMô tả: %7$s\nEmail: %8$s\nĐiện thoại: %9$s</string>
 
 <string name="admin_initials">QL</string><string name="admin_role">Người quản lý sự kiện</string>
-<string name="search_hint">Tìm tên sự kiện…</string><string name="filter_title">Lọc sự kiện</string>
+<string name="search_hint">Tìm tên hoặc mô tả sự kiện…</string><string name="filter_title">Lọc sự kiện</string>
 <string name="events_section">Sự kiện</string><string name="filtered_section">Kết quả tìm kiếm</string>
 <string name="local_note">Lưu trên thiết bị</string><string name="view_details">Xem chi tiết</string>
 <string name="month_short">TH %1$d</string><string name="event_count">%1$d sự kiện</string>

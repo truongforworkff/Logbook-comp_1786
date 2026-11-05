@@ -126,6 +126,13 @@
                     android:text="@string/event_schedule_subtitle"
                     android:textSize="14sp"
                     android:textColor="@color/muted"/>
+                <include
+                    android:id="@+id/sessionSearch"
+                    layout="@layout/shared_session_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="16dp"
+                    android:visibility="gone"/>
                 <TextView
                     android:id="@+id/scheduleEmpty"
                     android:layout_width="match_parent"
