@@ -32,7 +32,7 @@
 - design/logic/search.mjs: tìm tên/ngày, lọc yêu thích, kiểm tra dữ liệu lưu.
 - design/logic/search.test.mjs: kiểm tra logic bằng Node assert.
 
-Chạy local bằng server tĩnh ở thư mục design. Kiểm tra: node design/logic/search.test.mjs.
+Chạy local: py cw-user/preview.py, mở http://127.0.0.1:4180/. Preview server đặt MIME JavaScript module rõ ràng để chạy đúng trên Windows. Kiểm tra: node design/logic/search.test.mjs.
 
 Ảnh bìa từ Unsplash chỉ là ảnh minh họa, không phải ảnh của sự kiện. Tên Microsoft Ignite và NVIDIA GTC dùng theo bộ dữ liệu của app quản trị; lịch phiên và các sự kiện cộng đồng còn lại là minh họa. Prototype có ghi nhãn Bản mẫu.
 
