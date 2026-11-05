@@ -23,6 +23,10 @@ public class SessionScreenTest {
                 new com.comp1786.room.features.events.data.model.Event(0, "Session UI parent", "2026-12-20", "Hall", "Team", "Workshop", "Upcoming");
         parent.id = EventDatabase.get(context).events().insert(parent);
         eventId = parent.id;
+        com.comp1786.room.features.events.data.model.Event other =
+                new com.comp1786.room.features.events.data.model.Event(0, "Other UI event", "2026-12-21", "Hall", "Team", "Workshop", "Upcoming");
+        other.id = EventDatabase.get(context).events().insert(other);
+        dao.insert(new Session(0, other.id, "Hidden in other event", "12:00", "", "", "Workshop", ""));
         SessionEditorActivity activity = launch(test, context, 0);
         long id = 0;
         try {
@@ -72,6 +76,7 @@ public class SessionScreenTest {
             for (Session session : dao.getAll())
                 if (session.id == id) dao.delete(session);
             EventDatabase.get(context).events().delete(parent);
+            EventDatabase.get(context).events().delete(other);
         }
     }
 
