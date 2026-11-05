@@ -51,6 +51,13 @@ public class DesignScreenshotTest {
             awaitCards(instrumentation, activity, 1);
             screenshot(instrumentation,context,"17-event-description-search.png");
             instrumentation.runOnMainSync(() -> activity.findViewById(R.id.filter).performClick());
+            click(instrumentation,"filterDate");
+            click(instrumentation,"primary");
+            assertTrue(com.comp1786.room.features.events.logic.EventValidation.validDate(
+                    node(instrumentation,"filterDate").getText().toString()));
+            click(instrumentation,"filterDate");
+            click(instrumentation,"tertiary");
+            assertEquals("",node(instrumentation,"filterDate").getText().toString());
             setText(instrumentation,"filterDate","08/11/2026");
             setText(instrumentation,"filterOrganiser","GREENWICH");
             click(instrumentation,"primary");
@@ -85,9 +92,11 @@ public class DesignScreenshotTest {
             instrumentation.runOnMainSync(()->activity.findViewById(R.id.add).performClick());
             instrumentation.waitForIdleSync();
             screenshot(instrumentation,context,"03-create.png");
-            click(instrumentation,"pickDate");
+            click(instrumentation,"dateInput");
             screenshot(instrumentation,context,"04-date-popup.png");
-            instrumentation.sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK);
+            click(instrumentation,"primary");
+            assertTrue(com.comp1786.room.features.events.logic.EventValidation.validDate(
+                    node(instrumentation,"dateInput").getText().toString()));
             setText(instrumentation,"nameInput","Gặp gỡ cuối năm");
             setText(instrumentation,"dateInput","25/12/2026");
             setText(instrumentation,"locationInput","Greenwich Campus");

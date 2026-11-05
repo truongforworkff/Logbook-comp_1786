@@ -53,4 +53,6 @@
     <string name="clear_search">Xóa từ khóa tìm kiếm</string>
     <string name="session_search_empty">Không tìm thấy session phù hợp. Thử đổi hoặc xóa từ khóa.</string>
     <string name="session_search_count">%1$d / %2$d session</string>
+    <string name="choose_date_hint">Chạm để chọn ngày</string>
+    <string name="clear_date">Xóa ngày đã chọn</string>
 </resources>

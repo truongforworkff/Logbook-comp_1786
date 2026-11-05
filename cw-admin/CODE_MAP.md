@@ -104,3 +104,5 @@ Quy tắc clean code áp dụng cho mọi task nằm ở AGENTS.md tại gốc r
 - Dữ liệu lấy từ Room/SQLite qua LiveData rồi lọc trong bộ nhớ; cập nhật kết quả khi dữ liệu thay đổi. Không có thay đổi schema.
 - Unit test kiểm tra tên/mô tả, từ khóa một phần, dấu tiếng Việt, tổ hợp ngày/người tổ chức, rỗng và ký tự đặc biệt.
 - Kiểm thử UI kiểm tra tìm theo mô tả, lọc ngày/người tổ chức, xóa lọc, mở kết quả; tìm session không lẫn event khác.
+
+Chọn ngày: shared/ui/DateField.java dùng chung cho ô ngày form event và bộ lọc. Chạm ô nhập mở lịch bo góc, không tự bật bàn phím; form vẫn có nút Chọn ngày. Bộ lọc cho phép xóa ngày riêng. Giá trị hiển thị dd/MM/yyyy và ghi database ISO như cũ; kiểm thử UI mở lịch từ cả hai ô, xác nhận ngày và xóa ngày lọc.

@@ -16,7 +16,7 @@ public final class EventFilterDialog {
         SharedPopupBinding panel = SharedPopupBinding.inflate(activity.getLayoutInflater());
         panel.title.setText(R.string.filter_title); panel.subtitle.setText(R.string.filter_subtitle);
         EditText date = ui.filterField(panel.body,activity.getString(R.string.filter_date),dateFilter.isEmpty() ? "" : EventValidation.displayDate(dateFilter),R.id.filterDate);
-        date.setHint(R.string.date_hint); date.setInputType(android.text.InputType.TYPE_CLASS_DATETIME | android.text.InputType.TYPE_DATETIME_VARIATION_DATE);
+        new com.comp1786.room.shared.ui.DateField(activity, ui, date, true);
         EditText organiser = ui.filterField(panel.body,activity.getString(R.string.filter_organiser),organiserFilter,R.id.filterOrganiser);
         panel.primary.setText(R.string.apply_filter); panel.secondary.setText(R.string.cancel);
         panel.tertiary.setText(R.string.clear_filter); panel.tertiary.setVisibility(View.VISIBLE);

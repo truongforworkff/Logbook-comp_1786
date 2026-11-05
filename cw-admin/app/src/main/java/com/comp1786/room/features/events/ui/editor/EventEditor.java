@@ -12,7 +12,6 @@ import com.comp1786.room.features.events.logic.EventValidation;
 import com.comp1786.room.features.events.logic.EventViewModel;
 import com.comp1786.room.features.events.ui.list.EventAdapter;
 import com.comp1786.room.shared.ui.AppUi;
-import java.time.LocalDate;
 import java.util.Arrays;
 public final class EventEditor {
     private final AppCompatActivity activity;
@@ -57,27 +56,9 @@ public final class EventEditor {
             form.typeInput.setSelection(Math.max(0, Arrays.asList(activity.getResources().getStringArray(R.array.types)).indexOf(draft.type)));
             form.statusInput.setSelection(Math.max(0, Arrays.asList(activity.getResources().getStringArray(R.array.statuses)).indexOf(draft.status)));
         }
-        form.pickDate.setOnClickListener(view -> {
-            String entered=form.dateInput.getText().toString();
-            LocalDate initial=EventValidation.validDate(entered)?LocalDate.parse(EventValidation.storageDate(entered)):LocalDate.now();
-            LocalDate[] selected={initial};
-            SharedPopupBinding panel=SharedPopupBinding.inflate(activity.getLayoutInflater());
-            panel.title.setText(R.string.pick_date); panel.subtitle.setText(R.string.date_subtitle);
-            android.widget.CalendarView calendar=new android.widget.CalendarView(activity);
-            java.time.ZoneId zone=java.time.ZoneId.systemDefault();
-            calendar.setMinDate(LocalDate.of(1900,1,1).atStartOfDay(zone).toInstant().toEpochMilli());
-            calendar.setMaxDate(LocalDate.of(2100,12,31).atStartOfDay(zone).toInstant().toEpochMilli());
-            calendar.setDate(initial.atStartOfDay(zone).toInstant().toEpochMilli());
-            calendar.setOnDateChangeListener((widget,year,month,day)->selected[0]=LocalDate.of(year,month+1,day));
-            panel.body.addView(calendar,new android.widget.LinearLayout.LayoutParams(-1,ui.dp(320)));
-            panel.primary.setText(R.string.use_date); panel.secondary.setText(R.string.cancel);
-            AlertDialog picker=ui.openPopup(panel);
-            panel.secondary.setOnClickListener(button->picker.dismiss());
-            panel.primary.setOnClickListener(button->{
-                form.dateInput.setText(EventValidation.displayDate(selected[0].toString()));
-                ui.inlineValidation(form.dateInput,true,R.string.invalid_date); picker.dismiss();
-            });
-        });
+        com.comp1786.room.shared.ui.DateField datePicker =
+                new com.comp1786.room.shared.ui.DateField(activity, ui, form.dateInput, false);
+        form.pickDate.setOnClickListener(view -> datePicker.show());
         form.moreOptions.setOnClickListener(view -> {
             boolean expand = form.optionalFields.getVisibility() != View.VISIBLE;
             form.optionalFields.setVisibility(expand ? View.VISIBLE : View.GONE);
