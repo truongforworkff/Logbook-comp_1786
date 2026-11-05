@@ -151,7 +151,7 @@
             android:layout_height="52dp"
             android:background="@drawable/primary_button"
             app:backgroundTint="@null"
-            android:text="@string/save"
+            android:text="@string/session_save"
             android:textColor="#FFFFFF"
             android:textAllCaps="false"/>
         <Button

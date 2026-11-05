@@ -24,4 +24,5 @@
     <string name="session_deleted">Đã xóa session.</string>
     <string name="session_edit_hint">Chạm để xem hoặc chỉnh sửa</string>
     <string name="session_more">Thông tin bổ sung</string>
+    <string name="session_save">Lưu session</string>
 </resources>
