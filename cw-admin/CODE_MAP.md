@@ -111,3 +111,5 @@ Luồng chính: Danh sách event → Chi tiết event → nút Session (kèm t�
 - SessionScreenTest kiểm tra danh sách theo event và thao tác form.
 
 Quy tắc clean code cho mọi task nằm ở AGENTS.md tại gốc repo.
+
+Thêm nhanh: Chi tiết event → **Thêm session** → form gắn sẵn eventId, không phải mở danh sách session hay chọn lại sự kiện. Nút Session · tổng số vẫn dùng để xem/quản lý danh sách.

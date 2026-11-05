@@ -36,11 +36,19 @@ public final class EventDetails {
             onEdit.accept(event);
         });
         page.back.setOnClickListener(view -> dialog.dismiss());
+        page.addSessionAction.setOnClickListener(view -> openSessionEditor(event.id));
         page.sessionsAction.setOnClickListener(view ->
                 activity.startActivity(SessionActivity.intent(activity, event.id, false)));
         observeSessionCount(page, dialog, event.id);
         dialog.show();
         ui.fullScreen(dialog, page.getRoot());
+    }
+
+    private void openSessionEditor(long eventId) {
+        android.content.Intent intent = new android.content.Intent(activity,
+                com.comp1786.room.features.sessions.ui.editor.SessionEditorActivity.class);
+        intent.putExtra(com.comp1786.room.features.sessions.ui.editor.SessionEditorActivity.EVENT_ID, eventId);
+        activity.startActivity(intent);
     }
 
     private void bindDetails(EventDetailsScreenBinding page, Event event) {
