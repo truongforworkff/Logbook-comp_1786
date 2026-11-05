@@ -74,3 +74,24 @@ Khi làm session (B–C), đặt tính năng tại `features/sessions` với cù
 - `app/src/androidTest/.../features/events/ui/DesignScreenshotTest.java`: chạy giao diện trên emulator, chụp ảnh các màn/popup.
 - Test screenshot tạo/xóa dữ liệu mẫu trong app test; chỉ chạy trên emulator thử nghiệm riêng, không chạy trên thiết bị có dữ liệu bạn muốn giữ.
 - Giữ nguyên applicationId, tên file `events.db`, schema version 1 và cấu trúc bảng trong lần tổ chức mã này. Việc đổi package Java không phải yêu cầu xóa dữ liệu ứng dụng.
+
+## Mục B — quản lý session (15%)
+
+Mở tab **Session** dưới màn danh sách event. Session được sắp theo giờ, ID do SQLite tự sinh.
+
+- `features/sessions/ui/list/SessionActivity.java`: điều hướng, theo dõi danh sách và thông báo kết quả.
+- `features/sessions/ui/list/SessionAdapter.java` + `res/layout/session_list_item.xml`: thẻ giờ/tên/loại; chạm thẻ để xem và chỉnh sửa.
+- `features/sessions/ui/editor/SessionEditorActivity.java` + `res/layout/session_editor_screen.xml`: form thêm/sửa; các hàm setupForm, loadExisting, fillForm, readForm, save, confirmDelete, restoreDraft tách theo việc.
+- `features/sessions/logic/SessionValidation.java`: tên bắt buộc, giờ HH:mm từ 00:00 đến 23:59, sáu loại session và giới hạn trường.
+- `features/sessions/logic/SessionViewModel.java`: kiểm tra trước khi ghi, thực thi ngoài UI thread, trả kết quả lưu/xóa/lỗi.
+- `features/sessions/data/model/Session.java`: ID, tên, giờ, diễn giả, phòng, loại và mô tả.
+- `features/sessions/data/local/SessionDao.java`: SQL đọc/thêm/sửa/xóa.
+- `res/layout/session_list_screen.xml`: danh sách; `res/values/session_strings.xml`: chữ của tính năng.
+
+Luồng lưu: SessionEditorActivity.save → SessionValidation → SessionViewModel.save → SessionDao → SQLite → LiveData cập nhật danh sách.
+
+Database dùng chung events.db, version 2. MIGRATION_1_2 trong EventDatabase chỉ tạo bảng sessions, giữ nguyên bảng events, không xóa dữ liệu cũ. Không dùng fallbackToDestructiveMigration.
+
+Phạm vi B: session độc lập. Liên kết với event, đếm session và xóa dây chuyền thuộc mục C; chưa triển khai ở bước này.
+
+Kiểm thử: SessionValidationTest kiểm tra đầu vào; SessionDatabaseTest nâng cấp từ schema v1, giữ event, lưu nhiều session, mở lại database, sửa và xóa; SessionScreenTest kiểm tra form và thao tác thật.

@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:background="@color/canvas">
+<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:paddingHorizontal="24dp">
+<Button android:id="@+id/back" style="@style/Widget.AppCompat.Button.Borderless" android:layout_width="wrap_content" android:layout_height="48dp" android:text="@string/back_label" android:textAllCaps="false" android:textColor="@color/muted"/>
+<TextView android:id="@+id/title" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/ink" android:textSize="27sp" android:accessibilityHeading="true"/>
+<TextView android:id="@+id/sessionId" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/muted" android:paddingVertical="12dp"/>
+</LinearLayout>
+<ScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"><LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:paddingHorizontal="24dp" android:paddingBottom="24dp">
+<TextView style="@style/FieldLabel" android:text="@string/session_name" android:labelFor="@id/nameInput"/>
+<EditText style="@style/EventField" android:id="@+id/nameInput" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:inputType="textCapSentences" android:maxLength="120"  android:saveEnabled="true"/>
+<TextView style="@style/FieldLabel" android:text="@string/session_time" android:labelFor="@id/timeInput"/>
+<EditText style="@style/EventField" android:id="@+id/timeInput" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:inputType="time" android:maxLength="5" android:hint="@string/session_time_hint" android:saveEnabled="true"/>
+<TextView style="@style/FieldLabel" android:text="@string/session_type" android:labelFor="@id/typeInput"/>
+<Spinner android:id="@+id/typeInput" android:layout_width="match_parent" android:layout_height="48dp" android:spinnerMode="dropdown" android:popupBackground="@drawable/dropdown_surface" android:background="@drawable/event_card" android:padding="12dp"/>
+<Button android:id="@+id/moreOptions" style="@style/Widget.AppCompat.Button.Borderless" android:layout_width="match_parent" android:layout_height="48dp" android:text="@string/session_more" android:textAllCaps="false" android:textColor="@color/rose"/>
+<LinearLayout android:id="@+id/optionalFields" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:visibility="gone">
+<TextView style="@style/FieldLabel" android:text="@string/session_speaker" android:labelFor="@id/speakerInput"/>
+<EditText style="@style/EventField" android:id="@+id/speakerInput" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:inputType="textCapWords" android:maxLength="120"  android:saveEnabled="true"/>
+<TextView style="@style/FieldLabel" android:text="@string/session_room" android:labelFor="@id/roomInput"/>
+<EditText style="@style/EventField" android:id="@+id/roomInput" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:inputType="textCapSentences" android:maxLength="120"  android:saveEnabled="true"/>
+<TextView style="@style/FieldLabel" android:text="@string/session_description" android:labelFor="@id/descriptionInput"/>
+<EditText style="@style/EventField" android:id="@+id/descriptionInput" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:inputType="textCapSentences|textMultiLine" android:maxLength="2000"  android:saveEnabled="true"/>
+</LinearLayout></LinearLayout></ScrollView>
+<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="24dp">
+<androidx.appcompat.widget.AppCompatButton android:id="@+id/save" android:layout_width="match_parent" android:layout_height="52dp" android:background="@drawable/primary_button" app:backgroundTint="@null" android:text="@string/save" android:textColor="#FFFFFF" android:textAllCaps="false"/>
+<Button android:id="@+id/delete" style="@style/Widget.AppCompat.Button.Borderless" android:layout_width="match_parent" android:layout_height="48dp" android:text="@string/delete" android:textAllCaps="false" android:textColor="@color/rose"/>
+</LinearLayout></LinearLayout>

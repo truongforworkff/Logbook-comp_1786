@@ -50,3 +50,5 @@ Lần bàn giao này tập trung mục A. Session, cloud, tìm kiếm nâng cao 
 ## Nguồn và cách dùng
 
 Phát triển tiếp từ mã Java/Room trong logbook của repository này. Tham khảo: [Room](https://developer.android.com/training/data-storage/room), [Views](https://developer.android.com/develop/ui/views), [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel). Sinh viên cần hiểu mã, ghi nhận nguồn hỗ trợ và trình bày trung thực theo quy định coursework.
+
+Mục B: tab Session hỗ trợ thêm/sửa/xóa nhiều session trong SQLite; ID tự sinh, giờ HH:mm, sáu loại và các trường tùy chọn. Database v1 → v2 có migration giữ event cũ. Chi tiết file/hàm xem CODE_MAP.md. Liên kết event–session (C) chưa triển khai.
