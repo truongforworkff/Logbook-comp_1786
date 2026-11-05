@@ -63,4 +63,3 @@ public final class EventFilterDialog {
         return spinner;
     }
 }
-

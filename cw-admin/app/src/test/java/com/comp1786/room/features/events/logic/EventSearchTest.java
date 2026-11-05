@@ -18,16 +18,16 @@ public class EventSearchTest {
     }
 
     @Test public void matchesNamePrefixAndDescriptionWithoutCaseOrAccents() {
-        assertEquals(1, EventSearch.filter(events(, ""), "HOI TH", "", "").get(0).id);
-        assertEquals(1, EventSearch.filter(events(, ""), "TRI TUE", "", "").get(0).id);
-        assertEquals(2, EventSearch.filter(events(, ""), "dien toan", "", "").get(0).id);
+        assertEquals(1, EventSearch.filter(events(), "HOI TH", "", "", "").get(0).id);
+        assertEquals(1, EventSearch.filter(events(), "TRI TUE", "", "", "").get(0).id);
+        assertEquals(2, EventSearch.filter(events(), "dien toan", "", "", "").get(0).id);
     }
 
     @Test public void combinesKeywordDateAndOrganiserUsingAnd() {
-        assertEquals(1, EventSearch.filter(events(, ""), "ai", "2026-11-17", "DAI HOC").size());
-        assertTrue(EventSearch.filter(events(, ""), "ai", "2026-11-18", "DAI HOC").isEmpty());
-        assertTrue(EventSearch.filter(events(, ""), "ai", "", "NVIDIA").isEmpty());
-        assertEquals(2, EventSearch.filter(events(, ""), "", "", "nvi").get(0).id);
+        assertEquals(1, EventSearch.filter(events(), "ai", "2026-11-17", "DAI HOC", "").size());
+        assertTrue(EventSearch.filter(events(), "ai", "2026-11-18", "DAI HOC", "").isEmpty());
+        assertTrue(EventSearch.filter(events(), "ai", "", "NVIDIA", "").isEmpty());
+        assertEquals(2, EventSearch.filter(events(), "", "", "nvi", "").get(0).id);
     }
 
     @Test public void categoryCombinesWithKeywordAndDate() {
