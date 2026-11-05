@@ -29,6 +29,9 @@ public class SessionViewModel extends AndroidViewModel {
     public LiveData<List<Session>> getSessions(long eventId, boolean unassigned) {
         return unassigned ? dao.observeUnassigned() : dao.observeForEvent(eventId);
     }
+    public LiveData<List<com.comp1786.room.features.events.data.model.Event>> getEvents() {
+        return events.observeAll();
+    }
     public LiveData<Session> getSession(long id) { return dao.observeById(id); }
     public LiveData<com.comp1786.room.features.events.data.model.Event> getEvent(long id) {
         return events.observeById(id);

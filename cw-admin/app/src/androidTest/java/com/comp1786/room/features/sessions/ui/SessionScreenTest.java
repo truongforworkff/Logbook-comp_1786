@@ -27,6 +27,7 @@ public class SessionScreenTest {
                 new com.comp1786.room.features.events.data.model.Event(0, "Other UI event", "2026-12-21", "Hall", "Team", "Workshop", "Upcoming");
         other.id = EventDatabase.get(context).events().insert(other);
         dao.insert(new Session(0, other.id, "Hidden in other event", "12:00", "", "", "Workshop", ""));
+        verifySessionTab(test, context);
         SessionEditorActivity activity = launch(test, context, 0);
         long id = 0;
         try {
@@ -77,6 +78,65 @@ public class SessionScreenTest {
                 if (session.id == id) dao.delete(session);
             EventDatabase.get(context).events().delete(parent);
             EventDatabase.get(context).events().delete(other);
+        }
+    }
+
+    private void verifySessionTab(Instrumentation test, Context context) throws Exception {
+        com.comp1786.room.features.events.ui.list.MainActivity home =
+                (com.comp1786.room.features.events.ui.list.MainActivity) test.startActivitySync(
+                        new Intent(context, com.comp1786.room.features.events.ui.list.MainActivity.class)
+                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        Instrumentation.ActivityMonitor tabMonitor = test.addMonitor(
+                com.comp1786.room.features.sessions.ui.list.SessionActivity.class.getName(), null, false);
+        android.app.Activity tab = null;
+        try {
+            test.runOnMainSync(() -> home.findViewById(R.id.sessionsTab).performClick());
+            tab = test.waitForMonitorWithTimeout(tabMonitor, 10000);
+            assertNotNull("Session tab opens", tab);
+            final android.app.Activity page = tab;
+            boolean[] selected = {false};
+            long deadline = android.os.SystemClock.uptimeMillis() + 10000;
+            while (!selected[0] && android.os.SystemClock.uptimeMillis() < deadline) {
+                test.runOnMainSync(() -> {
+                    android.widget.Spinner picker = page.findViewById(R.id.eventPicker);
+                    if (picker.getAdapter() == null) return;
+                    for (int index = 1; index < picker.getAdapter().getCount(); index++) {
+                        if (picker.getAdapter().getItem(index).toString().startsWith("Session UI parent ·")) {
+                            assertFalse("Must choose an event before adding", page.findViewById(R.id.add).isEnabled());
+                            picker.setSelection(index);
+                            selected[0] = true;
+                            break;
+                        }
+                    }
+                });
+                if (!selected[0]) Thread.sleep(50);
+            }
+            assertTrue("Parent event appears in picker", selected[0]);
+            test.waitForIdleSync();
+            screenshot(test, "15-session-tab.png");
+            Instrumentation.ActivityMonitor editorMonitor = test.addMonitor(SessionEditorActivity.class.getName(), null, false);
+            try {
+                test.runOnMainSync(() -> page.findViewById(R.id.add).performClick());
+                SessionEditorActivity form = (SessionEditorActivity) test.waitForMonitorWithTimeout(editorMonitor, 10000);
+                assertNotNull("Adding from tab opens shared form", form);
+                boolean[] parentReady = {false};
+                deadline = android.os.SystemClock.uptimeMillis() + 10000;
+                while (!parentReady[0] && android.os.SystemClock.uptimeMillis() < deadline) {
+                    test.runOnMainSync(() -> parentReady[0] =
+                            ((android.widget.TextView) form.findViewById(R.id.eventName)).getText().toString().contains("Session UI parent"));
+                    if (!parentReady[0]) Thread.sleep(50);
+                }
+                assertTrue("Form is linked to chosen event", parentReady[0]);
+                screenshot(test, "16-session-tab-create.png");
+                test.runOnMainSync(form::finish);
+            } finally { test.removeMonitor(editorMonitor); }
+        } finally {
+            test.removeMonitor(tabMonitor);
+            if (tab != null) {
+                final android.app.Activity page = tab;
+                test.runOnMainSync(page::finish);
+            }
+            test.runOnMainSync(home::finish);
         }
     }
 

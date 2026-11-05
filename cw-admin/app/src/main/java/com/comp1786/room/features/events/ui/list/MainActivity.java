@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
         if (state != null) { dateFilter = state.getString("filterDate", ""); organiserFilter = state.getString("filterOrganiser", ""); }
         binding.list.setLayoutManager(new LinearLayoutManager(this));
         binding.list.setAdapter(adapter);
+        binding.sessionsTab.setOnClickListener(view -> startActivity(new android.content.Intent(this,
+                com.comp1786.room.features.sessions.ui.list.SessionActivity.class)));
         binding.add.setOnClickListener(view -> editor.show(null, null));
         model.getEvents().observe(this, events -> {
             allEvents = events == null ? java.util.Collections.emptyList() : events;

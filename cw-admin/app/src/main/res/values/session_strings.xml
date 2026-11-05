@@ -45,4 +45,8 @@
     <string name="session_speaker_value">Diễn giả: %1$s</string>
     <string name="session_date_label">Ngày diễn ra</string>
     <string name="event_schedule_subtitle">Từng khoảnh khắc, được chuẩn bị chu đáo.</string>
+    <string name="session_choose_event">Chọn sự kiện</string>
+    <string name="session_choose_event_hint">Chọn sự kiện để xem và thêm session.</string>
+    <string name="session_no_events">Chưa có sự kiện. Hãy tạo sự kiện ở tab Sự kiện trước.</string>
+    <string name="session_event_option">%1$s · %2$s</string>
 </resources>

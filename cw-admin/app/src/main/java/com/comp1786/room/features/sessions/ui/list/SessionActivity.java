@@ -4,19 +4,28 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.comp1786.room.R;
 import com.comp1786.room.databinding.SessionListScreenBinding;
+import com.comp1786.room.features.sessions.data.model.Session;
 import com.comp1786.room.features.sessions.logic.SessionViewModel;
 import com.comp1786.room.features.sessions.ui.editor.SessionEditorActivity;
 import com.comp1786.room.shared.ui.AppUi;
+import java.util.Collections;
+import java.util.List;
 
 public class SessionActivity extends AppCompatActivity {
     private SessionListScreenBinding binding;
     private AppUi ui;
+    private SessionViewModel model;
+    private SessionAdapter adapter;
+    private LiveData<List<Session>> sessionsSource;
     private long eventId;
+    private boolean global;
     private boolean unassigned;
+    private int legacyCount;
     private final androidx.activity.result.ActivityResultLauncher<Intent> editor =
             registerForActivityResult(new androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() == RESULT_OK) {
@@ -30,6 +39,23 @@ public class SessionActivity extends AppCompatActivity {
         binding = SessionListScreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         ui = new AppUi(this);
+        setupWindow();
+        long requestedEvent = getIntent().getLongExtra(SessionEditorActivity.EVENT_ID, 0);
+        global = requestedEvent <= 0;
+        eventId = state == null ? requestedEvent : state.getLong("selectedEvent", requestedEvent);
+        unassigned = !global && getIntent().getBooleanExtra("unassigned", false);
+        model = new ViewModelProvider(this).get(SessionViewModel.class);
+        setupList();
+        setupNavigation();
+        observeLegacySessions();
+        if (global) setupEventPicker();
+        else {
+            observeParent();
+            selectEvent(eventId);
+        }
+    }
+
+    private void setupWindow() {
         ui.styleSystemBars(getWindow());
         androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (view, insets) -> {
             androidx.core.graphics.Insets bars = insets.getInsets(
@@ -38,11 +64,6 @@ public class SessionActivity extends AppCompatActivity {
             view.setPadding(bars.left, bars.top, bars.right, bars.bottom);
             return insets;
         });
-        eventId = getIntent().getLongExtra(SessionEditorActivity.EVENT_ID, 0);
-        unassigned = getIntent().getBooleanExtra("unassigned", false);
-        if (eventId <= 0) { finish(); return; }
-        setupNavigation();
-        observeSessions();
     }
 
     public static Intent intent(android.content.Context context, long eventId, boolean unassigned) {
@@ -52,54 +73,93 @@ public class SessionActivity extends AppCompatActivity {
 
     private void setupNavigation() {
         binding.eventsTab.setOnClickListener(view -> finish());
+        binding.sessionsTab.setOnClickListener(view -> {
+            if (!global) startActivity(new Intent(this, SessionActivity.class));
+        });
         binding.add.setVisibility(unassigned ? View.GONE : View.VISIBLE);
+        binding.add.setEnabled(eventId > 0);
         binding.assignLegacy.setOnClickListener(view -> startActivity(intent(this, eventId, true)));
         binding.add.setOnClickListener(view -> openEditor(0));
     }
 
-    private void observeSessions() {
-        SessionAdapter adapter = new SessionAdapter(session -> {
+    private void setupList() {
+        adapter = new SessionAdapter(session -> {
             if (unassigned) openEditor(session.id);
             else openDetails(session.id);
         });
         binding.list.setLayoutManager(new LinearLayoutManager(this));
         binding.list.setAdapter(adapter);
-        SessionViewModel model = new ViewModelProvider(this).get(SessionViewModel.class);
-        observeParent(model);
-        observeLegacySessions(model);
-        model.getSessions(eventId, unassigned).observe(this, sessions -> {
-            if (sessions == null) return;
-            adapter.submitList(sessions);
-            binding.count.setText(getString(R.string.session_count, sessions.size()));
-            binding.empty.setVisibility(sessions.isEmpty() ? View.VISIBLE : View.GONE);
+    }
+
+    private void setupEventPicker() {
+        binding.eventPickerGroup.setVisibility(View.VISIBLE);
+        binding.eventName.setText(R.string.session_choose_event_hint);
+        SessionEventPicker picker = new SessionEventPicker(binding.eventPicker, this::selectEvent);
+        model.getEvents().observe(this, events -> {
+            if (events == null) return;
+            binding.eventName.setText(events.isEmpty() ? R.string.session_no_events : R.string.session_choose_event_hint);
+            picker.submit(events, eventId);
         });
     }
 
-    private void observeParent(SessionViewModel model) {
+    private void selectEvent(long id) {
+        if (id == eventId && sessionsSource != null) return;
+        if (sessionsSource != null) sessionsSource.removeObservers(this);
+        eventId = id;
+        binding.add.setEnabled(id > 0);
+        updateLegacyAction();
+        adapter.submitList(Collections.emptyList());
+        binding.count.setText(getString(R.string.session_count, 0));
+        binding.empty.setText(id == 0 ? R.string.session_choose_event_hint
+                : unassigned ? R.string.session_assign_hint : R.string.session_empty);
+        binding.empty.setVisibility(View.VISIBLE);
+        if (id == 0) { sessionsSource = null; return; }
+        sessionsSource = model.getSessions(id, unassigned);
+        sessionsSource.observe(this, this::renderSessions);
+    }
+
+    private void renderSessions(List<Session> sessions) {
+        if (sessions == null) return;
+        adapter.submitList(sessions);
+        binding.count.setText(getString(R.string.session_count, sessions.size()));
+        binding.empty.setVisibility(sessions.isEmpty() ? View.VISIBLE : View.GONE);
+    }
+
+    private void observeParent() {
         model.getEvent(eventId).observe(this, event -> {
             if (event == null) { finish(); return; }
             binding.eventName.setText(getString(R.string.session_parent, event.name));
         });
     }
 
-    private void observeLegacySessions(SessionViewModel model) {
-        model.getUnassignedCount().observe(this, count ->
-                binding.assignLegacy.setVisibility(!unassigned && count != null && count > 0 ? View.VISIBLE : View.GONE));
-        if (unassigned) {
-            binding.listTitle.setText(R.string.session_assign_title);
-            binding.empty.setText(R.string.session_assign_hint);
-        }
+    private void observeLegacySessions() {
+        model.getUnassignedCount().observe(this, count -> {
+            legacyCount = count == null ? 0 : count;
+            updateLegacyAction();
+        });
+        if (unassigned) binding.listTitle.setText(R.string.session_assign_title);
+    }
+
+    private void updateLegacyAction() {
+        binding.assignLegacy.setVisibility(!unassigned && eventId > 0 && legacyCount > 0 ? View.VISIBLE : View.GONE);
     }
 
     private void openDetails(long id) {
-        editor.launch(new Intent(this,
-                com.comp1786.room.features.sessions.ui.details.SessionDetailsActivity.class)
+        editor.launch(new Intent(this, com.comp1786.room.features.sessions.ui.details.SessionDetailsActivity.class)
                 .putExtra(SessionEditorActivity.SESSION_ID, id)
                 .putExtra(SessionEditorActivity.EVENT_ID, eventId));
     }
 
     private void openEditor(long id) {
-        editor.launch(new Intent(this, SessionEditorActivity.class).putExtra(SessionEditorActivity.SESSION_ID, id).putExtra(SessionEditorActivity.EVENT_ID, eventId));
+        if (eventId <= 0) return;
+        editor.launch(new Intent(this, SessionEditorActivity.class)
+                .putExtra(SessionEditorActivity.SESSION_ID, id)
+                .putExtra(SessionEditorActivity.EVENT_ID, eventId));
+    }
+
+    @Override protected void onSaveInstanceState(Bundle state) {
+        state.putLong("selectedEvent", eventId);
+        super.onSaveInstanceState(state);
     }
 
     @Override protected void onDestroy() {

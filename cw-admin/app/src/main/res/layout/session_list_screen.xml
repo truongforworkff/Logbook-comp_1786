@@ -61,6 +61,17 @@
                 android:layout_marginTop="6dp"
                 android:layout_marginBottom="22dp"/>
             <LinearLayout
+                android:id="@+id/eventPickerGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+                <TextView style="@style/FieldLabel" android:text="@string/session_choose_event" android:labelFor="@id/eventPicker"/>
+                <Spinner android:id="@+id/eventPicker" android:layout_width="match_parent" android:layout_height="52dp"
+                    android:spinnerMode="dropdown" android:background="@drawable/event_card"
+                    android:popupBackground="@drawable/dropdown_surface" android:padding="12dp"/>
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -131,7 +142,9 @@
                 android:text="@string/events_section"
                 android:textAllCaps="false"
                 android:textColor="@color/muted"/>
-            
+            <Button android:id="@+id/sessionsTab" style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp" android:layout_weight="1" android:layout_height="56dp"
+                android:text="@string/sessions_section" android:textAllCaps="false" android:textColor="@color/rose"/>
         </LinearLayout>
     </LinearLayout>
     <androidx.appcompat.widget.AppCompatButton
