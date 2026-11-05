@@ -23,7 +23,13 @@ public class DesignScreenshotTest {
         String[] names={"Một ngày sáng tạo","Chạm vào thiết kế","Kết nối và sẻ chia"};
         String[] dates={"2026-11-08","2026-11-15","2026-11-22"};
         String[] places={"Greenwich · Cơ sở Hà Nội","Studio 02 · Tầng 3","The Workshop Space"};
-        for(int i=0;i<names.length;i++) dao.insert(new Event(0,names[i],dates[i],places[i],"Greenwich Community","Workshop","Upcoming"));
+        for(int i=0;i<names.length;i++) {
+            long eventId = dao.insert(new Event(0,names[i],dates[i],places[i],"Greenwich Community","Workshop","Upcoming"));
+            if (i == 0) EventDatabase.get(context).sessions().insert(
+                    new com.comp1786.room.features.sessions.data.model.Session(
+                            0, eventId, "Chào mừng và kết nối", "09:00", "Nguyễn Minh Anh",
+                            "Sảnh chính", "Networking", "Nội dung đầy đủ của phiên chào mừng."));
+        }
         Intent intent=new Intent(context,MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         MainActivity activity=(MainActivity)instrumentation.startActivitySync(intent);
         try {
@@ -42,6 +48,14 @@ public class DesignScreenshotTest {
             instrumentation.runOnMainSync(()->((RecyclerView)activity.findViewById(R.id.list)).getChildAt(0).performClick());
             instrumentation.waitForIdleSync();
             screenshot(instrumentation,context,"02-details.png");
+            assertTrue(node(instrumentation,"sessionCount").getText().toString().contains("1"));
+            assertEquals("Chào mừng và kết nối", node(instrumentation,"name").getText().toString());
+            click(instrumentation,"scheduleItem");
+            assertEquals("Nội dung đầy đủ của phiên chào mừng.",
+                    node(instrumentation,"description").getText().toString());
+            screenshot(instrumentation,context,"14-inline-session-details.png");
+            instrumentation.sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK);
+            instrumentation.waitForIdleSync();
             click(instrumentation,"addSessionAction");
             assertTrue(node(instrumentation,"eventName").getText().toString().contains(names[0]));
             screenshot(instrumentation,context,"12-quick-add-session.png");

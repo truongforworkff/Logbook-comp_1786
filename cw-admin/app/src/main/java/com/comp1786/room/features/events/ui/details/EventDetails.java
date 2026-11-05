@@ -3,15 +3,11 @@ package com.comp1786.room.features.events.ui.details;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AlertDialog;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import com.comp1786.room.R;
 import com.comp1786.room.databinding.EventDetailsScreenBinding;
-import com.comp1786.room.features.events.data.local.EventDatabase;
 import com.comp1786.room.features.events.data.model.Event;
 import com.comp1786.room.features.events.logic.EventValidation;
 import com.comp1786.room.features.events.ui.list.EventAdapter;
-import com.comp1786.room.features.sessions.ui.list.SessionActivity;
 import com.comp1786.room.shared.ui.AppUi;
 import java.util.function.Consumer;
 
@@ -36,19 +32,9 @@ public final class EventDetails {
             onEdit.accept(event);
         });
         page.back.setOnClickListener(view -> dialog.dismiss());
-        page.addSessionAction.setOnClickListener(view -> openSessionEditor(event.id));
-        page.sessionsAction.setOnClickListener(view ->
-                activity.startActivity(SessionActivity.intent(activity, event.id, false)));
-        observeSessionCount(page, dialog, event.id);
+        new EventSchedule(activity, event.id).bind(page, dialog);
         dialog.show();
         ui.fullScreen(dialog, page.getRoot());
-    }
-
-    private void openSessionEditor(long eventId) {
-        android.content.Intent intent = new android.content.Intent(activity,
-                com.comp1786.room.features.sessions.ui.editor.SessionEditorActivity.class);
-        intent.putExtra(com.comp1786.room.features.sessions.ui.editor.SessionEditorActivity.EVENT_ID, eventId);
-        activity.startActivity(intent);
     }
 
     private void bindDetails(EventDetailsScreenBinding page, Event event) {
@@ -70,11 +56,4 @@ public final class EventDetails {
         page.phone.setVisibility(event.contactPhone.isEmpty() ? View.GONE : View.VISIBLE);
     }
 
-    private void observeSessionCount(EventDetailsScreenBinding page, AlertDialog dialog, long eventId) {
-        LiveData<Integer> count = EventDatabase.get(activity).sessions().observeCount(eventId);
-        Observer<Integer> observer = total -> page.sessionsAction.setText(
-                activity.getString(R.string.event_session_count, total == null ? 0 : total));
-        count.observe(activity, observer);
-        dialog.setOnDismissListener(ignored -> count.removeObserver(observer));
-    }
 }

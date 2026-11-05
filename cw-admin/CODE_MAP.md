@@ -123,3 +123,5 @@ Nút Chỉnh sửa session riêng mới mở form quản trị. LiveData làm m�
 - `res/layout/session_details_screen.xml`: giao diện đọc thông tin; không có ô nhập và không tự cắt mô tả.
 - `SessionActivity.openDetails`: điều hướng khi chọn session đã thuộc event.
 - Luồng gắn session cũ vẫn mở form để người quản trị xác nhận gắn vào event.
+
+Lịch trực tiếp trong event: EventDetails gắn EventSchedule; event_details_screen.xml chứa mục Lịch trình session dưới Về sự kiện. EventSchedule theo dõi đúng eventId, vẽ các phiên theo giờ bằng event_schedule_item.xml, cập nhật khi thêm/sửa/xóa, và mở SessionDetailsActivity khi chạm một phiên. Không phải mở màn danh sách session riêng để đọc lịch. Observer được bỏ khi đóng dialog.

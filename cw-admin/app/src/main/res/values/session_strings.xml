@@ -39,4 +39,9 @@
     <string name="session_room_label">Phòng</string>
     <string name="about_session">Nội dung session</string>
     <string name="session_no_description">Chưa có mô tả cho session này.</string>
+    <string name="event_schedule">Lịch trình session</string>
+    <string name="event_schedule_empty">Chưa có session. Thêm phiên đầu tiên cho sự kiện này.</string>
+    <string name="session_type_room">%1$s · %2$s</string>
+    <string name="session_speaker_value">Diễn giả: %1$s</string>
+    <string name="session_date_label">Ngày diễn ra</string>
 </resources>
