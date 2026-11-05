@@ -1,131 +1,93 @@
-# Đọc mã Eventa Admin theo chức năng
+# Đọc code Eventa Admin
 
-Trong Android Studio, chọn chế độ **Project** thay cho **Android** ở đầu bảng thư mục nếu muốn thấy cấu trúc vật lý. Mở project **cw-admin**.
+Trong Android Studio, mở project cw-admin và chọn **Project** ở bảng thư mục để thấy cấu trúc vật lý.
 
-## Thư mục Java
+## Luồng giao diện hiện tại
 
-```text
-app/src/main/java/com/comp1786/room/
-├── features/events/
-│   ├── ui/
-│   │   ├── list/
-│   │   │   ├── MainActivity.java        Màn danh sách, nhận thao tác và cập nhật màn hình
-│   │   │   ├── EventAdapter.java        Hiển thị từng thẻ event
-│   │   │   └── EventFilterDialog.java   Popup bộ lọc
-│   │   ├── details/EventDetails.java    Màn chi tiết
-│   │   └── editor/EventEditor.java      Form thêm/sửa, chọn ngày, review và xác nhận xóa
-│   ├── logic/
-│   │   ├── EventViewModel.java          Nhận lệnh lưu/xóa, chạy ghi ngoài UI thread, trả kết quả
-│   │   └── EventValidation.java         Quy tắc dữ liệu và chuyển định dạng ngày
-│   └── data/
-│       ├── model/Event.java            Các trường event và unique index tên/ngày
-│       └── local/
-│           ├── EventDao.java           Câu SQL đọc/thêm/sửa/xóa
-│           └── EventDatabase.java      Khởi tạo Room/SQLite, tên database
-└── shared/ui/AppUi.java                 Khung popup, banner, lỗi inline và thanh hệ thống
-```
+- Tab **Sự kiện**: danh sách, tìm/lọc event, tạo event.
+- Mở event: thông tin event và **Lịch trình** nằm ngay dưới phần mô tả. Timeline chỉ hiển thị session thuộc event đó.
+- Chạm một phiên trong lịch: mở màn chi tiết session chỉ đọc. Nút Chỉnh sửa riêng mới mở form.
+- **Thêm session trong event**: form tự nhận event đang mở, không phải chọn lại.
+- Tab **Session**: chọn event bằng danh sách tên + ngày, xem các session của event, nhấn + để tạo session. Chưa chọn event thì nút + bị khóa.
+- Hai cách thêm session dùng chung form, validation và lệnh ghi SQLite.
+- Nếu có session từ bản B chưa gắn event: chọn event đích rồi Gắn session cũ → kiểm tra → Lưu.
 
-## File giao diện XML
+## Tính năng event
 
-Android yêu cầu các file layout nằm trực tiếp trong `res/layout`; vì vậy các file được đặt tên theo chức năng thay vì tạo thư mục con.
+Thư mục gốc: app/src/main/java/com/comp1786/room/features/events/
 
-| File trong app/src/main/res/layout | Mã Java điều khiển |
-|---|---|
-| event_list_screen.xml | ui/list/MainActivity.java |
-| event_list_item.xml | ui/list/EventAdapter.java |
-| event_details_screen.xml | ui/details/EventDetails.java |
-| event_editor_screen.xml | ui/editor/EventEditor.java |
-| shared_popup.xml | shared/ui/AppUi.java; được editor và bộ lọc sử dụng |
-| shared_notice.xml | shared/ui/AppUi.java |
+- ui/list/MainActivity.java: danh sách, tìm/lọc và chuyển tab.
+- ui/list/EventAdapter.java: thẻ event.
+- ui/list/EventFilterDialog.java: bộ lọc.
+- ui/details/EventDetails.java: thông tin và liên hệ của event.
+- ui/details/EventSchedule.java: quan sát session theo eventId, vẽ timeline, mở chi tiết và thêm nhanh session. Bỏ observer khi đóng dialog.
+- ui/editor/EventEditor.java: thêm/sửa, chọn ngày, review và xác nhận xóa event.
+- logic/EventViewModel.java: ghi dữ liệu ngoài UI thread, trả kết quả lưu/xóa/lỗi/trùng.
+- logic/EventValidation.java: quy tắc trường bắt buộc, ngày, email, điện thoại.
+- data/model/Event.java: model và ràng buộc tên chuẩn hóa + ngày không trùng.
+- data/local/EventDao.java: SQL event.
+- data/local/EventDatabase.java: Room dùng chung events.db, migration và các DAO.
 
-Màu: `res/values/colors.xml`. Font/style: `res/values/themes.xml`. Nội dung chữ: `res/values/strings.xml`. Nền bo góc/icon: `res/drawable`. Hiệu ứng popup: `res/anim`.
+XML đi cùng:
+- event_list_screen.xml ↔ MainActivity.
+- event_list_item.xml ↔ EventAdapter.
+- event_details_screen.xml ↔ EventDetails, chứa Lịch trình.
+- event_schedule_item.xml ↔ EventSchedule, dòng timeline.
+- event_editor_screen.xml ↔ EventEditor.
 
-## File frontend và phần xử lý dữ liệu cho từng việc
+## Tính năng session
 
-| Việc cần đọc/sửa | Frontend Java + XML | Logic và dữ liệu liên quan |
-|---|---|---|
-| Danh sách event | MainActivity + EventAdapter; event_list_screen + event_list_item | EventViewModel.getEvents → EventDao.observeAll |
-| Xem chi tiết | EventDetails; event_details_screen | Nhận model Event đã đọc từ Room |
-| Thêm event | EventEditor.show; event_editor_screen; shared_popup để review | EventValidation → EventViewModel.save → EventDao.insert |
-| Sửa event | EventEditor.show với event có ID; cùng form editor | EventValidation → EventViewModel.save → EventDao.update |
-| Xóa event | EventEditor, popup xác nhận dùng shared_popup | EventViewModel.delete → EventDao.delete |
-| Chọn ngày | EventEditor mở lịch trong shared_popup | EventValidation.displayDate/storageDate; giữ ngày trong draft trước khi lưu |
-| Lỗi trường nhập | EventEditor gọi AppUi.inlineValidation | EventValidation cho biết giá trị hợp lệ hay không |
-| Chặn trùng | EventEditor và banner AppUi khi nhận DUPLICATE | Unique index trong Event; EventViewModel bắt lỗi constraint |
-| Tìm/lọc danh sách hiện tại | MainActivity.renderEvents + EventFilterDialog | Lọc danh sách Event đã được Room cung cấp; không gọi server |
-| Thông báo lưu/xóa/lỗi | MainActivity nhận kết quả, AppUi hiển thị shared_notice | EventViewModel.getOperation |
+Thư mục gốc: app/src/main/java/com/comp1786/room/features/sessions/
 
-## Một luồng để đọc từ đầu tới cuối
+- ui/list/SessionActivity.java: tab Session, chọn event, danh sách và điều hướng; cũng dùng cho luồng gắn session cũ.
+- ui/list/SessionEventPicker.java: danh sách chọn event theo tên + ngày. Không truy cập database trực tiếp.
+- ui/list/SessionAdapter.java: thẻ session trong màn quản lý.
+- ui/details/SessionDetailsActivity.java: màn đọc đầy đủ ngày, giờ, loại, diễn giả, phòng, mô tả; theo dõi dữ liệu thay đổi.
+- ui/editor/SessionEditorActivity.java: form dùng chung cho mọi điểm thêm/sửa. Các hàm setupForm, observeParent, loadExisting, fillForm, readForm, save, confirmDelete, restoreDraft chia theo công việc.
+- logic/SessionViewModel.java: đọc dữ liệu qua DAO, kiểm tra và ghi ngoài UI thread.
+- logic/SessionValidation.java: tên/giờ bắt buộc, giờ HH:mm, sáu loại session và giới hạn trường.
+- data/model/Session.java: ID tự sinh, eventId, tên, giờ, diễn giả, phòng, loại, mô tả.
+- data/local/SessionDao.java: SQL session, danh sách theo event, session chưa gắn và số lượng.
 
-**Thêm event:** nhấn + trong MainActivity → EventEditor.show → nhập form event_editor_screen → kiểm tra EventValidation → review bằng shared_popup → EventViewModel.save → EventDao.insert → SQLite → LiveData cập nhật MainActivity → EventAdapter vẽ lại thẻ → shared_notice báo thành công.
+XML đi cùng:
+- session_list_screen.xml ↔ SessionActivity và SessionEventPicker.
+- session_list_item.xml ↔ SessionAdapter.
+- session_details_screen.xml ↔ SessionDetailsActivity.
+- session_editor_screen.xml ↔ SessionEditorActivity.
+- session_strings.xml: nội dung chữ của tính năng.
 
-**Sửa/xóa:** bắt đầu từ thẻ trong MainActivity → EventDetails → EventEditor. Các lệnh ghi đều đi qua EventViewModel và EventDao.
+Khi đổi event trong tab Session, bỏ observer của danh sách cũ trước khi theo dõi event mới. Lựa chọn event được lưu khi xoay màn hình.
 
-## Backend ở đâu?
+## Dùng chung và kiểu giao diện
 
-Bản mục A hoạt động offline. Phần tương đương xử lý backend cục bộ nằm ở `features/events/logic` và `features/events/data`. Hiện project này **chưa có server/API**. Không cần tạo một server chỉ để lưu event local.
+- shared/ui/AppUi.java: khung popup, banner, lỗi inline và thanh hệ thống.
+- shared_popup.xml, shared_notice.xml: UI popup và thông báo.
+- res/values/colors.xml: bảng màu chung; themes.xml: style; strings.xml: chữ chung.
+- res/values/timeline_colors.xml: màu chấm và đường nối riêng của lịch trong event.
+- res/drawable/timeline_dot.xml: chấm timeline.
+- res/drawable: nền bo góc và icon; res/anim: hiệu ứng popup.
+- Android yêu cầu layout nằm trực tiếp trong res/layout, nên dùng tiền tố tên file thay cho thư mục con.
 
-Khi làm session (B–C), đặt tính năng tại `features/sessions` với cùng ba nhóm ui/logic/data. Khi làm cloud (E), bổ sung service/API và phần gọi mạng theo yêu cầu thực tế; chưa tạo các thư mục rỗng cho tính năng chưa làm.
+## Database và luồng ghi
 
-## Kiểm thử và dữ liệu
+App admin hiện lưu cục bộ bằng Room/SQLite, chưa có server/API.
 
-- `app/src/test/.../features/events/logic/EventValidationTest.java`: validation ngày/contact và chuẩn hóa tên.
-- `app/src/androidTest/.../features/events/data/local/EventDatabaseTest.java`: lưu dữ liệu và unique constraint.
-- `app/src/androidTest/.../features/events/ui/DesignScreenshotTest.java`: chạy giao diện trên emulator, chụp ảnh các màn/popup.
-- Test screenshot tạo/xóa dữ liệu mẫu trong app test; chỉ chạy trên emulator thử nghiệm riêng, không chạy trên thiết bị có dữ liệu bạn muốn giữ.
-- Giữ nguyên applicationId, tên file `events.db`, schema version 1 và cấu trúc bảng trong lần tổ chức mã này. Việc đổi package Java không phải yêu cầu xóa dữ liệu ứng dụng.
+Thêm session: chọn event → SessionEditorActivity.readForm → SessionValidation → SessionViewModel.save → SessionDao.insert → SQLite → LiveData cập nhật danh sách và lịch trong event.
 
-## Mục B — quản lý session (15%)
+- events.db hiện ở version 3.
+- Migration 1 → 2 tạo bảng sessions; 2 → 3 bổ sung eventId và khóa ngoại, giữ ID và các trường cũ.
+- Session mới phải có eventId hợp lệ. Giá trị null chỉ dành cho session cũ đang chờ người dùng gắn event.
+- Một event có nhiều session. Khóa ngoại ON DELETE CASCADE tự xóa session của event bị xóa, không ảnh hưởng event khác.
+- Không dùng fallbackToDestructiveMigration.
 
-Mở **Chi tiết event → Session**. Session được sắp theo giờ, ID do SQLite tự sinh.
+## Kiểm thử và dữ liệu mẫu
 
-- `features/sessions/ui/list/SessionActivity.java`: điều hướng, theo dõi danh sách và thông báo kết quả.
-- `features/sessions/ui/list/SessionAdapter.java` + `res/layout/session_list_item.xml`: thẻ giờ/tên/loại; chạm thẻ để xem và chỉnh sửa.
-- `features/sessions/ui/editor/SessionEditorActivity.java` + `res/layout/session_editor_screen.xml`: form thêm/sửa; các hàm setupForm, loadExisting, fillForm, readForm, save, confirmDelete, restoreDraft tách theo việc.
-- `features/sessions/logic/SessionValidation.java`: tên bắt buộc, giờ HH:mm từ 00:00 đến 23:59, sáu loại session và giới hạn trường.
-- `features/sessions/logic/SessionViewModel.java`: kiểm tra trước khi ghi, thực thi ngoài UI thread, trả kết quả lưu/xóa/lỗi.
-- `features/sessions/data/model/Session.java`: ID, tên, giờ, diễn giả, phòng, loại và mô tả.
-- `features/sessions/data/local/SessionDao.java`: SQL đọc/thêm/sửa/xóa.
-- `res/layout/session_list_screen.xml`: danh sách; `res/values/session_strings.xml`: chữ của tính năng.
+- EventValidationTest, SessionValidationTest: kiểm tra đầu vào.
+- EventDatabaseTest: lưu thông tin event và chặn trùng.
+- SessionDatabaseTest: nâng cấp v1/v2, bảo toàn dữ liệu, CRUD, khóa ngoại và cascade.
+- DesignScreenshotTest: các màn event, timeline trực tiếp, mở chi tiết session và thêm nhanh.
+- SessionScreenTest: tab Session, chọn event, form đúng event, danh sách không lẫn event khác, màn đọc và CRUD.
+- Bộ instrumentation có tạo/xóa dữ liệu mẫu: chỉ chạy toàn bộ trên emulator thử nghiệm riêng, không chạy trên máy có dữ liệu người dùng.
+- demo-data/technology-events.json: sự kiện công nghệ có nguồn; phiên mang nhãn Demo là lịch minh họa. File không tự nạp vào app khi clone Git.
 
-Luồng lưu: SessionEditorActivity.save → SessionValidation → SessionViewModel.save → SessionDao → SQLite → LiveData cập nhật danh sách.
-
-Database dùng chung events.db, hiện version 3. MIGRATION_1_2 trong EventDatabase chỉ tạo bảng sessions, giữ nguyên bảng events, không xóa dữ liệu cũ. Không dùng fallbackToDestructiveMigration.
-
-Mục B cung cấp CRUD session; mục C bên dưới tích hợp session vào từng event.
-
-Kiểm thử: SessionValidationTest kiểm tra đầu vào; SessionDatabaseTest nâng cấp từ schema v1, giữ event, lưu nhiều session, mở lại database, sửa và xóa; SessionScreenTest kiểm tra form và thao tác thật.
-
-## Mục C — session thuộc event (10%)
-
-Luồng chính: Danh sách event → Chi tiết event → nút Session (kèm tổng số) → danh sách session của event → thêm/xem/sửa/xóa.
-
-- Session.eventId là khóa ngoại đến Event.id, có index và ON DELETE CASCADE.
-- EventDetails theo dõi observeCount để số session tự cập nhật khi quay lại.
-- SessionActivity nhận eventId từ event đang mở, chỉ observeForEvent. Form hiển thị tên event, tự mang eventId khi lưu; người dùng không phải chọn lại event.
-- Xóa event bằng DAO sẽ xóa session tương ứng trong SQLite, không ảnh hưởng event khác.
-- Tab Session độc lập đã bỏ. Session luôn được quản lý theo event.
-- Migration 2 → 3 bảo toàn ID và mọi trường session cũ. eventId của các session cũ tạm null, không tự gán vào event bất kỳ.
-- Nếu có session cũ chưa gắn, mỗi event hiển thị nút **Gắn session cũ**: chọn session, kiểm tra thông tin rồi Lưu để gắn vào event đang mở. Chỉ những bản cũ này mới có thể chưa có eventId; validation không cho lưu session mới thiếu event.
-- SessionDatabaseTest kiểm tra nâng cấp từ v1/v2, bảo toàn session cũ, CRUD, khóa ngoại và cascade chỉ xóa con đúng event.
-- SessionScreenTest kiểm tra danh sách theo event và thao tác form.
-
-Quy tắc clean code cho mọi task nằm ở AGENTS.md tại gốc repo.
-
-Thêm nhanh: Chi tiết event → **Thêm session** → form gắn sẵn eventId, không phải mở danh sách session hay chọn lại sự kiện. Nút Session · tổng số vẫn dùng để xem/quản lý danh sách.
-
-## Xem session như người tham dự
-
-Event → Xem N session → chạm thẻ → màn chi tiết chỉ đọc (tên event, ngày, giờ, loại, diễn giả, phòng, mô tả đầy đủ).
-Nút Chỉnh sửa session riêng mới mở form quản trị. LiveData làm mới thông tin khi quay lại sau khi sửa.
-
-- `features/sessions/ui/details/SessionDetailsActivity.java`: setupWindow, setupNavigation, observeDetails, renderSession.
-- `res/layout/session_details_screen.xml`: giao diện đọc thông tin; không có ô nhập và không tự cắt mô tả.
-- `SessionActivity.openDetails`: điều hướng khi chọn session đã thuộc event.
-- Luồng gắn session cũ vẫn mở form để người quản trị xác nhận gắn vào event.
-
-Lịch trực tiếp trong event: EventDetails gắn EventSchedule; event_details_screen.xml chứa mục Lịch trình session dưới Về sự kiện. EventSchedule theo dõi đúng eventId, vẽ các phiên theo giờ bằng event_schedule_item.xml, cập nhật khi thêm/sửa/xóa, và mở SessionDetailsActivity khi chạm một phiên. Không phải mở màn danh sách session riêng để đọc lịch. Observer được bỏ khi đóng dialog.
-
-Kiểu lịch trong event theo HTML gốc: đường nối 1dp màu xám hồng sáng (#DED8DD), chấm trầm (#9C8997), giờ trên tên phiên, không dùng thẻ hay ô giờ. Màu riêng ở timeline_colors.xml, chấm ở timeline_dot.xml. Các màn danh sách/chi tiết/form session được giữ nguyên; chỉ lịch trong chi tiết event đổi giao diện.
-
-Tab Session: MainActivity mở SessionActivity ở chế độ chọn event. SessionEventPicker quản lý danh sách chọn (tên + ngày để phân biệt event trùng tên). Chưa chọn event thì nút thêm bị khóa; chọn event thì danh sách chỉ quan sát session của event đó. Khi đổi event, bỏ observer cũ; lưu lựa chọn khi xoay màn hình. Thêm bằng tab và thêm trong event dùng chung SessionEditorActivity, không thay schema hay tạo session rời.
+Quy tắc clean code áp dụng cho mọi task nằm ở AGENTS.md tại gốc repo.
