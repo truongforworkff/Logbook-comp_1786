@@ -50,23 +50,23 @@ public final class EventSchedule {
         page.sessionCount.setText(activity.getString(R.string.session_count, sessions.size()));
         page.scheduleEmpty.setVisibility(sessions.isEmpty() ? View.VISIBLE : View.GONE);
         page.scheduleItems.removeAllViews();
-        for (int index = 0; index < sessions.size(); index++) {
-            Session session = sessions.get(index);
+        for (Session session : sessions) {
             EventScheduleItemBinding row = EventScheduleItemBinding.inflate(
                     activity.getLayoutInflater(), page.scheduleItems, false);
-            bindRow(row, session, index == sessions.size() - 1);
+            bindRow(row, session);
             page.scheduleItems.addView(row.getRoot());
         }
     }
 
-    private void bindRow(EventScheduleItemBinding row, Session session, boolean last) {
+    private void bindRow(EventScheduleItemBinding row, Session session) {
         row.time.setText(session.time);
         row.name.setText(session.name);
-        row.meta.setText(session.room.isEmpty() ? session.type
-                : activity.getString(R.string.session_type_room, session.type, session.room));
-        row.speaker.setVisibility(session.speaker.isEmpty() ? View.GONE : View.VISIBLE);
+        String detail = session.room.isEmpty() ? session.speaker : session.room;
+        row.meta.setText(detail.isEmpty() ? session.type
+                : activity.getString(R.string.session_type_room, session.type, detail));
+        boolean showSpeaker = !session.speaker.isEmpty() && !session.room.isEmpty();
+        row.speaker.setVisibility(showSpeaker ? View.VISIBLE : View.GONE);
         row.speaker.setText(activity.getString(R.string.session_speaker_value, session.speaker));
-        row.connector.setVisibility(last ? View.INVISIBLE : View.VISIBLE);
         row.getRoot().setOnClickListener(view -> openDetails(session.id));
     }
 

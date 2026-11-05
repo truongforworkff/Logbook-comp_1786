@@ -108,7 +108,7 @@
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:text="@string/event_schedule"
-                        android:textSize="18sp"
+                        android:textSize="24sp"
                         android:fontFamily="sans-serif-medium"
                         android:textColor="@color/ink"/>
                     <TextView
@@ -119,6 +119,13 @@
                         android:textSize="12sp"
                         android:accessibilityLiveRegion="polite"/>
                 </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/event_schedule_subtitle"
+                    android:textSize="14sp"
+                    android:textColor="@color/muted"/>
                 <TextView
                     android:id="@+id/scheduleEmpty"
                     android:layout_width="match_parent"
@@ -133,11 +140,13 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_marginTop="16dp"/>
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/addSessionAction"
-                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/event_card"
+                    app:backgroundTint="@null"
                     android:text="@string/session_add"
                     android:textColor="@color/rose"
                     android:textAllCaps="false"/>

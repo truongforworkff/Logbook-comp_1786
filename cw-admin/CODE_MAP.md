@@ -125,3 +125,5 @@ Nút Chỉnh sửa session riêng mới mở form quản trị. LiveData làm m�
 - Luồng gắn session cũ vẫn mở form để người quản trị xác nhận gắn vào event.
 
 Lịch trực tiếp trong event: EventDetails gắn EventSchedule; event_details_screen.xml chứa mục Lịch trình session dưới Về sự kiện. EventSchedule theo dõi đúng eventId, vẽ các phiên theo giờ bằng event_schedule_item.xml, cập nhật khi thêm/sửa/xóa, và mở SessionDetailsActivity khi chạm một phiên. Không phải mở màn danh sách session riêng để đọc lịch. Observer được bỏ khi đóng dialog.
+
+Kiểu lịch trong event theo HTML gốc: đường nối 1dp màu xám hồng sáng (#DED8DD), chấm trầm (#9C8997), giờ trên tên phiên, không dùng thẻ hay ô giờ. Màu riêng ở timeline_colors.xml, chấm ở timeline_dot.xml. Các màn danh sách/chi tiết/form session được giữ nguyên; chỉ lịch trong chi tiết event đổi giao diện.
