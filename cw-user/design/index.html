@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f5f9">
+  <title>Eventa · Thiết kế app người tham dự</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="design-workspace">
+    <aside class="design-notes">
+      <a class="studio-brand" href="./">eventa<span> / design</span></a>
+      <div class="design-eyebrow">ỨNG DỤNG NGƯỜI THAM DỰ · G / H</div>
+      <h1>Khám phá điều mới.<br>Giữ lại điều<br>bạn quan tâm.</h1>
+      <p>Trắng nhẹ, xanh rõ ràng. Một giao diện dành chỗ cho sự kiện và những cuộc gặp đáng nhớ.</p>
+      <div class="palette" aria-label="Bảng màu"><i style="background:#087dff"></i><i style="background:#f4f5f9"></i><i style="background:#fff"></i><i style="background:#171b26"></i></div>
+      <div class="design-divider"></div>
+      <div class="screen-shortcuts" aria-label="Màn thiết kế">
+        <button data-action="nav" data-view="explore"><span>01</span> Khám phá sự kiện <b>↗</b></button>
+        <button data-action="preview-event"><span>02</span> Chi tiết & lịch trình <b>↗</b></button>
+        <button data-action="preview-session"><span>03</span> Chi tiết session <b>↗</b></button>
+        <button data-action="nav" data-view="saved"><span>04</span> Sự kiện yêu thích <b>↗</b></button>
+      </div>
+      <p class="design-caption">BẢN THIẾT KẾ TƯƠNG TÁC<br>Dữ liệu, lịch và ảnh dùng để minh họa giao diện. Chưa kết nối cloud.</p>
+      <div class="design-scope"><span>G</span> Xem & tìm sự kiện theo tên, ngày<br><span>H</span> Lưu yêu thích và truy cập nhanh</div>
+    </aside>
+    <section class="phone" aria-label="Bản xem trước app người tham dự">
+      <div class="device-status" aria-hidden="true"><b>9:41</b><div class="dynamic-island"></div><span>▥ &nbsp; ▰</span></div>
+      <div class="app-shell">
+        <div id="screen" class="screen"></div>
+        <nav class="bottom-nav" aria-label="Điều hướng chính">
+          <button data-action="nav" data-view="explore" id="nav-explore"><span id="explore-icon"></span><span>Khám phá</span></button>
+          <button data-action="nav" data-view="saved" id="nav-saved"><span class="nav-icon-wrap"><span id="saved-icon"></span><small id="saved-count" hidden></small></span><span>Yêu thích</span></button>
+        </nav>
+      </div>
+      <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+      <div class="home-indicator" aria-hidden="true"></div>
+    </section>
+    <div class="mobile-design-label">EVENTA · BẢN THIẾT KẾ G–H · DỮ LIỆU MINH HỌA</div>
+  </div>
+  <dialog id="date-dialog" class="date-dialog" aria-labelledby="date-title">
+    <form id="date-form">
+      <div class="sheet-handle"></div>
+      <div class="sheet-heading"><div><span class="eyebrow">DÀNH THỜI GIAN CHO ĐIỀU MỚI</span><h2 id="date-title">Bạn muốn đi ngày nào?</h2></div><button type="button" class="icon-button" data-action="close-date" aria-label="Đóng bộ lọc ngày">×</button></div>
+      <p>Chọn một ngày để tìm những sự kiện phù hợp.</p>
+      <label for="exact-date">Ngày diễn ra</label>
+      <input id="exact-date" type="date">
+      <button class="primary-button" type="submit">Xem sự kiện</button>
+      <button class="text-button" type="button" data-action="clear-date">Xem tất cả ngày</button>
+    </form>
+  </dialog>
+  <script type="module" src="app.mjs"></script>
+</body>
+</html>
