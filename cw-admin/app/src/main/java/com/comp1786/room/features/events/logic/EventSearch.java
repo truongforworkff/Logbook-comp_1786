@@ -8,7 +8,7 @@ import java.util.List;
 public final class EventSearch {
     private EventSearch() {}
 
-    public static List<Event> filter(List<Event> events, String query, String date, String organiser) {
+    public static List<Event> filter(List<Event> events, String query, String date, String organiser, String category) {
         String keyword = SearchText.normalize(query);
         String organiserKeyword = SearchText.normalize(organiser);
         List<Event> results = new ArrayList<>();
@@ -17,7 +17,8 @@ public final class EventSearch {
                     || SearchText.normalize(event.description).contains(keyword);
             boolean dateMatches = date.isEmpty() || event.date.equals(date);
             boolean organiserMatches = SearchText.normalize(event.organiser).contains(organiserKeyword);
-            if (textMatches && dateMatches && organiserMatches) results.add(event);
+            if (textMatches && dateMatches && organiserMatches
+                    && (category.isEmpty() || event.categoryCode.equals(category))) results.add(event);
         }
         return results;
     }

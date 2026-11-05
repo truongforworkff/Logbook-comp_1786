@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-@Database(entities = {Event.class, Session.class}, version = 3, exportSchema = true)
+@Database(entities = {Event.class, Session.class}, version = 4, exportSchema = true)
 public abstract class EventDatabase extends RoomDatabase {
     public abstract EventDao events();
     public abstract SessionDao sessions();
@@ -28,12 +28,18 @@ public abstract class EventDatabase extends RoomDatabase {
             db.execSQL("CREATE INDEX index_sessions_eventId ON sessions(eventId)");
         }
     };
+    public static final Migration MIGRATION_3_4 = new Migration(3, 4) {
+        @Override public void migrate(@NonNull SupportSQLiteDatabase db) {
+            db.execSQL("ALTER TABLE events ADD COLUMN categoryCode TEXT NOT NULL DEFAULT 'Other'");
+            db.execSQL("ALTER TABLE events ADD COLUMN imageUri TEXT NOT NULL DEFAULT ''");
+        }
+    };
     private static volatile EventDatabase instance;
     public static EventDatabase get(Context context) {
         if (instance == null) {
             synchronized (EventDatabase.class) {
                 if (instance == null) instance = Room.databaseBuilder(context.getApplicationContext(),
-                        EventDatabase.class, "events.db").addMigrations(MIGRATION_1_2, MIGRATION_2_3).build();
+                        EventDatabase.class, "events.db").addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4).build();
             }
         }
         return instance;

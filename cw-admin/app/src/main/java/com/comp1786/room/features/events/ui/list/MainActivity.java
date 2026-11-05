@@ -1,5 +1,9 @@
 package com.comp1786.room.features.events.ui.list;
 
+import android.content.Intent;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+
 import android.os.Bundle;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +32,11 @@ public class MainActivity extends AppCompatActivity {
     private List<Event> allEvents = Collections.emptyList();
     private String dateFilter = "";
     private String organiserFilter = "";
+    private String categoryFilter = "";
+    private final ActivityResultLauncher<String[]> photoPicker =
+            registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
+                if (uri != null && editor != null) editor.acceptImage(uri);
+            });
 
     @Override protected void onCreate(Bundle state) {
         super.onCreate(state);
@@ -37,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setupWindow();
         restoreFilters(state);
         model = new ViewModelProvider(this).get(EventViewModel.class);
-        editor = new EventEditor(this, ui, model);
+        editor = new EventEditor(this, ui, model, () -> photoPicker.launch(new String[]{"image/*"}));
         setupList();
         setupNavigation();
         setupSearch();
@@ -59,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         if (state == null) return;
         dateFilter = state.getString("filterDate", "");
         organiserFilter = state.getString("filterOrganiser", "");
+        categoryFilter = state.getString("filterCategory", "");
     }
 
     private void setupList() {
@@ -70,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupNavigation() {
         binding.sessionsTab.setOnClickListener(view ->
-                startActivity(new android.content.Intent(this, SessionActivity.class)));
+                startActivity(new Intent(this, SessionActivity.class)));
         binding.add.setOnClickListener(view -> editor.show(null, null));
     }
 
@@ -86,9 +96,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showFilters() {
-        new EventFilterDialog(this, ui).show(dateFilter, organiserFilter, (date, organiser, clearSearch) -> {
+        new EventFilterDialog(this, ui).show(dateFilter, organiserFilter, categoryFilter, (date, organiser, category, clearSearch) -> {
             dateFilter = date;
             organiserFilter = organiser;
+            categoryFilter = category;
             if (clearSearch) binding.search.setText("");
             renderEvents();
         });
@@ -103,9 +114,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void renderEvents() {
         String query = binding.search.getText().toString().trim();
-        List<Event> shown = EventSearch.filter(allEvents, query, dateFilter, organiserFilter);
+        List<Event> shown = EventSearch.filter(allEvents, query, dateFilter, organiserFilter, categoryFilter);
         adapter.submitList(shown);
-        boolean filtered = !query.isEmpty() || !dateFilter.isEmpty() || !organiserFilter.isEmpty();
+        boolean filtered = !query.isEmpty() || !dateFilter.isEmpty() || !organiserFilter.isEmpty() || !categoryFilter.isEmpty();
         binding.listTitle.setText(filtered ? R.string.filtered_section : R.string.events_section);
         binding.count.setText(getString(R.string.event_count, shown.size()));
         binding.empty.setText(filtered ? R.string.empty_search : R.string.empty);
@@ -130,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
     @Override protected void onSaveInstanceState(Bundle state) {
         state.putString("filterDate", dateFilter);
         state.putString("filterOrganiser", organiserFilter);
+        state.putString("filterCategory", categoryFilter);
         editor.saveState(state);
         super.onSaveInstanceState(state);
     }

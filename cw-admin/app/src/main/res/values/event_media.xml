@@ -1,0 +1,17 @@
+<resources>
+    <string name="event_category">Chủ đề sự kiện</string>
+    <string name="all_categories">Tất cả chủ đề</string>
+    <string-array name="event_categories">
+        <item>Khác</item><item>AI &amp; Dữ liệu</item><item>Công nghệ</item>
+        <item>Thiết kế</item><item>Kinh doanh</item><item>Giáo dục</item><item>Cộng đồng</item>
+    </string-array>
+    <string name="event_cover">Ảnh bìa (tùy chọn)</string>
+    <string name="choose_cover">Chọn ảnh bìa</string>
+    <string name="remove_cover">Bỏ ảnh</string>
+    <string name="cover_hint">Có thể để trống. Chọn một ảnh từ thiết bị nếu bạn muốn.</string>
+    <string name="cover_description">Ảnh bìa sự kiện</string>
+    <string name="cover_error">Không mở được ảnh này. Hãy chọn một ảnh khác.</string>
+    <string name="cover_selected">Đã chọn ảnh bìa</string>
+    <string name="category_status">%1$s · %2$s · %3$s</string>
+    <item name="filterCategory" type="id"/>
+</resources>

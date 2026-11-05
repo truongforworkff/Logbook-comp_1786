@@ -25,6 +25,7 @@ public class DesignScreenshotTest {
         String[] places={"Greenwich · Cơ sở Hà Nội","Studio 02 · Tầng 3","The Workshop Space"};
         for(int i=0;i<names.length;i++) {
             Event sample = new Event(0,names[i],dates[i],places[i],"Greenwich Community","Workshop","Upcoming");
+            sample.categoryCode = i == 0 ? "AI" : "Community";
             if (i == 0) sample.description = "Nghiên cứu trí tuệ D1786";
             long eventId = dao.insert(sample);
             if (i == 0) EventDatabase.get(context).sessions().insert(
@@ -69,6 +70,14 @@ public class DesignScreenshotTest {
             instrumentation.runOnMainSync(() -> activity.findViewById(R.id.filter).performClick());
             click(instrumentation,"tertiary");
             awaitCards(instrumentation, activity, 3);
+            instrumentation.runOnMainSync(() -> activity.findViewById(R.id.filter).performClick());
+            click(instrumentation, "filterCategory");
+            clickText(instrumentation, "AI & Dữ liệu");
+            click(instrumentation, "primary");
+            awaitCards(instrumentation, activity, 1);
+            instrumentation.runOnMainSync(() -> activity.findViewById(R.id.filter).performClick());
+            click(instrumentation, "tertiary");
+            awaitCards(instrumentation, activity, 3);
             instrumentation.runOnMainSync(() -> ((android.widget.EditText) activity.findViewById(R.id.search)).setText("TRI TUE D1786"));
             awaitCards(instrumentation, activity, 1);
             instrumentation.runOnMainSync(()->((RecyclerView)activity.findViewById(R.id.list)).getChildAt(0).performClick());
@@ -97,6 +106,8 @@ public class DesignScreenshotTest {
             click(instrumentation,"primary");
             assertTrue(com.comp1786.room.features.events.logic.EventValidation.validDate(
                     node(instrumentation,"dateInput").getText().toString()));
+            click(instrumentation, "categoryInput");
+            clickText(instrumentation, "AI & Dữ liệu");
             setText(instrumentation,"nameInput","Gặp gỡ cuối năm");
             setText(instrumentation,"dateInput","25/12/2026");
             setText(instrumentation,"locationInput","Greenwich Campus");
@@ -143,9 +154,32 @@ public class DesignScreenshotTest {
         android.view.accessibility.AccessibilityNodeInfo root=instrumentation.getUiAutomation().getRootInActiveWindow();
         assertNotNull(root);
         java.util.List<android.view.accessibility.AccessibilityNodeInfo> matches=root.findAccessibilityNodeInfosByViewId("com.comp1786.eventa.admin:id/"+id);
+        for (int attempt = 0; matches.isEmpty() && attempt < 8; attempt++) {
+            java.util.List<android.view.accessibility.AccessibilityNodeInfo> scrolls =
+                    root.findAccessibilityNodeInfosByViewId("com.comp1786.eventa.admin:id/editorScroll");
+            if (scrolls.isEmpty() || !scrolls.get(0).performAction(
+                    android.view.accessibility.AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)) break;
+            instrumentation.getUiAutomation().waitForIdle(300, 5000);
+            root = instrumentation.getUiAutomation().getRootInActiveWindow();
+            matches = root.findAccessibilityNodeInfosByViewId("com.comp1786.eventa.admin:id/"+id);
+        }
         assertFalse("Missing visible control: "+id,matches.isEmpty());
         return matches.get(0);
     }
+    private void clickText(Instrumentation test, String text) throws Exception {
+        test.waitForIdleSync();
+        test.getUiAutomation().waitForIdle(300, 5000);
+        android.view.accessibility.AccessibilityNodeInfo root = test.getUiAutomation().getRootInActiveWindow();
+        for (android.view.accessibility.AccessibilityNodeInfo option : root.findAccessibilityNodeInfosByText(text)) {
+            if (text.contentEquals(option.getText())) {
+                assertTrue(option.performAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK));
+                test.waitForIdleSync();
+                return;
+            }
+        }
+        fail("Missing option: " + text);
+    }
+
     private void click(Instrumentation instrumentation,String id) throws Exception {
         assertTrue("Control must be clickable: "+id,node(instrumentation,id).performAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK));
         instrumentation.waitForIdleSync();

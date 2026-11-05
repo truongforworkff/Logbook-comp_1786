@@ -1,4 +1,7 @@
 package com.comp1786.room.features.events.ui.list;
+
+import com.comp1786.room.features.events.logic.EventCategories;
+import com.comp1786.room.features.events.ui.EventPhoto;
 import com.comp1786.room.R;
 import com.comp1786.room.features.events.data.model.Event;
 import com.comp1786.room.features.events.logic.EventValidation;
@@ -36,6 +39,9 @@ public class EventAdapter extends ListAdapter<Event, EventAdapter.Holder> {
         Event event=getItem(position);
         LocalDate date=LocalDate.parse(event.date);
         Context context=holder.itemView.getContext();
+        holder.binding.category.setText(context.getResources().getStringArray(R.array.event_categories)[
+                EventCategories.position(event.categoryCode)]);
+        EventPhoto.load(holder.binding.cover, event.imageUri, null);
         holder.binding.name.setText(event.name);
         holder.binding.day.setText(String.valueOf(date.getDayOfMonth()));
         holder.binding.month.setText(context.getString(R.string.month_short,date.getMonthValue()));

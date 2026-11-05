@@ -37,3 +37,12 @@ Chạy local: py cw-user/preview.py, mở http://127.0.0.1:4180/. Preview server
 Ảnh bìa từ Unsplash chỉ là ảnh minh họa, không phải ảnh của sự kiện. Tên Microsoft Ignite và NVIDIA GTC dùng theo bộ dữ liệu của app quản trị; lịch phiên và các sự kiện cộng đồng còn lại là minh họa. Prototype có ghi nhãn Bản mẫu.
 
 Khi triển khai G–H sau khi duyệt: dùng .NET MAUI/hybrid theo đề; thay dữ liệu mẫu bằng cloud service của E, có trạng thái tải/lỗi/offline rõ ràng. Giờ kết thúc trong prototype là dữ liệu thiết kế, cần thống nhất với hợp đồng dữ liệu thực tế trước khi triển khai.
+
+## Chủ đề và ảnh tùy chọn
+
+- Bộ lọc chủ đề có sheet riêng, kết hợp với tên/ngày/tháng và áp dụng cả danh sách Yêu thích.
+- Chủ đề tách khỏi hình thức session/event. Mã dùng chung với admin: Other, AI, Technology, Design, Business, Education, Community.
+- Thẻ sự kiện có ảnh dùng cover; không có ảnh dùng phần đầu gọn chứa chủ đề, nút yêu thích và thời gian, không để khoảng ảnh trống. Event Build with AI minh họa trường hợp này.
+- Chi tiết không có ảnh bắt đầu từ chủ đề và tên. Ảnh lỗi được ẩn.
+- Người tham dự chỉ xem ảnh do người tổ chức cung cấp. Chọn/thay/xóa ảnh thuộc form admin.
+- Đây vẫn là bản thiết kế HTML, chưa triển khai app MAUI hay đồng bộ ảnh cloud.

@@ -21,8 +21,15 @@ function loadSaved() {
   try { return readSaved(localStorage.getItem(storageKey), events); }
   catch { return new Set(); }
 }
+const categories = [
+  ["", "Tất cả chủ đề"], ["AI", "AI & Dữ liệu"], ["Technology", "Công nghệ"],
+  ["Design", "Thiết kế"], ["Business", "Kinh doanh"], ["Education", "Giáo dục"],
+  ["Community", "Cộng đồng"], ["Other", "Khác"]
+];
+const categoryDialog = document.querySelector("#category-dialog");
+const categoryLabel = code => categories.find(([value]) => value === code)?.[1] ?? "Tất cả chủ đề";
 const state = { route:"explore", origin:"explore", eventId:events[0].id, sessionId:"",
-  query:"", date:"", month:"", saved:loadSaved() };
+  query:"", date:"", month:"", category:"", saved:loadSaved() };
 const screen = document.querySelector("#screen");
 const dateDialog = document.querySelector("#date-dialog");
 let toastTimer;
@@ -47,7 +54,7 @@ function topbar(event) {
 
 function card(event) {
   return '<article class="event-card" data-action="event" data-id="'+event.id+'" role="button" tabindex="0" aria-label="Xem sự kiện: '+escapeHtml(event.name)+'">'+
-    '<div class="cover"><img src="'+event.image+'" alt="'+escapeHtml(event.alt)+'" loading="lazy">'+
+    '<div class="cover '+(event.image?'':'no-photo')+'">'+(event.image?'<img src="'+escapeHtml(event.image)+'" alt="'+escapeHtml(event.alt)+'" loading="lazy">':'')+
     '<div class="cover-badges"><span class="category '+event.categoryClass+'">'+escapeHtml(event.category)+'</span>'+favoriteButton(event)+'</div>'+
     '<span class="date-tag">'+icon("clock")+formatDate(event.date)+' · '+event.time+' – '+event.endTime+'</span></div>'+
     '<div class="card-body"><h3 class="card-title">'+escapeHtml(event.name)+'</h3><p class="card-description">'+escapeHtml(event.description)+'</p>'+
@@ -59,10 +66,10 @@ function filters() {
   return '<div class="searchbar">'+icon("search")+'<input id="query" aria-label="Tìm sự kiện theo tên" placeholder="'+
     (state.route==="saved"?"Tìm trong sự kiện đã lưu…":"Tìm sự kiện bạn quan tâm…")+'"><button class="clear-search" data-action="clear-search" aria-label="Xóa từ khóa" '+(!state.query?'hidden':'')+'>×</button></div>'+
     '<div class="filter-row">'+chips.map(([month,label])=>'<button data-action="month" data-month="'+month+'" class="filter-chip '+(state.month===month&&!state.date?"active":"")+'" aria-pressed="'+(state.month===month&&!state.date)+'">'+label+'</button>').join("")+
-    '<button class="filter-chip '+(state.date?"active":"")+'" data-action="date" aria-label="Chọn ngày diễn ra">'+icon("calendar")+(state.date?formatDate(state.date):"Chọn ngày")+'</button></div>';
+    '<button class="filter-chip '+(state.date?"active":"")+'" data-action="date" aria-label="Chọn ngày diễn ra">'+icon("calendar")+(state.date?formatDate(state.date):"Chọn ngày")+'</button></div><button class="category-filter filter-chip '+(state.category?"active":"")+'" data-action="category" aria-label="Lọc theo chủ đề">'+categoryLabel(state.category)+'<span aria-hidden="true">⌄</span></button>';
 }
 function emptyState(savedEmpty) {
-  const filtered = Boolean(state.query || state.date || state.month);
+  const filtered = Boolean(state.query || state.date || state.month || state.category);
   return '<div class="empty-state"><div class="empty-icon">'+icon(savedEmpty?"heart":"search")+'</div><h2>'+
     (savedEmpty?"Dành một chỗ cho điều bạn thích":filtered?"Chưa tìm thấy sự kiện phù hợp":"Sự kiện mới đang chờ bạn")+
     '</h2><p>'+(savedEmpty?"Chạm vào trái tim ở sự kiện bạn quan tâm. Bạn sẽ tìm lại chúng thật nhanh ở đây.":"Thử một tên khác hoặc chọn ngày khác để tiếp tục khám phá.")+
@@ -82,8 +89,8 @@ function renderBrowse() {
 }
 function updateResults() {
   const savedOnly = state.route==="saved";
-  const results = findEvents(events, {query:state.query,date:state.date,month:state.month,savedOnly,saved:state.saved});
-  const filtered = Boolean(state.query || state.date || state.month);
+  const results = findEvents(events, {query:state.query,date:state.date,month:state.month,category:state.category,savedOnly,saved:state.saved});
+  const filtered = Boolean(state.query || state.date || state.month || state.category);
   screen.querySelector("#results-title").textContent = filtered?"Kết quả tìm kiếm":savedOnly?"Đã lưu yêu thích":"Sự kiện nổi bật";
   screen.querySelector("#results-count").textContent = results.length+" sự kiện";
   screen.querySelector("#results").innerHTML = results.length
@@ -102,7 +109,7 @@ function schedule(event) {
 }
 function renderEvent() {
   const event = currentEvent();
-  screen.innerHTML = topbar(event)+'<main class="content"><div class="detail-cover"><img src="'+event.image+'" alt="'+escapeHtml(event.alt)+'"></div>'+
+  screen.innerHTML = topbar(event)+'<main class="content">'+(event.image?'<div class="detail-cover"><img src="'+escapeHtml(event.image)+'" alt="'+escapeHtml(event.alt)+'"></div>':'')+
     '<span class="category '+event.categoryClass+'">'+escapeHtml(event.category)+'</span><h1 class="detail-title">'+escapeHtml(event.name)+'</h1>'+
     '<div class="meta-card">'+metaRow("calendar",formatDate(event.date,true),event.time+" – "+event.endTime+" · Giờ minh họa")+
     metaRow("pin",event.location,event.organiser)+'</div>'+
@@ -138,7 +145,7 @@ function render(preserveScroll = false) {
 }
 function navigate(route) {
   state.route = route;
-  state.query = ""; state.month = ""; state.date = "";
+  state.query = ""; state.month = ""; state.date = ""; state.category = "";
   render();
 }
 function toggleFavorite(id) {
@@ -169,7 +176,7 @@ function back() {
   render();
 }
 function clearFilters() {
-  state.query="";state.date="";state.month="";render();
+  state.query="";state.date="";state.month="";state.category="";render();
 }
 
 document.addEventListener("click", event => {
@@ -184,6 +191,14 @@ document.addEventListener("click", event => {
   else if (action==="back") back();
   else if (action==="browse") navigate("explore");
   else if (action==="month") {state.month=button.dataset.month;state.date="";render();}
+  else if (action==="category") {
+    categoryDialog.querySelector("#category-options").innerHTML = categories.map(([code,label]) =>
+      '<button class="category-option '+(state.category===code?'selected':'')+'" data-action="select-category" data-category="'+code+'" aria-pressed="'+(state.category===code)+'">'+label+'<span aria-hidden="true">'+(state.category===code?'✓':'')+'</span></button>'
+    ).join("");
+    categoryDialog.showModal();
+  }
+  else if (action==="select-category") {state.category=button.dataset.category;categoryDialog.close();render();}
+  else if (action==="close-category") categoryDialog.close();
   else if (action==="date") openDate();
   else if (action==="close-date") dateDialog.close();
   else if (action==="clear-date") {state.date="";state.month="";dateDialog.close();render();}
@@ -209,3 +224,12 @@ document.querySelector("#date-form").addEventListener("submit", event => {
 document.querySelector("#explore-icon").innerHTML=icon("calendar");
 document.querySelector("#saved-icon").innerHTML=icon("heart");
 render();
+
+document.addEventListener("error", event => {
+  if (!(event.target instanceof HTMLImageElement)) return;
+  const cover = event.target.closest(".cover,.detail-cover");
+  if (!cover) return;
+  event.target.remove();
+  if (cover.matches(".detail-cover")) cover.hidden = true;
+  else cover.classList.add("no-photo");
+}, true);

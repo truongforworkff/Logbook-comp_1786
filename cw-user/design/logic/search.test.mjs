@@ -20,4 +20,10 @@ for (const event of events) {
   assert.ok(event.sessions.length);
   assert.ok(event.sessions.every(session=>session.time<session.end));
 }
+assert.equal(findEvents(events, {category:"AI"}).length, 2);
+assert.equal(findEvents(events, {category:"AI",query:"Microsoft",date:"2026-11-17"}).length, 1);
+assert.equal(findEvents(events, {category:"Design",query:"Microsoft"}).length, 0);
+assert.equal(findEvents(events, {category:"Unknown"}).length, 0);
+assert.equal(events.find(event=>event.id==="build").image, "");
+assert.ok(events.every(event=>["AI","Technology","Design"].includes(event.categoryCode)));
 console.log("Prototype checks passed: search, dates, favourites and catalog.");

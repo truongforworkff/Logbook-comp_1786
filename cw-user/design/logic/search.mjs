@@ -3,12 +3,13 @@ export function normalize(value) {
     .normalize("NFD").replace(/\p{M}+/gu, "");
 }
 
-export function findEvents(events, { query = "", date = "", month = "", savedOnly = false, saved = new Set() } = {}) {
+export function findEvents(events, { query = "", date = "", month = "", category = "", savedOnly = false, saved = new Set() } = {}) {
   const keyword = normalize(query);
   return events.filter(event =>
     normalize(event.name).includes(keyword)
     && (!date || event.date === date)
     && (!month || event.date.startsWith(month))
+    && (!category || event.categoryCode === category)
     && (!savedOnly || saved.has(event.id))
   ).sort((a, b) => a.date.localeCompare(b.date));
 }

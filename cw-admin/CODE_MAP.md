@@ -21,7 +21,10 @@ Thư mục gốc: app/src/main/java/com/comp1786/room/features/events/
 - ui/list/EventFilterDialog.java: bộ lọc.
 - ui/details/EventDetails.java: thông tin và liên hệ của event.
 - ui/details/EventSchedule.java: quan sát session theo eventId, vẽ timeline, mở chi tiết và thêm nhanh session. Bỏ observer khi đóng dialog.
-- ui/editor/EventEditor.java: thêm/sửa, chọn ngày, review và xác nhận xóa event.
+- ui/editor/EventEditor.java: thêm/sửa, chọn ngày/chủ đề/ảnh, review và xác nhận xóa event.
+- ui/EventPhoto.java: đọc ảnh trên luồng nền, giảm kích thước tối đa 1024px, chỉnh hướng EXIF và ẩn khung khi không có/không mở được ảnh.
+- logic/EventCategories.java: mã chủ đề ổn định, độc lập với hình thức tổ chức type.
+- res/values/event_media.xml: nhãn chủ đề và chọn ảnh.
 - logic/EventViewModel.java: ghi dữ liệu ngoài UI thread, trả kết quả lưu/xóa/lỗi/trùng.
 - logic/EventValidation.java: quy tắc trường bắt buộc, ngày, email, điện thoại.
 - data/model/Event.java: model và ràng buộc tên chuẩn hóa + ngày không trùng.
@@ -74,8 +77,8 @@ App admin hiện lưu cục bộ bằng Room/SQLite, chưa có server/API.
 
 Thêm session: chọn event → SessionEditorActivity.readForm → SessionValidation → SessionViewModel.save → SessionDao.insert → SQLite → LiveData cập nhật danh sách và lịch trong event.
 
-- events.db hiện ở version 3.
-- Migration 1 → 2 tạo bảng sessions; 2 → 3 bổ sung eventId và khóa ngoại, giữ ID và các trường cũ.
+- events.db hiện ở version 4.
+- Migration 1 → 2 tạo bảng sessions; 2 → 3 bổ sung eventId và khóa ngoại; 3 → 4 thêm categoryCode (mặc định Other) và imageUri (mặc định rỗng). Giữ ID, dữ liệu và session cũ.
 - Session mới phải có eventId hợp lệ. Giá trị null chỉ dành cho session cũ đang chờ người dùng gắn event.
 - Một event có nhiều session. Khóa ngoại ON DELETE CASCADE tự xóa session của event bị xóa, không ảnh hưởng event khác.
 - Không dùng fallbackToDestructiveMigration.
@@ -84,7 +87,7 @@ Thêm session: chọn event → SessionEditorActivity.readForm → SessionValida
 
 - EventValidationTest, SessionValidationTest: kiểm tra đầu vào.
 - EventDatabaseTest: lưu thông tin event và chặn trùng.
-- SessionDatabaseTest: nâng cấp v1/v2, bảo toàn dữ liệu, CRUD, khóa ngoại và cascade.
+- SessionDatabaseTest: nâng cấp v1/v2/v3, bảo toàn dữ liệu, CRUD, khóa ngoại và cascade.
 - DesignScreenshotTest: các màn event, timeline trực tiếp, mở chi tiết session và thêm nhanh.
 - SessionScreenTest: tab Session, chọn event, form đúng event, danh sách không lẫn event khác, màn đọc và CRUD.
 - Bộ instrumentation có tạo/xóa dữ liệu mẫu: chỉ chạy toàn bộ trên emulator thử nghiệm riêng, không chạy trên máy có dữ liệu người dùng.
@@ -106,3 +109,13 @@ Quy tắc clean code áp dụng cho mọi task nằm ở AGENTS.md tại gốc r
 - Kiểm thử UI kiểm tra tìm theo mô tả, lọc ngày/người tổ chức, xóa lọc, mở kết quả; tìm session không lẫn event khác.
 
 Chọn ngày: shared/ui/DateField.java dùng chung cho ô ngày form event và bộ lọc. Chạm ô nhập mở lịch bo góc, không tự bật bàn phím; form vẫn có nút Chọn ngày. Bộ lọc cho phép xóa ngày riêng. Giá trị hiển thị dd/MM/yyyy và ghi database ISO như cũ; kiểm thử UI mở lịch từ cả hai ô, xác nhận ngày và xóa ngày lọc.
+
+## Chủ đề và ảnh bìa
+
+- Chủ đề: Khác, AI & Dữ liệu, Công nghệ, Thiết kế, Kinh doanh, Giáo dục, Cộng đồng. Mã lưu trong EventCategories; nhãn theo đúng thứ tự ở event_media.xml.
+- Category là chủ đề; type vẫn là hình thức Conference/Workshop/... Bộ lọc chủ đề kết hợp AND với ngày, người tổ chức và từ khóa.
+- Form tạo/sửa cho chọn một chủ đề. Ảnh bìa nằm trong phần tùy chọn: chọn, xem trước, thay hoặc bỏ ảnh. Bản nháp được giữ khi xoay màn hình.
+- MainActivity mở bộ chọn tài liệu Android (OpenDocument, image/*). EventEditor giữ quyền đọc lâu dài của URI, kiểm tra MIME và khả năng giải mã trước khi chấp nhận ảnh.
+- Không có ảnh thì thẻ/chi tiết bỏ hẳn khung ảnh. URI không còn đọc được cũng không làm app bị dừng.
+- shortcut: imageUri là tham chiếu ảnh cục bộ; khi làm phần cloud cần tải nội dung ảnh lên và lưu URL truy cập được từ app người tham dự. Di chuyển/xóa ảnh gốc có thể làm mất quyền đọc.
+- EventCategoriesTest, EventSearchTest kiểm tra chủ đề; EventDatabaseTest kiểm tra lưu/sửa/bỏ ảnh; SessionDatabaseTest kiểm tra migration v1/v2/v3 và giữ quan hệ; EventPhotoTest kiểm tra ảnh lớn, hướng ảnh và ảnh lỗi; DesignScreenshotTest kiểm tra chọn/lọc chủ đề trên UI.

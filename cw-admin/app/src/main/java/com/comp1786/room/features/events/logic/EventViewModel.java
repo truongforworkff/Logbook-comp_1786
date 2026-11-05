@@ -30,7 +30,10 @@ public class EventViewModel extends AndroidViewModel {
     public LiveData<Operation> getOperation() { return operation; }
     public boolean isBusy() { return busy; }
     public void consumeOperation() { operation.setValue(Operation.IDLE); }
-    public void save(Event event) { change(() -> { if (event.id == 0) dao.insert(event); else dao.update(event); }); }
+    public void save(Event event) {
+        if (!EventCategories.valid(event.categoryCode)) { operation.setValue(Operation.ERROR); return; }
+        change(() -> { if (event.id == 0) dao.insert(event); else dao.update(event); });
+    }
     public void delete(Event event) { change(() -> dao.delete(event)); }
     private void change(Runnable action) {
         if (busy) return;

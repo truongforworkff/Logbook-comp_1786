@@ -56,3 +56,9 @@ Mục B: Chi tiết event → Session hỗ trợ thêm/sửa/xóa nhiều sessio
 Mục C: mở Chi tiết event → Session. Session mới tự thuộc event đang mở. Với session tạo ở bản B, mở event đích → Gắn session cũ → chọn session → Lưu. Migration v1/v2 lên v3 giữ dữ liệu. Quy tắc clean code áp dụng cho mọi task: AGENTS.md.
 
 Mục D: tìm event theo tên/mô tả; lọc ngày/người tổ chức; tìm session theo tên/mô tả trong event và tab Session. Hỗ trợ hoa/thường, tiếng Việt có/không dấu, số kết quả, trạng thái rỗng và mở đầy đủ chi tiết. Dữ liệu đọc từ SQLite qua Room; không đổi schema.
+
+### Chủ đề và ảnh sự kiện
+
+Chọn chủ đề trong form tạo/sửa. Mở phần tùy chọn để thêm, thay hoặc bỏ ảnh bìa. Có thể tạo sự kiện không có ảnh. Danh sách/chi tiết hiển thị ảnh và chủ đề; bộ lọc bổ sung chủ đề.
+
+Database v4 nâng cấp giữ nguyên event/session. Dữ liệu cũ mặc định chủ đề Khác, ảnh trống. Ảnh dùng URI cục bộ có quyền đọc lâu dài; ảnh chưa được đồng bộ cloud và có thể mất truy cập nếu ảnh gốc bị xóa/di chuyển.

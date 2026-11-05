@@ -3,6 +3,7 @@ package com.comp1786.room.features.events.data.model;
 import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.ColumnInfo;
 import androidx.room.PrimaryKey;
 @Entity(tableName = "events", indices = @androidx.room.Index(value = {"normalizedName", "date"}, unique = true))
 public class Event {
@@ -24,6 +25,8 @@ public class Event {
     @NonNull public String description = "";
     @NonNull public String contactEmail = "";
     @NonNull public String contactPhone = "";
+    @NonNull @ColumnInfo(defaultValue = "'Other'") public String categoryCode = "Other";
+    @NonNull @ColumnInfo(defaultValue = "''") public String imageUri = "";
     public Event(long id, @NonNull String name, @NonNull String date, @NonNull String location, @NonNull String organiser, @NonNull String type, @NonNull String status) {
         this.id = id;
         this.name = name.trim();
@@ -38,7 +41,7 @@ public class Event {
         if (this == value) return true;
         if (!(value instanceof Event)) return false;
         Event other = (Event) value;
-        return id == other.id && Objects.equals(name, other.name) && Objects.equals(date, other.date) && Objects.equals(location, other.location) && Objects.equals(organiser, other.organiser) && Objects.equals(type, other.type) && Objects.equals(status, other.status) && Objects.equals(description, other.description) && Objects.equals(contactEmail, other.contactEmail) && Objects.equals(contactPhone, other.contactPhone);
+        return id == other.id && Objects.equals(name, other.name) && Objects.equals(date, other.date) && Objects.equals(location, other.location) && Objects.equals(organiser, other.organiser) && Objects.equals(type, other.type) && Objects.equals(status, other.status) && Objects.equals(description, other.description) && Objects.equals(contactEmail, other.contactEmail) && Objects.equals(contactPhone, other.contactPhone) && Objects.equals(categoryCode, other.categoryCode) && Objects.equals(imageUri, other.imageUri);
     }
-    @Override public int hashCode() { return Objects.hash(id, name, date, location, organiser, type, status, description, contactEmail, contactPhone); }
+    @Override public int hashCode() { return Objects.hash(id, name, date, location, organiser, type, status, description, contactEmail, contactPhone, categoryCode, imageUri); }
 }

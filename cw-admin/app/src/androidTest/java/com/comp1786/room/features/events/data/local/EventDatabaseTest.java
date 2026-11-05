@@ -16,17 +16,23 @@ public class EventDatabaseTest {
         try {
             Event first=event("  Workshop  ","2026-11-08");
             first.description="Design together"; first.contactEmail="manager@example.com"; first.contactPhone="+84912345678";
+            first.categoryCode="Design"; first.imageUri="content://test/cover/1";
             first.id=db.events().insert(first);
             Event loaded=db.events().getAll().get(0);
+            assertEquals(first.categoryCode,loaded.categoryCode);
+            assertEquals(first.imageUri,loaded.imageUri);
             assertEquals(first.description,loaded.description);
             assertEquals(first.contactEmail,loaded.contactEmail);
             assertEquals(first.contactPhone,loaded.contactPhone);
             try { db.events().insert(event("WORKSHOP","2026-11-08")); fail("Duplicate must be rejected"); }
             catch(android.database.sqlite.SQLiteConstraintException expected) { }
             db.events().insert(event("Workshop","2026-11-09"));
-            loaded.description="Updated"; db.events().update(loaded);
+            loaded.description="Updated"; loaded.imageUri=""; loaded.categoryCode="AI"; db.events().update(loaded);
             assertEquals(2,db.events().getAll().size());
             assertEquals("Updated",db.events().getAll().get(0).description);
+            assertEquals("",db.events().getAll().get(0).imageUri);
+            assertEquals("AI",db.events().getAll().get(0).categoryCode);
+            assertEquals("Other",db.events().getAll().get(1).categoryCode);
             db.events().delete(loaded); assertEquals(1,db.events().getAll().size());
         } finally { db.close(); }
     }

@@ -1,6 +1,6 @@
 export const events = [
   {
-    id: "ignite", name: "Microsoft Ignite 2026", category: "AI & Cloud", categoryClass: "blue",
+    id: "ignite", name: "Microsoft Ignite 2026", categoryCode: "AI", category: "AI & Dữ liệu", categoryClass: "blue",
     date: "2026-11-17", time: "09:00", endTime: "17:00",
     location: "Moscone Center · San Francisco", organiser: "Microsoft",
     image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=900&q=85",
@@ -14,7 +14,7 @@ export const events = [
     ]
   },
   {
-    id:"gtc",name:"NVIDIA GTC Washington, D.C.",category:"Công nghệ",categoryClass:"green",
+    id:"gtc",name:"NVIDIA GTC Washington, D.C.",categoryCode:"Technology",category:"Công nghệ",categoryClass:"green",
     date:"2026-11-30",time:"09:00",endTime:"16:30",location:"Washington, D.C. · Hoa Kỳ",organiser:"NVIDIA",
     image:"https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=900&q=85",
     alt:"Nhóm cộng tác cùng máy tính, ảnh minh họa",
@@ -26,7 +26,7 @@ export const events = [
     ]
   },
   {
-    id:"design",name:"Design Systems & Human Experience",category:"Thiết kế",categoryClass:"purple",
+    id:"design",name:"Design Systems & Human Experience",categoryCode:"Design",category:"Thiết kế",categoryClass:"purple",
     date:"2026-11-24",time:"13:30",endTime:"17:00",location:"Creative Studio · TP. Hồ Chí Minh",organiser:"Design Community · Minh họa",
     image:"https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=85",
     alt:"Không gian trao đổi và làm việc sáng tạo, ảnh minh họa",
@@ -39,10 +39,10 @@ export const events = [
     ]
   },
   {
-    id:"build",name:"Build with AI: từ ý tưởng đến sản phẩm",category:"Workshop",categoryClass:"orange",
+    id:"build",name:"Build with AI: từ ý tưởng đến sản phẩm",categoryCode:"AI",category:"AI & Dữ liệu",categoryClass:"orange",
     date:"2026-12-12",time:"09:00",endTime:"16:00",location:"Innovation Hub · Hà Nội",organiser:"Tech Community · Minh họa",
-    image:"https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=900&q=85",
-    alt:"Nhóm làm việc trên máy tính, ảnh minh họa",
+    image:"",
+    alt:"",
     description:"Dành một ngày để biến ý tưởng thành một trải nghiệm có thể chạm vào. Cùng thực hành, thử nghiệm và kể câu chuyện phía sau sản phẩm.",
     note:"Sự kiện và lịch hoàn toàn minh họa cho bản thiết kế.",
     sessions:[

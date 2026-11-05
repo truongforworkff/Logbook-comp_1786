@@ -1,17 +1,107 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="18dp" android:layout_marginBottom="12dp" android:background="@drawable/event_card" android:foreground="?attr/selectableItemBackground">
-<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical">
-<LinearLayout android:layout_width="52dp" android:layout_height="62dp" android:orientation="vertical" android:gravity="center" android:background="@drawable/soft_surface" android:layout_marginEnd="14dp">
-<TextView android:id="@+id/month" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/rose" android:textSize="10sp"/>
-<TextView android:id="@+id/day" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/rose" android:textSize="24sp" android:fontFamily="sans-serif-medium"/>
-</LinearLayout>
-<LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical">
-<TextView android:id="@+id/name" android:textColor="@color/ink" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="16sp" android:fontFamily="sans-serif-medium" android:maxLines="2" android:ellipsize="end"/>
-<TextView android:id="@+id/details" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:textSize="12sp" android:textColor="@color/muted" android:maxLines="2" android:ellipsize="end"/>
-</LinearLayout>
-</LinearLayout>
-<View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="16dp" android:layout_marginBottom="10dp" android:background="#F4EFF1"/>
-<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical">
-<TextView android:id="@+id/status" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingStart="10dp" android:paddingEnd="10dp" android:paddingTop="5dp" android:paddingBottom="5dp" android:background="@drawable/status_pill" android:textColor="@color/rose" android:textSize="11sp"/>
-<TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="@string/view_details" android:gravity="end" android:textSize="11sp" android:textColor="@color/muted" android:drawableEnd="@drawable/ic_chevron" android:drawablePadding="6dp"/>
-</LinearLayout>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="18dp"
+    android:layout_marginBottom="12dp"
+    android:background="@drawable/event_card"
+    android:foreground="?attr/selectableItemBackground">
+    <ImageView
+        android:id="@+id/cover"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_marginBottom="14dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/cover_description"
+        android:visibility="gone" />
+    <TextView
+        android:id="@+id/category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:textSize="11sp"
+        android:textColor="@color/rose" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+        <LinearLayout
+            android:layout_width="52dp"
+            android:layout_height="62dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/soft_surface"
+            android:layout_marginEnd="14dp">
+            <TextView
+                android:id="@+id/month"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/rose"
+                android:textSize="10sp" />
+            <TextView
+                android:id="@+id/day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/rose"
+                android:textSize="24sp"
+                android:fontFamily="sans-serif-medium" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/name"
+                android:textColor="@color/ink"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="2"
+                android:ellipsize="end" />
+            <TextView
+                android:id="@+id/details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textSize="12sp"
+                android:textColor="@color/muted"
+                android:maxLines="2"
+                android:ellipsize="end" />
+        </LinearLayout>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="10dp"
+        android:background="#F4EFF1" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/status_pill"
+            android:textColor="@color/rose"
+            android:textSize="11sp" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/view_details"
+            android:gravity="end"
+            android:textSize="11sp"
+            android:textColor="@color/muted"
+            android:drawableEnd="@drawable/ic_chevron"
+            android:drawablePadding="6dp" />
+    </LinearLayout>
 </LinearLayout>

@@ -50,6 +50,11 @@
       <button class="text-button" type="button" data-action="clear-date">Xem tất cả ngày</button>
     </form>
   </dialog>
-  <script type="module" src="app.mjs?v=2"></script>
+  <dialog id="category-dialog" class="date-dialog" aria-labelledby="category-title">
+    <div class="sheet-handle"></div>
+    <div class="sheet-heading"><div><span class="eyebrow">ĐIỀU BẠN QUAN TÂM</span><h2 id="category-title">Khám phá theo chủ đề</h2></div><button class="icon-button" data-action="close-category" aria-label="Đóng bộ lọc chủ đề">×</button></div>
+    <div id="category-options" class="category-options"></div>
+  </dialog>
+  <script type="module" src="app.mjs?v=3"></script>
 </body>
 </html>

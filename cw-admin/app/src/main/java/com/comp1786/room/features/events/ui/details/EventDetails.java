@@ -1,5 +1,8 @@
 package com.comp1786.room.features.events.ui.details;
 
+import com.comp1786.room.features.events.logic.EventCategories;
+import com.comp1786.room.features.events.ui.EventPhoto;
+
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AlertDialog;
@@ -39,7 +42,11 @@ public final class EventDetails {
 
     private void bindDetails(EventDetailsScreenBinding page, Event event) {
         page.title.setText(event.name);
-        page.category.setText(event.type + " · " + EventAdapter.statusLabel(activity, event.status));
+        String category = activity.getResources().getStringArray(R.array.event_categories)[
+                EventCategories.position(event.categoryCode)];
+        page.category.setText(activity.getString(R.string.category_status, category, event.type,
+                EventAdapter.statusLabel(activity, event.status)));
+        EventPhoto.load(page.cover, event.imageUri, null);
         page.date.setText(EventValidation.displayDate(event.date));
         page.location.setText(event.location);
         page.organiser.setText(activity.getString(R.string.organised_by, event.organiser));

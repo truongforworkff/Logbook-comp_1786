@@ -1,4 +1,10 @@
 package com.comp1786.room.features.events.ui.editor;
+
+import com.comp1786.room.features.events.logic.EventCategories;
+import com.comp1786.room.features.events.ui.EventPhoto;
+import com.comp1786.room.shared.ui.DateField;
+import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -21,14 +27,18 @@ public final class EventEditor {
     private EventEditorScreenBinding fields;
     private Event editingEvent;
     private boolean deleting;
-    public EventEditor(AppCompatActivity activity,AppUi ui,EventViewModel model) {
-        this.activity=activity; this.ui=ui; this.model=model;
+    private final Runnable chooseImage;
+    private String imageUri = "";
+    public EventEditor(AppCompatActivity activity,AppUi ui,EventViewModel model,Runnable chooseImage) {
+        this.activity=activity; this.ui=ui; this.model=model; this.chooseImage=chooseImage;
     }
     public void restoreState(Bundle state) {
         if (state != null && state.getBoolean("editorOpen")) {
             Event draft = new Event(state.getLong("eventId"), state.getString("name", ""),
                     state.getString("date", ""), state.getString("location", ""),
                     state.getString("organiser", ""), state.getString("type", ""), state.getString("status", "Upcoming"));
+            draft.categoryCode = state.getString("categoryCode", "Other");
+            draft.imageUri = state.getString("imageUri", "");
             draft.description = state.getString("description", "");
             draft.contactEmail = state.getString("email", "");
             draft.contactPhone = state.getString("phone", "");
@@ -44,8 +54,10 @@ public final class EventEditor {
         fields = form;
         deleting = false;
         editingEvent = existing;
+        imageUri = draft == null ? "" : draft.imageUri;
         form.editorTitle.setText(existing == null ? R.string.create_title : R.string.edit_title);
         if (draft != null) {
+            form.categoryInput.setSelection(EventCategories.position(draft.categoryCode));
             form.descriptionInput.setText(draft.description);
             form.emailInput.setText(draft.contactEmail);
             form.phoneInput.setText(draft.contactPhone);
@@ -56,15 +68,16 @@ public final class EventEditor {
             form.typeInput.setSelection(Math.max(0, Arrays.asList(activity.getResources().getStringArray(R.array.types)).indexOf(draft.type)));
             form.statusInput.setSelection(Math.max(0, Arrays.asList(activity.getResources().getStringArray(R.array.statuses)).indexOf(draft.status)));
         }
-        com.comp1786.room.shared.ui.DateField datePicker =
-                new com.comp1786.room.shared.ui.DateField(activity, ui, form.dateInput, false);
+        setupImage(form);
+        DateField datePicker =
+                new DateField(activity, ui, form.dateInput, false);
         form.pickDate.setOnClickListener(view -> datePicker.show());
         form.moreOptions.setOnClickListener(view -> {
             boolean expand = form.optionalFields.getVisibility() != View.VISIBLE;
             form.optionalFields.setVisibility(expand ? View.VISIBLE : View.GONE);
             form.moreOptions.setText(expand ? R.string.less_options : R.string.more_options);
         });
-        if (draft != null && (!draft.description.isEmpty() || !draft.contactEmail.isEmpty() || !draft.contactPhone.isEmpty())) {
+        if (draft != null && (!draft.description.isEmpty() || !draft.contactEmail.isEmpty() || !draft.contactPhone.isEmpty() || !draft.imageUri.isEmpty())) {
             form.optionalFields.setVisibility(View.VISIBLE); form.moreOptions.setText(R.string.less_options);
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(activity)
@@ -96,11 +109,15 @@ public final class EventEditor {
                         form.nameInput.getText().toString().trim(), EventValidation.storageDate(date),
                         form.locationInput.getText().toString().trim(),
                         form.organiserInput.getText().toString().trim(), form.typeInput.getSelectedItem().toString(), form.statusInput.getSelectedItem().toString());
+                event.categoryCode = EventCategories.CODES.get(form.categoryInput.getSelectedItemPosition());
+                event.imageUri = imageUri;
                 event.description = form.descriptionInput.getText().toString().trim();
                 event.contactEmail = email;
                 event.contactPhone = phone;
                 SharedPopupBinding panel=SharedPopupBinding.inflate(activity.getLayoutInflater());
                 panel.title.setText(R.string.review_title); panel.subtitle.setText(R.string.review_subtitle);
+                ui.reviewRow(panel.body,R.string.event_category,form.categoryInput.getSelectedItem().toString());
+                if (!event.imageUri.isEmpty()) ui.reviewRow(panel.body,R.string.event_cover,activity.getString(R.string.cover_selected));
                 ui.reviewRow(panel.body,R.string.name,event.name); ui.reviewRow(panel.body,R.string.date,date);
                 ui.reviewRow(panel.body,R.string.location,event.location); ui.reviewRow(panel.body,R.string.organiser,event.organiser);
                 ui.reviewRow(panel.body,R.string.type,event.type); ui.reviewRow(panel.body,R.string.status,EventAdapter.statusLabel(activity,event.status));
@@ -133,8 +150,53 @@ public final class EventEditor {
         ui.fullScreen(dialog,form.getRoot());
     }
 
+
+    private void setupImage(EventEditorScreenBinding form) {
+        form.chooseImage.setOnClickListener(view -> chooseImage.run());
+        form.removeImage.setOnClickListener(view -> {
+            imageUri = "";
+            form.reviewAction.setEnabled(!model.isBusy());
+            renderImage(form);
+        });
+        renderImage(form);
+    }
+
+    private void renderImage(EventEditorScreenBinding form) {
+        form.removeImage.setVisibility(imageUri.isEmpty() ? View.GONE : View.VISIBLE);
+        EventPhoto.load(form.imagePreview, imageUri, null);
+    }
+
+    public void acceptImage(Uri uri) {
+        if (fields == null) return;
+        EventEditorScreenBinding form = fields;
+        String previous = imageUri;
+        try {
+            String type = activity.getContentResolver().getType(uri);
+            if (!"content".equals(uri.getScheme()) || type == null || !type.startsWith("image/"))
+                throw new IllegalArgumentException("Not an image");
+            activity.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            imageUri = uri.toString();
+            String selected = imageUri;
+            form.reviewAction.setEnabled(false);
+            form.removeImage.setVisibility(View.VISIBLE);
+            EventPhoto.load(form.imagePreview, selected, valid -> {
+                if (fields != form || !selected.equals(imageUri)) return;
+                form.reviewAction.setEnabled(!model.isBusy());
+                if (!valid) {
+                    imageUri = previous;
+                    renderImage(form);
+                    ui.showNotice(window(), activity.getString(R.string.cover_error), true);
+                }
+            });
+        } catch (SecurityException | IllegalArgumentException error) {
+            ui.showNotice(window(), activity.getString(R.string.cover_error), true);
+        }
+    }
+
     public void saveState(Bundle state) {
         if (fields != null) {
+            state.putString("categoryCode", EventCategories.CODES.get(fields.categoryInput.getSelectedItemPosition()));
+            state.putString("imageUri", imageUri);
             state.putString("description", fields.descriptionInput.getText().toString());
             state.putString("email", fields.emailInput.getText().toString());
             state.putString("phone", fields.phoneInput.getText().toString());

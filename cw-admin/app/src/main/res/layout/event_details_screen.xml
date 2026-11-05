@@ -27,7 +27,14 @@
                 android:textAllCaps="false"
                 android:drawableStart="@drawable/ic_back"
                 android:drawablePadding="8dp"
-                android:textColor="@color/muted"/>
+                android:textColor="@color/muted" />
+            <ImageView
+                android:id="@+id/cover"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/cover_description"
+                android:visibility="gone" />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -41,7 +48,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
-                    android:textColor="@color/rose"/>
+                    android:textColor="@color/rose" />
                 <TextView
                     android:id="@+id/title"
                     android:textColor="@color/ink"
@@ -50,7 +57,7 @@
                     android:textSize="27sp"
                     android:fontFamily="sans-serif-medium"
                     android:layout_marginTop="12dp"
-                    android:accessibilityHeading="true"/>
+                    android:accessibilityHeading="true" />
             </LinearLayout>
             <TextView
                 android:id="@+id/date"
@@ -61,7 +68,7 @@
                 android:drawablePadding="14dp"
                 android:textSize="15sp"
                 android:paddingTop="12dp"
-                android:paddingBottom="12dp"/>
+                android:paddingBottom="12dp" />
             <TextView
                 android:id="@+id/location"
                 android:textColor="@color/ink"
@@ -71,21 +78,21 @@
                 android:drawablePadding="14dp"
                 android:textSize="15sp"
                 android:paddingTop="12dp"
-                android:paddingBottom="12dp"/>
+                android:paddingBottom="12dp" />
             <TextView
                 android:id="@+id/organiser"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="13sp"
                 android:textColor="@color/muted"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="10dp" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/about_event"
                 android:textSize="16sp"
                 android:fontFamily="sans-serif-medium"
-                android:layout_marginTop="28dp"/>
+                android:layout_marginTop="28dp" />
             <TextView
                 android:id="@+id/description"
                 android:layout_width="match_parent"
@@ -93,7 +100,7 @@
                 android:textSize="14sp"
                 android:lineSpacingExtra="5dp"
                 android:textColor="@color/muted"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="10dp" />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -110,14 +117,14 @@
                         android:text="@string/event_schedule"
                         android:textSize="24sp"
                         android:fontFamily="sans-serif-medium"
-                        android:textColor="@color/ink"/>
+                        android:textColor="@color/ink" />
                     <TextView
                         android:id="@+id/sessionCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/muted"
                         android:textSize="12sp"
-                        android:accessibilityLiveRegion="polite"/>
+                        android:accessibilityLiveRegion="polite" />
                 </LinearLayout>
                 <TextView
                     android:layout_width="match_parent"
@@ -125,14 +132,14 @@
                     android:layout_marginTop="8dp"
                     android:text="@string/event_schedule_subtitle"
                     android:textSize="14sp"
-                    android:textColor="@color/muted"/>
+                    android:textColor="@color/muted" />
                 <include
                     android:id="@+id/sessionSearch"
                     layout="@layout/shared_session_search"
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
                     android:layout_marginTop="16dp"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
                 <TextView
                     android:id="@+id/scheduleEmpty"
                     android:layout_width="match_parent"
@@ -140,13 +147,13 @@
                     android:paddingTop="16dp"
                     android:paddingBottom="16dp"
                     android:text="@string/event_schedule_empty"
-                    android:textColor="@color/muted"/>
+                    android:textColor="@color/muted" />
                 <LinearLayout
                     android:id="@+id/scheduleItems"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginTop="16dp"/>
+                    android:layout_marginTop="16dp" />
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/addSessionAction"
                     android:layout_width="match_parent"
@@ -156,7 +163,7 @@
                     app:backgroundTint="@null"
                     android:text="@string/session_add"
                     android:textColor="@color/rose"
-                    android:textAllCaps="false"/>
+                    android:textAllCaps="false" />
                 <Button
                     android:id="@+id/legacySessions"
                     style="@style/Widget.AppCompat.Button.Borderless"
@@ -165,7 +172,7 @@
                     android:text="@string/session_assign"
                     android:textColor="@color/rose"
                     android:textAllCaps="false"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/contacts"
@@ -178,7 +185,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/contact_heading"
                     android:textSize="16sp"
-                    android:fontFamily="sans-serif-medium"/>
+                    android:fontFamily="sans-serif-medium" />
                 <TextView
                     android:id="@+id/email"
                     android:layout_width="match_parent"
@@ -186,7 +193,7 @@
                     android:textSize="14sp"
                     android:textColor="@color/muted"
                     android:layout_marginTop="10dp"
-                    android:textIsSelectable="true"/>
+                    android:textIsSelectable="true" />
                 <TextView
                     android:id="@+id/phone"
                     android:layout_width="match_parent"
@@ -194,7 +201,7 @@
                     android:textSize="14sp"
                     android:textColor="@color/muted"
                     android:layout_marginTop="8dp"
-                    android:textIsSelectable="true"/>
+                    android:textIsSelectable="true" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
@@ -214,6 +221,6 @@
             app:backgroundTint="@null"
             android:text="@string/edit"
             android:textAllCaps="false"
-            android:textColor="#FFFFFF"/>
+            android:textColor="#FFFFFF" />
     </LinearLayout>
 </LinearLayout>
