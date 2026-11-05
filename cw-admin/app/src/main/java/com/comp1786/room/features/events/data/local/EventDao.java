@@ -8,6 +8,7 @@ import java.util.List;
 public interface EventDao {
     @Query("SELECT * FROM events ORDER BY date ASC, id ASC") LiveData<List<Event>> observeAll();
     @Query("SELECT * FROM events ORDER BY date ASC, id ASC") List<Event> getAll();
+    @Query("SELECT * FROM events WHERE id = :id") LiveData<Event> observeById(long id);
     @Insert long insert(Event event);
     @Update void update(Event event);
     @Delete void delete(Event event);

@@ -21,7 +21,7 @@
 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/stroke"/>
 <LinearLayout android:layout_width="match_parent" android:layout_height="72dp" android:background="#FFFFFF" android:gravity="center_vertical" android:paddingStart="28dp" android:paddingEnd="28dp">
 <Button android:id="@+id/eventsTab" style="@style/Widget.AppCompat.Button.Borderless" android:layout_width="0dp" android:layout_weight="1" android:layout_height="56dp" android:text="@string/events_section" android:textAllCaps="false" android:textColor="@color/rose"/>
-<Button android:id="@+id/sessionsTab" style="@style/Widget.AppCompat.Button.Borderless" android:layout_width="0dp" android:layout_weight="1" android:layout_height="56dp" android:text="@string/sessions_section" android:textAllCaps="false" android:textColor="@color/muted"/>
+<TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="@string/local_note" android:textColor="@color/muted" android:gravity="end" android:textSize="11sp"/>
 </LinearLayout>
 </LinearLayout>
 <androidx.appcompat.widget.AppCompatButton android:id="@+id/add" android:layout_width="54dp" android:layout_height="54dp" android:layout_gravity="bottom|end" android:layout_marginEnd="24dp" android:layout_marginBottom="90dp" android:background="@drawable/fab_button" app:backgroundTint="@null" android:foreground="?attr/selectableItemBackground" android:text="+" android:textColor="#FFFFFF" android:textSize="30sp" android:contentDescription="@string/add" android:elevation="3dp"/>

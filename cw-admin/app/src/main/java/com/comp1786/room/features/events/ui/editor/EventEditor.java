@@ -136,7 +136,7 @@ public final class EventEditor {
             });
             if(existing!=null) form.deleteAction.setOnClickListener(view->{
                 SharedPopupBinding panel=SharedPopupBinding.inflate(activity.getLayoutInflater());
-                panel.title.setText(R.string.delete_title); panel.subtitle.setText(R.string.delete_subtitle);
+                panel.title.setText(R.string.delete_title); panel.subtitle.setText(R.string.delete_with_sessions);
                 ui.reviewRow(panel.body,R.string.name,existing.name);
                 panel.primary.setText(R.string.delete); panel.secondary.setText(R.string.keep_event);
                 AlertDialog confirmation=ui.openPopup(panel);

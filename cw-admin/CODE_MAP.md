@@ -77,7 +77,7 @@ Khi làm session (B–C), đặt tính năng tại `features/sessions` với cù
 
 ## Mục B — quản lý session (15%)
 
-Mở tab **Session** dưới màn danh sách event. Session được sắp theo giờ, ID do SQLite tự sinh.
+Mở **Chi tiết event → Session**. Session được sắp theo giờ, ID do SQLite tự sinh.
 
 - `features/sessions/ui/list/SessionActivity.java`: điều hướng, theo dõi danh sách và thông báo kết quả.
 - `features/sessions/ui/list/SessionAdapter.java` + `res/layout/session_list_item.xml`: thẻ giờ/tên/loại; chạm thẻ để xem và chỉnh sửa.
@@ -90,8 +90,24 @@ Mở tab **Session** dưới màn danh sách event. Session được sắp theo 
 
 Luồng lưu: SessionEditorActivity.save → SessionValidation → SessionViewModel.save → SessionDao → SQLite → LiveData cập nhật danh sách.
 
-Database dùng chung events.db, version 2. MIGRATION_1_2 trong EventDatabase chỉ tạo bảng sessions, giữ nguyên bảng events, không xóa dữ liệu cũ. Không dùng fallbackToDestructiveMigration.
+Database dùng chung events.db, hiện version 3. MIGRATION_1_2 trong EventDatabase chỉ tạo bảng sessions, giữ nguyên bảng events, không xóa dữ liệu cũ. Không dùng fallbackToDestructiveMigration.
 
-Phạm vi B: session độc lập. Liên kết với event, đếm session và xóa dây chuyền thuộc mục C; chưa triển khai ở bước này.
+Mục B cung cấp CRUD session; mục C bên dưới tích hợp session vào từng event.
 
 Kiểm thử: SessionValidationTest kiểm tra đầu vào; SessionDatabaseTest nâng cấp từ schema v1, giữ event, lưu nhiều session, mở lại database, sửa và xóa; SessionScreenTest kiểm tra form và thao tác thật.
+
+## Mục C — session thuộc event (10%)
+
+Luồng chính: Danh sách event → Chi tiết event → nút Session (kèm tổng số) → danh sách session của event → thêm/xem/sửa/xóa.
+
+- Session.eventId là khóa ngoại đến Event.id, có index và ON DELETE CASCADE.
+- EventDetails theo dõi observeCount để số session tự cập nhật khi quay lại.
+- SessionActivity nhận eventId từ event đang mở, chỉ observeForEvent. Form hiển thị tên event, tự mang eventId khi lưu; người dùng không phải chọn lại event.
+- Xóa event bằng DAO sẽ xóa session tương ứng trong SQLite, không ảnh hưởng event khác.
+- Tab Session độc lập đã bỏ. Session luôn được quản lý theo event.
+- Migration 2 → 3 bảo toàn ID và mọi trường session cũ. eventId của các session cũ tạm null, không tự gán vào event bất kỳ.
+- Nếu có session cũ chưa gắn, mỗi event hiển thị nút **Gắn session cũ**: chọn session, kiểm tra thông tin rồi Lưu để gắn vào event đang mở. Chỉ những bản cũ này mới có thể chưa có eventId; validation không cho lưu session mới thiếu event.
+- SessionDatabaseTest kiểm tra nâng cấp từ v1/v2, bảo toàn session cũ, CRUD, khóa ngoại và cascade chỉ xóa con đúng event.
+- SessionScreenTest kiểm tra danh sách theo event và thao tác form.
+
+Quy tắc clean code cho mọi task nằm ở AGENTS.md tại gốc repo.

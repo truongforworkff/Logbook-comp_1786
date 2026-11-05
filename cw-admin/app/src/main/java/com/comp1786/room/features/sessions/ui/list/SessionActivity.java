@@ -15,6 +15,8 @@ import com.comp1786.room.shared.ui.AppUi;
 public class SessionActivity extends AppCompatActivity {
     private SessionListScreenBinding binding;
     private AppUi ui;
+    private long eventId;
+    private boolean unassigned;
     private final androidx.activity.result.ActivityResultLauncher<Intent> editor =
             registerForActivityResult(new androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() == RESULT_OK) {
@@ -36,12 +38,22 @@ public class SessionActivity extends AppCompatActivity {
             view.setPadding(bars.left, bars.top, bars.right, bars.bottom);
             return insets;
         });
+        eventId = getIntent().getLongExtra(SessionEditorActivity.EVENT_ID, 0);
+        unassigned = getIntent().getBooleanExtra("unassigned", false);
+        if (eventId <= 0) { finish(); return; }
         setupNavigation();
         observeSessions();
     }
 
+    public static Intent intent(android.content.Context context, long eventId, boolean unassigned) {
+        return new Intent(context, SessionActivity.class)
+                .putExtra(SessionEditorActivity.EVENT_ID, eventId).putExtra("unassigned", unassigned);
+    }
+
     private void setupNavigation() {
         binding.eventsTab.setOnClickListener(view -> finish());
+        binding.add.setVisibility(unassigned ? View.GONE : View.VISIBLE);
+        binding.assignLegacy.setOnClickListener(view -> startActivity(intent(this, eventId, true)));
         binding.add.setOnClickListener(view -> openEditor(0));
     }
 
@@ -50,7 +62,9 @@ public class SessionActivity extends AppCompatActivity {
         binding.list.setLayoutManager(new LinearLayoutManager(this));
         binding.list.setAdapter(adapter);
         SessionViewModel model = new ViewModelProvider(this).get(SessionViewModel.class);
-        model.getSessions().observe(this, sessions -> {
+        observeParent(model);
+        observeLegacySessions(model);
+        model.getSessions(eventId, unassigned).observe(this, sessions -> {
             if (sessions == null) return;
             adapter.submitList(sessions);
             binding.count.setText(getString(R.string.session_count, sessions.size()));
@@ -58,8 +72,24 @@ public class SessionActivity extends AppCompatActivity {
         });
     }
 
+    private void observeParent(SessionViewModel model) {
+        model.getEvent(eventId).observe(this, event -> {
+            if (event == null) { finish(); return; }
+            binding.eventName.setText(getString(R.string.session_parent, event.name));
+        });
+    }
+
+    private void observeLegacySessions(SessionViewModel model) {
+        model.getUnassignedCount().observe(this, count ->
+                binding.assignLegacy.setVisibility(!unassigned && count != null && count > 0 ? View.VISIBLE : View.GONE));
+        if (unassigned) {
+            binding.listTitle.setText(R.string.session_assign_title);
+            binding.empty.setText(R.string.session_assign_hint);
+        }
+    }
+
     private void openEditor(long id) {
-        editor.launch(new Intent(this, SessionEditorActivity.class).putExtra(SessionEditorActivity.SESSION_ID, id));
+        editor.launch(new Intent(this, SessionEditorActivity.class).putExtra(SessionEditorActivity.SESSION_ID, id).putExtra(SessionEditorActivity.EVENT_ID, eventId));
     }
 
     @Override protected void onDestroy() {

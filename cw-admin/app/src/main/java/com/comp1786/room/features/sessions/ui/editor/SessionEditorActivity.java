@@ -15,11 +15,13 @@ import com.comp1786.room.features.sessions.logic.SessionViewModel;
 import com.comp1786.room.shared.ui.AppUi;
 
 public class SessionEditorActivity extends AppCompatActivity {
+    public static final String EVENT_ID = "eventId";
     public static final String SESSION_ID = "sessionId";
     private SessionEditorScreenBinding binding;
     private SessionViewModel model;
     private AppUi ui;
     private long sessionId;
+    private long eventId;
     private boolean loaded;
 
     @Override protected void onCreate(Bundle state) {
@@ -35,9 +37,12 @@ public class SessionEditorActivity extends AppCompatActivity {
             view.setPadding(bars.left, bars.top, bars.right, bars.bottom);
             return insets;
         });
+        eventId = getIntent().getLongExtra(EVENT_ID, 0);
+        if (eventId <= 0) { finish(); return; }
         sessionId = getIntent().getLongExtra(SESSION_ID, 0);
         model = new ViewModelProvider(this).get(SessionViewModel.class);
         setupForm();
+        observeParent();
         restoreDraft(state);
         observeResult();
         loadExisting();
@@ -68,19 +73,28 @@ public class SessionEditorActivity extends AppCompatActivity {
         binding.moreOptions.setText(expanded ? R.string.less_options : R.string.session_more);
     }
 
+    private void observeParent() {
+        model.getEvent(eventId).observe(this, event -> {
+            if (event == null) {
+                finish();
+                return;
+            }
+            binding.eventName.setText(getString(R.string.session_parent, event.name));
+        });
+    }
+
     private void loadExisting() {
         if (loaded) return;
-        model.getSessions().observe(this, sessions -> {
-            if (loaded || sessions == null) return;
-            for (Session session : sessions) {
-                if (session.id == sessionId) {
-                    fillForm(session);
-                    loaded = true;
-                    setActionsEnabled(!model.isBusy());
-                    return;
-                }
+        model.getSession(sessionId).observe(this, session -> {
+            if (session == null && model.isBusy()) return;
+            if (session == null || (session.eventId != null && session.eventId != eventId)) {
+                finish();
+                return;
             }
-            ui.showNotice(null, getString(R.string.storage_error), true);
+            if (loaded) return;
+            fillForm(session);
+            loaded = true;
+            setActionsEnabled(!model.isBusy());
         });
     }
 
@@ -95,7 +109,7 @@ public class SessionEditorActivity extends AppCompatActivity {
     }
 
     private Session readForm() {
-        return new Session(sessionId, binding.nameInput.getText().toString(),
+        return new Session(sessionId, eventId, binding.nameInput.getText().toString(),
                 binding.timeInput.getText().toString(), binding.speakerInput.getText().toString(),
                 binding.roomInput.getText().toString(), binding.typeInput.getSelectedItem().toString(),
                 binding.descriptionInput.getText().toString());
@@ -153,7 +167,7 @@ public class SessionEditorActivity extends AppCompatActivity {
 
     private void restoreDraft(Bundle state) {
         if (state == null || !state.getBoolean("loaded")) return;
-        fillForm(new Session(sessionId, state.getString("name", ""), state.getString("time", ""),
+        fillForm(new Session(sessionId, eventId, state.getString("name", ""), state.getString("time", ""),
                 state.getString("speaker", ""), state.getString("room", ""),
                 state.getString("type", "Workshop"), state.getString("description", "")));
         showOptional(state.getBoolean("optional"));

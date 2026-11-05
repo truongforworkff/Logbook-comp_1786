@@ -18,7 +18,7 @@ public final class SessionValidation {
     }
 
     public static boolean valid(Session session) {
-        return session.id >= 0 && validName(session.name) && validTime(session.time)
+        return session.id >= 0 && session.eventId != null && session.eventId > 0 && validName(session.name) && validTime(session.time)
                 && TYPES.contains(session.type) && session.speaker.length() <= 120
                 && session.room.length() <= 120 && session.description.length() <= 2000;
     }

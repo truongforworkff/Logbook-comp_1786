@@ -14,10 +14,15 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class SessionScreenTest {
+    private long eventId;
     @Test public void invalidInputThenCreateEditAndDelete() throws Exception {
         Instrumentation test = InstrumentationRegistry.getInstrumentation();
         Context context = test.getTargetContext();
         SessionDao dao = EventDatabase.get(context).sessions();
+        com.comp1786.room.features.events.data.model.Event parent =
+                new com.comp1786.room.features.events.data.model.Event(0, "Session UI parent", "2026-12-20", "Hall", "Team", "Workshop", "Upcoming");
+        parent.id = EventDatabase.get(context).events().insert(parent);
+        eventId = parent.id;
         SessionEditorActivity activity = launch(test, context, 0);
         long id = 0;
         try {
@@ -37,6 +42,7 @@ public class SessionScreenTest {
             awaitFinished(test, activity);
             for (Session session : dao.getAll()) if (session.name.equals("Session UI test")) id = session.id;
             assertTrue(id > 0);
+            verifyEventList(test, context);
 
             SessionEditorActivity edit = launch(test, context, id);
             try {
@@ -65,12 +71,31 @@ public class SessionScreenTest {
             test.runOnMainSync(activity::finish);
             for (Session session : dao.getAll())
                 if (session.id == id) dao.delete(session);
+            EventDatabase.get(context).events().delete(parent);
         }
+    }
+
+    private void verifyEventList(Instrumentation test, Context context) throws Exception {
+        com.comp1786.room.features.sessions.ui.list.SessionActivity list =
+                (com.comp1786.room.features.sessions.ui.list.SessionActivity) test.startActivitySync(
+                        com.comp1786.room.features.sessions.ui.list.SessionActivity.intent(context, eventId, false)
+                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        try {
+            long deadline = android.os.SystemClock.uptimeMillis() + 10000;
+            boolean[] ready = {false};
+            while (!ready[0] && android.os.SystemClock.uptimeMillis() < deadline) {
+                test.runOnMainSync(() -> ready[0] = "1 session".contentEquals(
+                        ((android.widget.TextView) list.findViewById(R.id.count)).getText()));
+                if (!ready[0]) Thread.sleep(50);
+            }
+            assertTrue("Only the selected event's session appears", ready[0]);
+            screenshot(test, "11-event-sessions.png");
+        } finally { test.runOnMainSync(list::finish); }
     }
 
     private SessionEditorActivity launch(Instrumentation test, Context context, long id) {
         return (SessionEditorActivity) test.startActivitySync(new Intent(context, SessionEditorActivity.class)
-                .putExtra(SessionEditorActivity.SESSION_ID, id).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                .putExtra(SessionEditorActivity.EVENT_ID, eventId).putExtra(SessionEditorActivity.SESSION_ID, id).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     private void fill(Instrumentation test, SessionEditorActivity activity, int field, String value) {
