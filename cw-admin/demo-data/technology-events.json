@@ -1,0 +1,138 @@
+{
+  "checkedOn": "2026-11-06",
+  "note": "Event metadata uses official sources. Sessions prefixed Demo are illustrative schedules, not official agendas. No contact details are invented.",
+  "events": [
+    {
+      "name": "NVIDIA GTC 2026 — AI và điện toán tăng tốc",
+      "date": "2026-03-16",
+      "location": "San Jose, California, Hoa Kỳ",
+      "organiser": "NVIDIA",
+      "type": "Conference",
+      "status": "Completed",
+      "source": "https://nvidianews.nvidia.com/news/nvidia-ceo-jensen-huang-and-global-technology-leaders-to-showcase-age-of-ai-at-gtc-2026",
+      "summary": "Hội nghị AI và điện toán tăng tốc diễn ra từ 16–19/03/2026. Ngày trên thẻ là ngày bắt đầu.",
+      "sessions": [
+        {
+          "name": "GTC 2026 Keynote",
+          "time": "11:00",
+          "speaker": "Jensen Huang",
+          "room": "SAP Center",
+          "type": "Keynote",
+          "description": "Keynote ngày 16/03/2026, giờ địa phương San Jose. Nguồn: https://www.nvidia.com/gtc/session-catalog/"
+        }
+      ]
+    },
+    {
+      "name": "Microsoft Ignite 2026 — AI cho doanh nghiệp",
+      "date": "2026-11-17",
+      "location": "Moscone Center, San Francisco / Online",
+      "organiser": "Microsoft",
+      "type": "Conference",
+      "status": "Upcoming",
+      "source": "https://ignite.microsoft.com/en-US/home?mtag=Ladewig",
+      "summary": "Hội nghị Microsoft Ignite diễn ra từ 17–20/11/2026 tại San Francisco và trực tuyến. Ngày trên thẻ là ngày bắt đầu.",
+      "sessions": [
+        {
+          "name": "Demo: AI agents trong doanh nghiệp",
+          "time": "09:00",
+          "speaker": "",
+          "room": "",
+          "type": "Presentation",
+          "description": "Lịch minh họa để thử app; tên và giờ phiên này không phải agenda chính thức của Microsoft."
+        },
+        {
+          "name": "Demo: Trao đổi về triển khai AI an toàn",
+          "time": "10:30",
+          "speaker": "",
+          "room": "",
+          "type": "Panel Discussion",
+          "description": "Lịch minh họa để thử app, không phải phiên do Microsoft công bố."
+        }
+      ]
+    },
+    {
+      "name": "NVIDIA GTC Washington, D.C. 2026",
+      "date": "2026-11-30",
+      "location": "Washington, D.C., Hoa Kỳ",
+      "organiser": "NVIDIA",
+      "type": "Conference",
+      "status": "Upcoming",
+      "source": "https://www.nvidia.com/gtc/dc/",
+      "summary": "Hội nghị công nghệ AI tại Washington, D.C., từ 30/11 đến 03/12/2026. Ngày trên thẻ là ngày bắt đầu.",
+      "sessions": [
+        {
+          "name": "Demo: Hạ tầng AI và ứng dụng thực tế",
+          "time": "09:00",
+          "speaker": "",
+          "room": "",
+          "type": "Presentation",
+          "description": "Lịch minh họa để thử app; chưa lấy tên, giờ hoặc diễn giả từ agenda chính thức."
+        },
+        {
+          "name": "Demo: Kết nối cộng đồng công nghệ",
+          "time": "15:00",
+          "speaker": "",
+          "room": "",
+          "type": "Networking",
+          "description": "Lịch minh họa để thử app, không phải lịch chính thức của NVIDIA."
+        }
+      ]
+    },
+    {
+      "name": "Apple giới thiệu MacBook Pro 14 inch với M6",
+      "date": "2026-10-27",
+      "location": "Apple Newsroom — công bố trực tuyến",
+      "organiser": "Apple",
+      "type": "Other",
+      "status": "Completed",
+      "source": "https://www.apple.com/newsroom/2026/10/apple-introduces-the-new-14-inch-macbook-pro-with-m6/",
+      "summary": "Apple công bố MacBook Pro 14 inch với chip M6 ngày 27/10/2026. Đây là bản ghi công bố sản phẩm, không phải khẳng định có một hội thảo trực tiếp.",
+      "sessions": [
+        {
+          "name": "Demo: Tổng quan MacBook Pro M6",
+          "time": "09:00",
+          "speaker": "",
+          "room": "",
+          "type": "Presentation",
+          "description": "Lịch giới thiệu minh họa để thử app, dựa trên công bố sản phẩm; không phải lịch sự kiện của Apple."
+        },
+        {
+          "name": "Demo: Tìm hiểu AI chạy trên thiết bị",
+          "time": "10:00",
+          "speaker": "",
+          "room": "",
+          "type": "Workshop",
+          "description": "Workshop minh họa để thử app, không do Apple tổ chức."
+        }
+      ]
+    },
+    {
+      "name": "Apple giới thiệu iMac với M6",
+      "date": "2026-10-27",
+      "location": "Apple Newsroom — công bố trực tuyến",
+      "organiser": "Apple",
+      "type": "Other",
+      "status": "Completed",
+      "source": "https://www.apple.com/newsroom/2026/10/apple-unveils-new-imac-with-m6/",
+      "summary": "Bản ghi dựa trên thông cáo Apple giới thiệu iMac với M6 ngày 27/10/2026. Đây là công bố trực tuyến, không phải một hội thảo trực tiếp.",
+      "sessions": [
+        {
+          "name": "Demo: Giới thiệu iMac M6",
+          "time": "14:00",
+          "speaker": "",
+          "room": "",
+          "type": "Presentation",
+          "description": "Phiên và giờ minh họa để thử app; thông tin sản phẩm dựa trên Apple Newsroom."
+        },
+        {
+          "name": "Demo: Thảo luận góc làm việc sáng tạo",
+          "time": "15:00",
+          "speaker": "",
+          "room": "",
+          "type": "Panel Discussion",
+          "description": "Lịch minh họa để thử app, không phải agenda chính thức của Apple."
+        }
+      ]
+    }
+  ]
+}
