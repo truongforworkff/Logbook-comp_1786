@@ -113,3 +113,13 @@ Luồng chính: Danh sách event → Chi tiết event → nút Session (kèm t�
 Quy tắc clean code cho mọi task nằm ở AGENTS.md tại gốc repo.
 
 Thêm nhanh: Chi tiết event → **Thêm session** → form gắn sẵn eventId, không phải mở danh sách session hay chọn lại sự kiện. Nút Session · tổng số vẫn dùng để xem/quản lý danh sách.
+
+## Xem session như người tham dự
+
+Event → Xem N session → chạm thẻ → màn chi tiết chỉ đọc (tên event, ngày, giờ, loại, diễn giả, phòng, mô tả đầy đủ).
+Nút Chỉnh sửa session riêng mới mở form quản trị. LiveData làm mới thông tin khi quay lại sau khi sửa.
+
+- `features/sessions/ui/details/SessionDetailsActivity.java`: setupWindow, setupNavigation, observeDetails, renderSession.
+- `res/layout/session_details_screen.xml`: giao diện đọc thông tin; không có ô nhập và không tự cắt mô tả.
+- `SessionActivity.openDetails`: điều hướng khi chọn session đã thuộc event.
+- Luồng gắn session cũ vẫn mở form để người quản trị xác nhận gắn vào event.

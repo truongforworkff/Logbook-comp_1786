@@ -22,11 +22,11 @@
     <string name="session_keep">Giữ session</string>
     <string name="session_saved">Đã lưu session.</string>
     <string name="session_deleted">Đã xóa session.</string>
-    <string name="session_edit_hint">Chạm để xem hoặc chỉnh sửa</string>
+    <string name="session_edit_hint">Xem chi tiết session →</string>
     <string name="session_more">Thông tin bổ sung</string>
     <string name="session_save">Lưu session</string>
     <string name="event_sessions">Các session của sự kiện</string>
-    <string name="event_session_count">Session · %1$d</string>
+    <string name="event_session_count">Xem %1$d session</string>
     <string name="session_parent">Sự kiện: %1$s</string>
     <string name="session_assign">Gắn session cũ</string>
     <string name="session_assign_hint">Chọn session cũ rồi lưu để gắn vào sự kiện này.</string>
@@ -34,4 +34,9 @@
     <string name="session_event_missing">Sự kiện không còn tồn tại. Vui lòng quay lại danh sách.</string>
     <string name="session_loading_count">Đang tải session…</string>
     <string name="delete_with_sessions">Sự kiện và toàn bộ session thuộc sự kiện sẽ bị xóa khỏi thiết bị.</string>
+    <string name="session_time_label">Giờ bắt đầu</string>
+    <string name="session_speaker_label">Diễn giả</string>
+    <string name="session_room_label">Phòng</string>
+    <string name="about_session">Nội dung session</string>
+    <string name="session_no_description">Chưa có mô tả cho session này.</string>
 </resources>

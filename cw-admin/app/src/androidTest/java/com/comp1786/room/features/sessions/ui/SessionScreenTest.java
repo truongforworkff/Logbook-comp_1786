@@ -90,12 +90,57 @@ public class SessionScreenTest {
             boolean[] ready = {false};
             while (!ready[0] && android.os.SystemClock.uptimeMillis() < deadline) {
                 test.runOnMainSync(() -> ready[0] = "1 session".contentEquals(
-                        ((android.widget.TextView) list.findViewById(R.id.count)).getText()));
+                        ((android.widget.TextView) list.findViewById(R.id.count)).getText())
+                        && ((androidx.recyclerview.widget.RecyclerView) list.findViewById(R.id.list)).getChildCount() > 0);
                 if (!ready[0]) Thread.sleep(50);
             }
             assertTrue("Only the selected event's session appears", ready[0]);
             screenshot(test, "11-event-sessions.png");
+            verifyReadOnlyDetails(test, list);
         } finally { test.runOnMainSync(list::finish); }
+    }
+
+    private void verifyReadOnlyDetails(Instrumentation test,
+            com.comp1786.room.features.sessions.ui.list.SessionActivity list) throws Exception {
+        Instrumentation.ActivityMonitor monitor = test.addMonitor(
+                com.comp1786.room.features.sessions.ui.details.SessionDetailsActivity.class.getName(), null, false);
+        com.comp1786.room.features.sessions.ui.details.SessionDetailsActivity details = null;
+        try {
+            test.runOnMainSync(() -> ((androidx.recyclerview.widget.RecyclerView) list.findViewById(R.id.list))
+                    .getChildAt(0).performClick());
+            details = (com.comp1786.room.features.sessions.ui.details.SessionDetailsActivity)
+                    test.waitForMonitorWithTimeout(monitor, 10000);
+            assertNotNull("Card opens a read-only detail screen", details);
+            final com.comp1786.room.features.sessions.ui.details.SessionDetailsActivity page = details;
+            boolean[] loaded = {false};
+            long deadline = android.os.SystemClock.uptimeMillis() + 10000;
+            while (!loaded[0] && android.os.SystemClock.uptimeMillis() < deadline) {
+                test.runOnMainSync(() -> loaded[0] = page.findViewById(R.id.edit).isEnabled());
+                if (!loaded[0]) Thread.sleep(50);
+            }
+            assertTrue(loaded[0]);
+            test.runOnMainSync(() -> {
+                assertEquals("Guest", ((android.widget.TextView) page.findViewById(R.id.speaker)).getText().toString());
+                assertEquals("Optional details", ((android.widget.TextView) page.findViewById(R.id.description)).getText().toString());
+                assertFalse(page.findViewById(R.id.title) instanceof EditText);
+                assertNull(page.findViewById(R.id.save));
+            });
+            screenshot(test, "13-session-details.png");
+            Instrumentation.ActivityMonitor editMonitor = test.addMonitor(SessionEditorActivity.class.getName(), null, false);
+            try {
+                test.runOnMainSync(() -> page.findViewById(R.id.edit).performClick());
+                SessionEditorActivity edit = (SessionEditorActivity) test.waitForMonitorWithTimeout(editMonitor, 10000);
+                assertNotNull("Editing is a separate action", edit);
+                awaitLoaded(test, edit);
+                test.runOnMainSync(edit::finish);
+            } finally { test.removeMonitor(editMonitor); }
+        } finally {
+            test.removeMonitor(monitor);
+            if (details != null) {
+                final android.app.Activity page = details;
+                test.runOnMainSync(page::finish);
+            }
+        }
     }
 
     private SessionEditorActivity launch(Instrumentation test, Context context, long id) {

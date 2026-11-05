@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher" android:allowBackup="false" android:label="@string/app_name" android:theme="@style/Theme.Coursework" android:supportsRtl="true">
+        <activity android:name="com.comp1786.room.features.sessions.ui.details.SessionDetailsActivity" android:exported="false"/>
         <activity android:name="com.comp1786.room.features.sessions.ui.editor.SessionEditorActivity" android:exported="false" android:windowSoftInputMode="adjustResize"/>
         <activity android:name="com.comp1786.room.features.sessions.ui.list.SessionActivity" android:exported="false" android:windowSoftInputMode="adjustResize"/>
         <activity android:name="com.comp1786.room.features.events.ui.list.MainActivity" android:exported="true" android:windowSoftInputMode="adjustResize">

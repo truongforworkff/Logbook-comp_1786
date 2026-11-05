@@ -58,7 +58,10 @@ public class SessionActivity extends AppCompatActivity {
     }
 
     private void observeSessions() {
-        SessionAdapter adapter = new SessionAdapter(session -> openEditor(session.id));
+        SessionAdapter adapter = new SessionAdapter(session -> {
+            if (unassigned) openEditor(session.id);
+            else openDetails(session.id);
+        });
         binding.list.setLayoutManager(new LinearLayoutManager(this));
         binding.list.setAdapter(adapter);
         SessionViewModel model = new ViewModelProvider(this).get(SessionViewModel.class);
@@ -86,6 +89,13 @@ public class SessionActivity extends AppCompatActivity {
             binding.listTitle.setText(R.string.session_assign_title);
             binding.empty.setText(R.string.session_assign_hint);
         }
+    }
+
+    private void openDetails(long id) {
+        editor.launch(new Intent(this,
+                com.comp1786.room.features.sessions.ui.details.SessionDetailsActivity.class)
+                .putExtra(SessionEditorActivity.SESSION_ID, id)
+                .putExtra(SessionEditorActivity.EVENT_ID, eventId));
     }
 
     private void openEditor(long id) {
