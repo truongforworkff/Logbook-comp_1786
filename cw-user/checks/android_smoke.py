@@ -40,6 +40,18 @@ def bounds(node):
     return list(map(int, re.findall(r"\d+", node.get("bounds", ""))))
 
 
+def dismiss_launcher_dialog(root):
+    if not any(node.get("text") == "Quickstep isn't responding" for node in root.iter("node")):
+        return False
+    for node in root.iter("node"):
+        if node.get("package") == "android" and node.get("text") == "Close app":
+            x1, y1, x2, y2 = bounds(node)
+            adb("shell", "input", "tap", str((x1 + x2) // 2), str((y1 + y2) // 2))
+            print("Dismissed CI system launcher ANR; app ANRs remain failures.", flush=True)
+            return True
+    return False
+
+
 def find(name=None, *, kind=None, scroll=False):
     deadline = time.monotonic() + 35
     while time.monotonic() < deadline:
@@ -47,6 +59,8 @@ def find(name=None, *, kind=None, scroll=False):
             root = tree()
         except subprocess.CalledProcessError:
             time.sleep(0.3)
+            continue
+        if dismiss_launcher_dialog(root):
             continue
         for node in root.iter("node"):
             if name and node.get("package") != PACKAGE:
