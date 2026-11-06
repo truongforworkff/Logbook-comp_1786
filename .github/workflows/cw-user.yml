@@ -50,7 +50,7 @@ jobs:
           profile: pixel_6
           disable-animations: true
           working-directory: cw-user/app
-          script: flutter drive --driver=test_driver/integration_test.dart --target=integration_test/app_test.dart -d emulator-5554 --no-pub
+          script: flutter drive --driver=test_driver/integration_test.dart --target=integration_test/app_test.dart -d emulator-5554 --keep-app-running
       - uses: actions/upload-artifact@v4
         if: always()
         with:
