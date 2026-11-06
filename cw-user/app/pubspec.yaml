@@ -1,0 +1,24 @@
+name: eventa_user
+description: Eventa Explore — ứng dụng người tham dự G/H bằng Flutter.
+publish_to: none
+version: 2.0.0+2
+environment:
+  sdk: ^3.13.3
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  shared_preferences: ^2.5.6
+  shared_preferences_android: ^2.5.4
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/data/events.json
+    - assets/images/
