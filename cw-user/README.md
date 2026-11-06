@@ -66,3 +66,7 @@ Android giữ applicationId com.comp1786.eventa.user, dùng lại file preferenc
 Phiên Demo và ảnh bìa chỉ là minh họa; nguồn event nằm trong JSON. Giờ session lấy từ admin, không tự thêm giờ kết thúc.
 
 Tham khảo [Flutter](https://docs.flutter.dev/) và [shared_preferences](https://pub.dev/packages/shared_preferences).
+
+## Firebase Spark
+
+Đã đăng ký Android/web với project eventa-coursework và khởi tạo Firebase trong lib/main.dart. Cấu hình: lib/shared/data/firebase_options.dart. CatalogRepository vẫn đọc snapshot; danh sách Cloud sẽ triển khai cùng E. Xem [thiết lập và kiểm tra kết nối](../cloud/firebase/README.md).

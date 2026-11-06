@@ -62,3 +62,7 @@ Mục D: tìm event theo tên/mô tả; lọc ngày/người tổ chức; tìm s
 Chọn chủ đề trong form tạo/sửa. Mở phần tùy chọn để thêm, thay hoặc bỏ ảnh bìa. Có thể tạo sự kiện không có ảnh. Danh sách/chi tiết hiển thị ảnh và chủ đề; bộ lọc bổ sung chủ đề.
 
 Database v4 nâng cấp giữ nguyên event/session. Dữ liệu cũ mặc định chủ đề Khác, ảnh trống. Ảnh dùng URI cục bộ có quyền đọc lâu dài; ảnh chưa được đồng bộ cloud và có thể mất truy cập nếu ảnh gốc bị xóa/di chuyển.
+
+## Firebase Spark
+
+Đã cấu hình project eventa-coursework, SDK Firestore/Auth và Google Services plugin. SQLite và giao diện giữ nguyên. Cloud đang từ chối client; chưa viết upload/đồng bộ E. Xem [thiết lập và kiểm tra kết nối](../cloud/firebase/README.md).

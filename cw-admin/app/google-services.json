@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "298519879781",
+    "project_id": "eventa-coursework",
+    "storage_bucket": "eventa-coursework.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:298519879781:android:44b8d14a8a254c0ef1e68c",
+        "android_client_info": {
+          "package_name": "com.comp1786.eventa.admin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVeRAhTGLE2cNiFU_iM2wtoUfF4dzWvzA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:298519879781:android:0cde9e115aec7b89f1e68c",
+        "android_client_info": {
+          "package_name": "com.comp1786.eventa.user"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVeRAhTGLE2cNiFU_iM2wtoUfF4dzWvzA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

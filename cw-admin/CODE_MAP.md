@@ -119,3 +119,10 @@ Chọn ngày: shared/ui/DateField.java dùng chung cho ô ngày form event và b
 - Không có ảnh thì thẻ/chi tiết bỏ hẳn khung ảnh. URI không còn đọc được cũng không làm app bị dừng.
 - shortcut: imageUri là tham chiếu ảnh cục bộ; khi làm phần cloud cần tải nội dung ảnh lên và lưu URL truy cập được từ app người tham dự. Di chuyển/xóa ảnh gốc có thể làm mất quyền đọc.
 - EventCategoriesTest, EventSearchTest kiểm tra chủ đề; EventDatabaseTest kiểm tra lưu/sửa/bỏ ảnh; SessionDatabaseTest kiểm tra migration v1/v2/v3 và giữ quan hệ; EventPhotoTest kiểm tra ảnh lớn, hướng ảnh và ảnh lỗi; DesignScreenshotTest kiểm tra chọn/lọc chủ đề trên UI.
+
+## Firebase — thiết lập
+
+- app/google-services.json + build.gradle.kts: định danh Firebase và SDK Firestore/Auth; FirebaseInitProvider khởi tạo tự động.
+- AndroidManifest.xml: quyền Internet/trạng thái mạng.
+- androidTest/.../features/cloud/data/FirebaseSetupTest.java: kiểm tra project và server từ chối setup_checks, không sửa dữ liệu app.
+- ../cloud/firebase: database/rules/hướng dẫn; chưa có UI upload/đồng bộ E.

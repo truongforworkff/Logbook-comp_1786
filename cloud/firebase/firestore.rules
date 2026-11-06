@@ -1,0 +1,9 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Keep setup closed until event publication and admin roles are implemented.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
