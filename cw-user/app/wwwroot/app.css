@@ -9,7 +9,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-vis
 button{border:0}button:disabled{opacity:.45;cursor:default}a{color:inherit}
 .app-shell{height:calc(100% - 39px);display:grid;grid-template-rows:minmax(0,1fr) 75px}
 .screen{overflow-y:auto;overflow-x:hidden;scrollbar-width:none;scroll-behavior:smooth}.screen::-webkit-scrollbar{display:none}
-.home-indicator{position:absolute;width:95px;height:4px;border-radius:8px;background:#1a1d25;bottom:6px;left:50%;transform:translateX(-50%)}
 .topbar{height:58px;padding:6px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;z-index:4;background:#f4f5f9ed;backdrop-filter:blur(18px)}
 .logo-lockup{display:flex;align-items:center;gap:9px}.brand-icon{width:30px;height:30px;background:#e3eeff;color:var(--blue);display:grid;place-items:center;border-radius:11px}
 .logo-lockup strong{font-size:15px;letter-spacing:-.5px}.status-pill{font-size:9px;color:#77808d;display:flex;align-items:center;gap:4px;background:#fff;border:1px solid #e9ecf1;padding:5px 7px;border-radius:16px;white-space:nowrap}
@@ -92,3 +91,6 @@ html,body,#app{height:100%;width:100%;overflow:hidden;background:var(--canvas)}
 #blazor-error-ui{display:none;position:fixed;inset:auto 12px 12px;background:white;border:1px solid #e4a9b9;border-radius:12px;padding:20px;z-index:100;color:var(--ink);font-size:14px}
 #blazor-error-ui a{color:var(--blue);display:block;margin-top:8px}
 .date-tag{gap:4px;flex-wrap:wrap}
+
+.card-title-button{padding:0;background:transparent;color:inherit;font:inherit;text-align:left;line-height:inherit;width:100%}
+.body-copy{white-space:pre-line;overflow-wrap:anywhere}

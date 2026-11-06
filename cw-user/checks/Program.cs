@@ -33,6 +33,13 @@ Check(EventSearch.Filter(events, category:"Technology", month:"2026-11").Count =
 Check(EventSearch.Filter(events, "%_'").Count == 0, "literal special characters");
 Check(EventSearch.Filter(events, "  ").Count == 5, "blank query");
 Check(EventSearch.Filter(events)[0].Id == "ignite-2026", "upcoming first");
+var oldCulture = System.Globalization.CultureInfo.CurrentCulture;
+try
+{
+    System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.GetCultureInfo("ar-SA");
+    Check(EventSearch.Filter(events, date:"2026-11-17").Single().Id == "ignite-2026", "ISO dates independent of device calendar");
+}
+finally { System.Globalization.CultureInfo.CurrentCulture = oldCulture; }
 var valid = events.Select(item => item.Id);
 var saved = FavouriteCodec.Read("[\"ignite-2026\",\"unknown\",\"ignite-2026\"]", valid);
 Check(saved.SetEquals(["ignite-2026"]), "deduplicate and remove unknown favourites");

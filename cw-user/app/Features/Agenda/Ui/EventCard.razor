@@ -1,5 +1,4 @@
-<article class="event-card" role="button" tabindex="0" aria-label="@("Xem sự kiện: " + Event.Name)"
-         @onclick="Open" @onkeydown="HandleKey">
+<article class="event-card" @onclick="Open">
     <div class="cover @(HasImage ? "" : "no-photo")">
         @if (HasImage)
         {
@@ -18,7 +17,7 @@
         </span>
     </div>
     <div class="card-body">
-        <h3 class="card-title">@Event.Name</h3>
+        <h3 class="card-title"><button class="card-title-button" aria-label="@("Xem sự kiện: " + Event.Name)" @onclick="Open" @onclick:stopPropagation>@Event.Name</button></h3>
         <p class="card-description">@Event.Description</p>
         <div class="venue-block">
             <div class="venue-line"><Icon Name="pin" />@Event.Location</div>
@@ -26,7 +25,7 @@
         </div>
         <div class="card-footer">
             <span class="sessions-label">@Event.Sessions.Count session</span>
-            <span class="small-primary">Xem lịch trình <Icon Name="arrow" /></span>
+            <button class="small-primary" aria-label="@("Xem lịch trình: " + Event.Name)" @onclick="Open" @onclick:stopPropagation>Xem lịch trình <Icon Name="arrow" /></button>
         </div>
     </div>
 </article>
@@ -40,8 +39,4 @@
     private bool HasImage => Event.Image.Length > 0 && !imageFailed;
     private Task Open() => OnOpen.InvokeAsync(Event.Id);
     private Task Toggle() => OnToggle.InvokeAsync(Event.Id);
-    private async Task HandleKey(KeyboardEventArgs key)
-    {
-        if (key.Key is "Enter" or " ") await Open();
-    }
 }

@@ -77,7 +77,7 @@ else
     private IReadOnlyList<EventInfo> Results => EventSearch.Filter(State.Events, State.Query, State.Date,
         State.Month, State.Category, State.Route == AgendaRoute.Saved ? Favourites.Ids : null);
     private IEnumerable<string> Months => State.Events.Where(item => item.Status != "Completed")
-        .Select(item => item.Date.ToString("yyyy-MM")).Distinct().Order().Take(2);
+        .Select(item => item.Date.ToString("yyyy-MM", System.Globalization.CultureInfo.InvariantCulture)).Distinct().Order().Take(2);
     private void ChangeQuery(ChangeEventArgs value) => State.Query = value.Value?.ToString() ?? "";
     private void SelectMonth(string month) { State.Month = month; State.Date = ""; }
     private void EmptyAction()

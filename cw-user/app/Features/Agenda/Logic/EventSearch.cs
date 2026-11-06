@@ -16,8 +16,8 @@ public static class EventSearch
     {
         var keyword = Normalize(query);
         return events.Where(item => Normalize(item.Name).Contains(keyword)
-                && (date.Length == 0 || item.Date.ToString("yyyy-MM-dd") == date)
-                && (month.Length == 0 || item.Date.ToString("yyyy-MM").Equals(month))
+                && (date.Length == 0 || item.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) == date)
+                && (month.Length == 0 || item.Date.ToString("yyyy-MM", CultureInfo.InvariantCulture).Equals(month))
                 && (category.Length == 0 || item.CategoryCode == category)
                 && (saved is null || saved.Contains(item.Id)))
             .OrderBy(item => item.Status == "Completed")
