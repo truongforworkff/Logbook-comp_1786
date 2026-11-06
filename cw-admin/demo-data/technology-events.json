@@ -20,7 +20,10 @@
           "type": "Keynote",
           "description": "Keynote ngày 16/03/2026, giờ địa phương San Jose. Nguồn: https://www.nvidia.com/gtc/session-catalog/"
         }
-      ]
+      ],
+      "categoryCode": "AI",
+      "imageUrl": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=640&q=60",
+      "imageNote": "Ảnh minh họa từ Unsplash, không phải ảnh sự kiện/sản phẩm được công bố."
     },
     {
       "name": "Microsoft Ignite 2026 — AI cho doanh nghiệp",
@@ -48,7 +51,10 @@
           "type": "Panel Discussion",
           "description": "Lịch minh họa để thử app, không phải phiên do Microsoft công bố."
         }
-      ]
+      ],
+      "categoryCode": "AI",
+      "imageUrl": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=640&q=60",
+      "imageNote": "Ảnh minh họa từ Unsplash, không phải ảnh sự kiện/sản phẩm được công bố."
     },
     {
       "name": "NVIDIA GTC Washington, D.C. 2026",
@@ -76,7 +82,10 @@
           "type": "Networking",
           "description": "Lịch minh họa để thử app, không phải lịch chính thức của NVIDIA."
         }
-      ]
+      ],
+      "categoryCode": "AI",
+      "imageUrl": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=640&q=60",
+      "imageNote": "Ảnh minh họa từ Unsplash, không phải ảnh sự kiện/sản phẩm được công bố."
     },
     {
       "name": "Apple giới thiệu MacBook Pro 14 inch với M6",
@@ -104,7 +113,10 @@
           "type": "Workshop",
           "description": "Workshop minh họa để thử app, không do Apple tổ chức."
         }
-      ]
+      ],
+      "categoryCode": "Technology",
+      "imageUrl": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=640&q=60",
+      "imageNote": "Ảnh minh họa từ Unsplash, không phải ảnh sự kiện/sản phẩm được công bố."
     },
     {
       "name": "Apple giới thiệu iMac với M6",
@@ -132,7 +144,10 @@
           "type": "Panel Discussion",
           "description": "Lịch minh họa để thử app, không phải agenda chính thức của Apple."
         }
-      ]
+      ],
+      "categoryCode": "Technology",
+      "imageUrl": "",
+      "imageNote": ""
     }
   ]
 }
