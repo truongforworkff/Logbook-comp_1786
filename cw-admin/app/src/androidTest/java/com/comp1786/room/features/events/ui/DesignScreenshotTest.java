@@ -58,7 +58,7 @@ public class DesignScreenshotTest {
                     node(instrumentation,"filterDate").getText().toString()));
             click(instrumentation,"filterDate");
             click(instrumentation,"tertiary");
-            assertEquals("",node(instrumentation,"filterDate").getText().toString());
+            assertTrue("Empty date exposes its hint", node(instrumentation,"filterDate").isShowingHintText());
             setText(instrumentation,"filterDate","08/11/2026");
             setText(instrumentation,"filterOrganiser","GREENWICH");
             click(instrumentation,"primary");
