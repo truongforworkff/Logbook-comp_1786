@@ -38,3 +38,7 @@ APK debug trong app/bin/Debug/net10.0-android/. Có thể mở project bằng Vi
 Giờ session lấy nguyên từ admin; không tự thêm giờ kết thúc mà đề và database hiện chưa có. Các phiên Demo và ảnh Unsplash là minh họa. Nguồn sự kiện nằm trong events.json; không tự tạo email/điện thoại.
 
 Tham khảo cấu trúc [MAUI Blazor template](https://github.com/dotnet/maui/tree/main/src/Templates/src/templates/maui-blazor) và [MAUI Preferences](https://learn.microsoft.com/dotnet/maui/platform-integration/storage/preferences).
+
+## Kiểm tra trên emulator
+
+Sau khi cài APK debug, chạy py checks/android_smoke.py --adb PATH_TO_ADB --output PATH_TO_SCREENSHOTS. Bài kiểm tra mở đúng app người tham dự, không xóa database của app nào; kiểm tra tìm/lọc, lịch chọn ngày, session và thêm/bỏ/giữ yêu thích sau khi khởi động lại. Để lại Microsoft Ignite trong Yêu thích cho demo. Chỉ chạy trên môi trường demo.

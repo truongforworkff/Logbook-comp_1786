@@ -24,6 +24,23 @@ jobs:
         working-directory: cw-user
       - run: dotnet build app/Eventa.User.csproj -c Debug -p:AndroidSdkDirectory="$ANDROID_HOME" -p:JavaSdkDirectory="$JAVA_HOME"
         working-directory: cw-user
+      - name: Enable emulator acceleration
+        run: sudo chmod 666 /dev/kvm
+      - name: Check G and H on Android
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: |
+            adb install -r cw-user/app/bin/Debug/net10.0-android/com.comp1786.eventa.user-Signed.apk
+            python3 cw-user/checks/android_smoke.py --output user-screenshots
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eventa-user-screenshots
+          path: user-screenshots/
       - uses: actions/upload-artifact@v4
         with:
           name: eventa-user-android
