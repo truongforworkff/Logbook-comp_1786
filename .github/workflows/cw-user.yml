@@ -4,6 +4,9 @@ on:
     branches: [CW]
     paths: ['cw-user/app/**', 'cw-user/checks/**', 'cw-user/global.json', '.github/workflows/cw-user.yml']
   workflow_dispatch:
+concurrency:
+  group: cw-user-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
@@ -34,7 +37,7 @@ jobs:
           profile: pixel_6
           disable-animations: true
           script: |
-            adb install -r cw-user/app/bin/Debug/net10.0-android/com.comp1786.eventa.user-Signed.apk
+            adb install --no-incremental -r cw-user/app/bin/Debug/net10.0-android/com.comp1786.eventa.user-Signed.apk
             python3 cw-user/checks/android_smoke.py --output user-screenshots
       - uses: actions/upload-artifact@v4
         if: always()

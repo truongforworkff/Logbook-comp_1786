@@ -121,11 +121,8 @@ try:
 
     tap("Chọn ngày")
     find("Bạn muốn đi ngày nào?")
-    date_input = next(node for node in tree().iter("node") if node.get("resource-id") == "exact-date")
-    x1, y1, x2, y2 = bounds(date_input)
-    adb("shell", "input", "tap", str((x1 + x2) // 2), str((y1 + y2) // 2))
-    root = tree()
-    assert any("DatePicker" in node.get("class", "") for node in root.iter("node")), "Native date picker opens"
+    tap("Ngày diễn ra")
+    find(kind="android.widget.DatePicker")
     adb("shell", "input", "keyevent", "4")
     adb("shell", "input", "keyevent", "4")
     find("5 sự kiện")
