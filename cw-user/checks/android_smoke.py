@@ -112,7 +112,7 @@ try:
     tap(kind="android.widget.EditText")
     adb("shell", "input", "text", "NVIDIA")
     find("2 sự kiện")
-    assert label(find(kind="android.widget.EditText")) == "NVIDIA", "Fast typing preserves every character"
+    assert find(kind="android.widget.EditText").get("text") == "NVIDIA", "Fast typing preserves every character"
     adb("shell", "input", "keyevent", "4")
     screenshot("03-name-search.png")
     print("Name search passed.", flush=True)
@@ -133,11 +133,13 @@ try:
 
     tap("Xem sự kiện: " + EVENT)
     find("Về sự kiện")
-    if "ignite-2026" not in saved_ids():
+    added = "ignite-2026" not in saved_ids()
+    if added:
         tap("Lưu hoặc bỏ yêu thích sự kiện")
     assert "ignite-2026" in saved_ids(), "Favourite written to native storage"
     screenshot("04-event-detail.png")
-    tap("Đóng thông báo")
+    if added:
+        tap("Đóng thông báo")
     tap("Xem phiên: Demo: AI agents trong doanh nghiệp", scroll=True)
     find("Bạn sẽ khám phá điều gì?")
     screenshot("05-session-detail.png")
