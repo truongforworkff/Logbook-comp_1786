@@ -49,6 +49,7 @@ void main() {
       220,
       scrollable: find.byType(Scrollable).first,
     );
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('event-ignite-2026')));
     await tester.pumpAndSettle();
     final hadFavourite = controller.saved.contains('ignite-2026');
@@ -70,6 +71,7 @@ void main() {
       220,
       scrollable: find.byType(Scrollable).first,
     );
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('session-ignite-2026-1')));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('session-title')), findsOneWidget);
