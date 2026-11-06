@@ -70,11 +70,12 @@ class _BrowsePageState extends State<BrowsePage> {
         child: child!,
       ),
     );
-    if (mounted && result != null)
+    if (mounted && result != null) {
       setState(() {
         date = result;
         month = '';
       });
+    }
   }
 
   Future<void> _pickCategory() async {

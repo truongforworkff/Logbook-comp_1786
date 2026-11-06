@@ -4,13 +4,17 @@ import 'package:eventa_user/app.dart';
 import 'package:eventa_user/features/agenda/logic/agenda_controller.dart';
 
 import 'support/memory_favourites.dart';
+import 'support/fixture_catalog.dart';
 
 Future<AgendaController> start(WidgetTester tester) async {
   tester.view.physicalSize = const Size(1080, 2400);
   tester.view.devicePixelRatio = 2.75;
   addTearDown(tester.view.resetPhysicalSize);
   addTearDown(tester.view.resetDevicePixelRatio);
-  final controller = AgendaController(favourites: MemoryFavourites());
+  final controller = AgendaController(
+    catalog: FixtureCatalog(),
+    favourites: MemoryFavourites(),
+  );
   await tester.pumpWidget(EventaApp(controller: controller));
   await tester.pumpAndSettle();
   return controller;

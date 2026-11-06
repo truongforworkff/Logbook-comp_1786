@@ -1,25 +1,12 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:eventa_user/features/agenda/data/event_info.dart';
-import 'package:eventa_user/features/agenda/data/catalog_repository.dart';
 import 'package:eventa_user/features/agenda/logic/agenda_controller.dart';
 import 'package:eventa_user/features/agenda/logic/event_search.dart';
 import 'package:eventa_user/features/favourites/logic/favourite_codec.dart';
 
 import 'support/memory_favourites.dart';
-
-class FixtureCatalog extends CatalogRepository {
-  @override
-  Future<List<EventInfo>> load() async => readCatalog();
-}
-
-List<EventInfo> readCatalog() =>
-    (jsonDecode(File('assets/data/events.json').readAsStringSync())
-            as List<dynamic>)
-        .map((row) => EventInfo.fromJson(row as Map<String, dynamic>))
-        .toList();
+import 'support/fixture_catalog.dart';
 
 void main() {
   final events = readCatalog();
@@ -32,8 +19,9 @@ void main() {
     expect(events.map((event) => event.id).toSet().length, 5);
     expect(events.any((event) => event.image.isEmpty), isTrue);
     for (final event in events) {
-      if (event.imageAsset.isNotEmpty)
+      if (event.imageAsset.isNotEmpty) {
         expect(File(event.imageAsset).existsSync(), isTrue);
+      }
       expect(
         event.sessions.map((session) => session.id).toSet().length,
         event.sessions.length,
