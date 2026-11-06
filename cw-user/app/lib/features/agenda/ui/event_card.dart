@@ -19,122 +19,129 @@ class EventCard extends StatelessWidget {
   final VoidCallback onOpen;
 
   @override
-  Widget build(BuildContext context) => Container(
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(20),
-      border: Border.all(color: AppColors.line),
-      boxShadow: const [
-        BoxShadow(
-          color: Color(0x080C2448),
-          blurRadius: 12,
-          offset: Offset(0, 4),
-        ),
-      ],
-    ),
-    clipBehavior: Clip.antiAlias,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _cover(),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(15, 13, 15, 15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Semantics(
-                label: 'Xem sự kiện: ${event.name}',
-                button: true,
-                onTap: onOpen,
-                child: ExcludeSemantics(
-                  child: InkWell(
-                    key: Key('event-${event.id}'),
-                    onTap: onOpen,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 3),
-                      child: Text(
-                        event.name,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          height: 1.35,
-                          fontWeight: FontWeight.w700,
+  Widget build(BuildContext context) => GestureDetector(
+    onTap: onOpen,
+    excludeFromSemantics: true,
+    child: Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.line),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x080C2448),
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _cover(),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15, 13, 15, 15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Semantics(
+                  label: 'Xem sự kiện: ${event.name}',
+                  button: true,
+                  onTap: onOpen,
+                  child: ExcludeSemantics(
+                    child: InkWell(
+                      key: Key('event-${event.id}'),
+                      onTap: onOpen,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 3),
+                        child: Text(
+                          event.name,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            height: 1.35,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                event.description,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 12,
-                  height: 1.65,
-                  color: AppColors.muted,
+                const SizedBox(height: 6),
+                Text(
+                  event.description,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    height: 1.65,
+                    color: AppColors.muted,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.all(11),
-                decoration: BoxDecoration(
-                  color: AppColors.canvas,
-                  borderRadius: BorderRadius.circular(10),
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.all(11),
+                  decoration: BoxDecoration(
+                    color: AppColors.canvas,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    children: [
+                      _venue(
+                        Icons.location_on_outlined,
+                        event.location,
+                        AppColors.blue,
+                      ),
+                      const SizedBox(height: 5),
+                      _venue(
+                        Icons.people_outline,
+                        event.organiser,
+                        AppColors.muted,
+                      ),
+                    ],
+                  ),
                 ),
-                child: Column(
+                const SizedBox(height: 12),
+                Row(
                   children: [
-                    _venue(
-                      Icons.location_on_outlined,
-                      event.location,
-                      AppColors.blue,
+                    const Icon(Icons.circle, size: 6, color: Color(0xFF25B66B)),
+                    const SizedBox(width: 5),
+                    Expanded(
+                      child: Text(
+                        '${event.sessions.length} session',
+                        style: const TextStyle(
+                          fontSize: 11,
+                          color: Color(0xFF25B66B),
+                        ),
+                      ),
                     ),
-                    const SizedBox(height: 5),
-                    _venue(
-                      Icons.people_outline,
-                      event.organiser,
-                      AppColors.muted,
+                    FilledButton(
+                      onPressed: onOpen,
+                      style: FilledButton.styleFrom(
+                        minimumSize: const Size(0, 42),
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Xem lịch trình',
+                            style: TextStyle(fontSize: 11),
+                          ),
+                          SizedBox(width: 5),
+                          Icon(Icons.arrow_forward, size: 15),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  const Icon(Icons.circle, size: 6, color: Color(0xFF25B66B)),
-                  const SizedBox(width: 5),
-                  Expanded(
-                    child: Text(
-                      '${event.sessions.length} session',
-                      style: const TextStyle(
-                        fontSize: 11,
-                        color: Color(0xFF25B66B),
-                      ),
-                    ),
-                  ),
-                  FilledButton(
-                    onPressed: onOpen,
-                    style: FilledButton.styleFrom(
-                      minimumSize: const Size(0, 42),
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                    ),
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('Xem lịch trình', style: TextStyle(fontSize: 11)),
-                        SizedBox(width: 5),
-                        Icon(Icons.arrow_forward, size: 15),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     ),
   );
 
