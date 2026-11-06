@@ -1,0 +1,47 @@
+<article class="event-card" role="button" tabindex="0" aria-label="@("Xem sự kiện: " + Event.Name)"
+         @onclick="Open" @onkeydown="HandleKey">
+    <div class="cover @(HasImage ? "" : "no-photo")">
+        @if (HasImage)
+        {
+            <img src="@Event.Image" alt="Ảnh bìa minh họa" loading="lazy" @onerror="() => imageFailed = true">
+        }
+        <div class="cover-badges">
+            <span class="category blue">@EventLabels.Category(Event.CategoryCode)</span>
+            <button class="favorite-button @(Saved ? "saved" : "")" aria-pressed="@Saved"
+                    aria-label="@((Saved ? "Bỏ yêu thích: " : "Lưu yêu thích: ") + Event.Name)"
+                    @onclick="Toggle" @onclick:stopPropagation @onkeydown:stopPropagation>
+                <Icon Name="heart" />
+            </button>
+        </div>
+        <span class="date-tag"><Icon Name="calendar" />@EventLabels.Date(Event.Date)
+            @if (Event.Status == "Completed") { <span>· Đã diễn ra</span> }
+        </span>
+    </div>
+    <div class="card-body">
+        <h3 class="card-title">@Event.Name</h3>
+        <p class="card-description">@Event.Description</p>
+        <div class="venue-block">
+            <div class="venue-line"><Icon Name="pin" />@Event.Location</div>
+            <div class="venue-line secondary"><Icon Name="people" />@Event.Organiser</div>
+        </div>
+        <div class="card-footer">
+            <span class="sessions-label">@Event.Sessions.Count session</span>
+            <span class="small-primary">Xem lịch trình <Icon Name="arrow" /></span>
+        </div>
+    </div>
+</article>
+
+@code {
+    [Parameter, EditorRequired] public EventInfo Event { get; set; } = default!;
+    [Parameter] public bool Saved { get; set; }
+    [Parameter] public EventCallback<string> OnOpen { get; set; }
+    [Parameter] public EventCallback<string> OnToggle { get; set; }
+    private bool imageFailed;
+    private bool HasImage => Event.Image.Length > 0 && !imageFailed;
+    private Task Open() => OnOpen.InvokeAsync(Event.Id);
+    private Task Toggle() => OnToggle.InvokeAsync(Event.Id);
+    private async Task HandleKey(KeyboardEventArgs key)
+    {
+        if (key.Key is "Enter" or " ") await Open();
+    }
+}

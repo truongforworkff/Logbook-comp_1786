@@ -1,0 +1,24 @@
+@namespace Eventa.User.Features.Agenda.Ui
+
+<div class="session-hero">
+    <span class="category blue">@Session.Type</span>
+    <h1>@Session.Name</h1><p class="event-ref">@Event.Name</p>
+    <div class="time-block"><Icon Name="clock" />@Session.Time</div>
+</div>
+<div class="meta-card">
+    <div class="meta-row"><span class="meta-icon"><Icon Name="calendar" /></span><div><strong>@EventLabels.Date(Event.Date, true)</strong><small>@Event.Name</small></div></div>
+    <div class="meta-row"><span class="meta-icon"><Icon Name="pin" /></span><div><strong>@(Session.Room.Length > 0 ? Session.Room : "Chưa công bố phòng")</strong><small>@Event.Location</small></div></div>
+    <div class="meta-row"><span class="meta-icon"><Icon Name="people" /></span><div><strong>@(Session.Speaker.Length > 0 ? Session.Speaker : "Chưa công bố diễn giả")</strong></div></div>
+</div>
+<section class="content-section"><h2>Bạn sẽ khám phá điều gì?</h2>
+    <p class="body-copy">@(Session.Description.Length > 0 ? Session.Description : "Nội dung đang được cập nhật.")</p>
+</section>
+<section class="content-section">
+    <button class="primary-button secondary" @onclick="() => OnBack.InvokeAsync()"><Icon Name="back" />Trở lại lịch trình</button>
+</section>
+
+@code {
+    [Parameter, EditorRequired] public EventInfo Event { get; set; } = default!;
+    [Parameter, EditorRequired] public SessionInfo Session { get; set; } = default!;
+    [Parameter] public EventCallback OnBack { get; set; }
+}

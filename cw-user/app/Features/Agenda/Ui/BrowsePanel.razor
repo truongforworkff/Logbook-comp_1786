@@ -1,0 +1,88 @@
+@namespace Eventa.User.Features.Agenda.Ui
+@using Eventa.User.Features.Favourites.Data
+
+@if (State.Route == AgendaRoute.Saved)
+{
+    <div class="saved-intro"><div class="saved-emblem"><Icon Name="heart" /></div>
+        <div><h1>Điều bạn quan tâm</h1><p>Những sự kiện bạn muốn dành thời gian.</p></div>
+    </div>
+}
+else
+{
+    <h1 class="page-heading">Khám phá sự kiện</h1>
+    <p class="subheading">Những cuộc gặp mở ra ý tưởng mới.</p>
+    <div class="preview-banner"><Icon Name="sparkle" />
+        <div><strong>Một điều mới cho ngày sắp tới</strong><small>AI, công nghệ và những trải nghiệm sáng tạo.</small></div>
+        <span class="tiny-mark" aria-hidden="true">↗</span>
+    </div>
+}
+
+@if (!NoSaved)
+{
+    <div class="searchbar">
+        <Icon Name="search" />
+        <input aria-label="Tìm sự kiện theo tên" placeholder="Tìm sự kiện bạn quan tâm…"
+               value="@State.Query" @oninput="ChangeQuery">
+        @if (State.Query.Length > 0)
+        {
+            <button class="clear-search" aria-label="Xóa từ khóa" @onclick="() => State.Query = string.Empty">×</button>
+        }
+    </div>
+    <div class="filter-row">
+        <button class="filter-chip @(State.Month.Length + State.Date.Length == 0 ? "active" : "")"
+                @onclick="() => SelectMonth(string.Empty)">Tất cả ngày</button>
+        @foreach (var month in Months)
+        {
+            <button class="filter-chip @(State.Month == month && State.Date.Length == 0 ? "active" : "")"
+                    @onclick="() => SelectMonth(month)">Tháng @int.Parse(month[5..])</button>
+        }
+        <button class="filter-chip @(State.Date.Length > 0 ? "active" : "")" @onclick="() => State.OpenSheet(DateSheet)">
+            <Icon Name="calendar" />@(State.Date.Length > 0 ? EventLabels.Date(DateOnly.Parse(State.Date)) : "Chọn ngày")
+        </button>
+    </div>
+    <button class="category-filter filter-chip @(State.Category.Length > 0 ? "active" : "")"
+            aria-label="Lọc theo chủ đề" @onclick="() => State.OpenSheet(CategorySheet)">
+        @EventLabels.Category(State.Category)<span aria-hidden="true">⌄</span>
+    </button>
+}
+<div class="section-heading">
+    <h2>@(State.IsFiltered ? "Kết quả tìm kiếm" : State.Route == AgendaRoute.Saved ? "Đã lưu yêu thích" : "Sự kiện nổi bật")</h2>
+    <span role="status" aria-live="polite">@Results.Count sự kiện</span>
+</div>
+<div class="event-list">
+    @foreach (var item in Results)
+    {
+        <EventCard @key="item.Id" Event="item" Saved="Favourites.Contains(item.Id)"
+                   OnOpen="State.OpenEvent" OnToggle="OnToggle" />
+    }
+</div>
+@if (Results.Count == 0)
+{
+    <div class="empty-state">
+        <div class="empty-icon"><Icon Name="@(NoSaved ? "heart" : "search")" /></div>
+        <h2>@(NoSaved ? "Dành một chỗ cho điều bạn thích" : "Chưa tìm thấy sự kiện phù hợp")</h2>
+        <p>@(NoSaved ? "Chạm vào trái tim ở sự kiện bạn quan tâm. Bạn sẽ tìm lại chúng thật nhanh ở đây." : "Thử tên khác hoặc xóa bộ lọc để tiếp tục khám phá.")</p>
+        <button class="primary-button secondary" @onclick="EmptyAction">
+            @(NoSaved ? "Khám phá sự kiện" : "Xóa bộ lọc") <Icon Name="arrow" />
+        </button>
+    </div>
+}
+
+@code {
+    private const string DateSheet = "date", CategorySheet = "category";
+    [Parameter, EditorRequired] public AgendaState State { get; set; } = default!;
+    [Parameter, EditorRequired] public FavouritesStore Favourites { get; set; } = default!;
+    [Parameter] public EventCallback<string> OnToggle { get; set; }
+    private bool NoSaved => State.Route == AgendaRoute.Saved && Favourites.Ids.Count == 0;
+    private IReadOnlyList<EventInfo> Results => EventSearch.Filter(State.Events, State.Query, State.Date,
+        State.Month, State.Category, State.Route == AgendaRoute.Saved ? Favourites.Ids : null);
+    private IEnumerable<string> Months => State.Events.Where(item => item.Status != "Completed")
+        .Select(item => item.Date.ToString("yyyy-MM")).Distinct().Order().Take(2);
+    private void ChangeQuery(ChangeEventArgs value) => State.Query = value.Value?.ToString() ?? "";
+    private void SelectMonth(string month) { State.Month = month; State.Date = ""; }
+    private void EmptyAction()
+    {
+        if (NoSaved) State.Navigate(AgendaRoute.Explore);
+        else State.ClearFilters();
+    }
+}

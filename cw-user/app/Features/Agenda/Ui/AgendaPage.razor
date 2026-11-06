@@ -1,0 +1,68 @@
+@namespace Eventa.User.Features.Agenda.Ui
+@implements IDisposable
+
+<div class="app-shell" inert="@(State.Sheet.Length > 0)">
+    <div class="screen">
+        <header class="topbar">
+            @if (State.Route is AgendaRoute.Event or AgendaRoute.Session)
+            {
+                <button class="back-button" @onclick="GoBack"><Icon Name="back" /><span>@(State.Route == AgendaRoute.Session ? "Chi tiết sự kiện" : "Quay lại")</span></button>
+                @if (State.CurrentEvent is { } headerEvent)
+                {
+                    <button class="favorite-button @(Favourites.Contains(headerEvent.Id) ? "saved" : "")"
+                            aria-pressed="@Favourites.Contains(headerEvent.Id)" aria-label="Lưu hoặc bỏ yêu thích sự kiện"
+                            @onclick="() => ToggleFavourite(headerEvent.Id)"><Icon Name="heart" /></button>
+                }
+            }
+            else
+            {
+                <div class="logo-lockup"><span class="brand-icon"><Icon Name="sparkle" /></span><strong>Explore Agenda</strong></div>
+                <span class="status-pill"><i class="status-dot"></i>Cục bộ</span>
+                <span class="avatar" aria-hidden="true">EA</span>
+            }
+        </header>
+        <main class="content">
+            @if (loading)
+            {
+                <div class="empty-state" role="status"><div class="empty-icon"><Icon Name="calendar" /></div><h2>Đang tải sự kiện…</h2></div>
+            }
+            else if (error.Length > 0)
+            {
+                <div class="empty-state" role="alert"><h2>Chưa mở được danh sách</h2><p>@error</p><button class="primary-button" @onclick="LoadCatalog">Thử lại</button></div>
+            }
+            else if (State.Route is AgendaRoute.Explore or AgendaRoute.Saved)
+            {
+                <BrowsePanel State="State" Favourites="Favourites" OnToggle="ToggleFavourite" />
+            }
+            else if (State.CurrentEvent is { } selected)
+            {
+                @if (State.Route == AgendaRoute.Event)
+                {
+                    <EventPanel @key="selected.Id" Event="selected" Saved="Favourites.Contains(selected.Id)"
+                                OnToggle="ToggleFavourite" OnSession="State.OpenSession" />
+                }
+                else if (State.CurrentSession is { } session)
+                {
+                    <SessionPanel Event="selected" Session="session" OnBack="GoBack" />
+                }
+            }
+        </main>
+    </div>
+    <nav class="bottom-nav" aria-label="Điều hướng chính">
+        <button class="@(ActiveTab == AgendaRoute.Explore ? "active" : "")" aria-current="@(ActiveTab == AgendaRoute.Explore ? "page" : null)"
+                @onclick="() => State.Navigate(AgendaRoute.Explore)"><Icon Name="calendar" /><span>Khám phá</span></button>
+        <button class="@(ActiveTab == AgendaRoute.Saved ? "active" : "")" aria-current="@(ActiveTab == AgendaRoute.Saved ? "page" : null)"
+                @onclick="() => State.Navigate(AgendaRoute.Saved)">
+            <span class="nav-icon-wrap"><Icon Name="heart" />
+                @if (Favourites.Ids.Count > 0) { <small>@Favourites.Ids.Count</small> }
+            </span><span>Yêu thích</span>
+        </button>
+    </nav>
+</div>
+@if (State.Sheet.Length > 0) { <FilterSheet State="State" /> }
+@if (notice.Length > 0)
+{
+    <div class="app-notice" role="status" aria-live="polite">
+        @notice<button aria-label="Đóng thông báo" @onclick="() => notice = string.Empty">×</button>
+    </div>
+}

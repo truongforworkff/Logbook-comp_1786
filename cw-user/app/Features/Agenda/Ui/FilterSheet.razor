@@ -1,0 +1,49 @@
+@namespace Eventa.User.Features.Agenda.Ui
+
+<div class="sheet-backdrop" @onclick="State.CloseSheet">
+    <section class="date-dialog filter-sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title"
+             @onclick:stopPropagation @onkeydown="HandleKey">
+        <div class="sheet-handle"></div>
+        <div class="sheet-heading">
+            <div><span class="eyebrow">ĐIỀU BẠN QUAN TÂM</span><h2 id="sheet-title">@(IsDate ? "Bạn muốn đi ngày nào?" : "Khám phá theo chủ đề")</h2></div>
+            <button class="icon-button sheet-close" aria-label="Đóng bộ lọc" @onclick="State.CloseSheet">×</button>
+        </div>
+        @if (IsDate)
+        {
+            <p>Chọn một ngày để tìm sự kiện phù hợp.</p>
+            <label for="exact-date">Ngày diễn ra</label>
+            <input id="exact-date" type="date" value="@pendingDate" @onchange="e => pendingDate = e.Value?.ToString() ?? string.Empty">
+            <button class="primary-button" @onclick="ApplyDate">Xem sự kiện</button>
+            <button class="text-button" @onclick="ClearDate">Xem tất cả ngày</button>
+        }
+        else
+        {
+            <div class="category-options">
+                @foreach (var category in EventLabels.Categories)
+                {
+                    <button class="category-option @(State.Category == category.Code ? "selected" : "")"
+                            aria-pressed="@(State.Category == category.Code)" @onclick="() => ApplyCategory(category.Code)">
+                        @category.Label <span aria-hidden="true">@(State.Category == category.Code ? "✓" : "")</span>
+                    </button>
+                }
+            </div>
+        }
+    </section>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public AgendaState State { get; set; } = default!;
+    private string pendingDate = "";
+    private bool IsDate => State.Sheet == "date";
+    protected override void OnInitialized() => pendingDate = State.Date;
+    private void ApplyDate()
+    {
+        if (pendingDate.Length > 0 && !DateOnly.TryParseExact(pendingDate, "yyyy-MM-dd", out _)) return;
+        State.Date = pendingDate;
+        State.Month = "";
+        State.CloseSheet();
+    }
+    private void ClearDate() { pendingDate = ""; ApplyDate(); }
+    private void ApplyCategory(string code) { State.Category = code; State.CloseSheet(); }
+    private void HandleKey(KeyboardEventArgs key) { if (key.Key == "Escape") State.CloseSheet(); }
+}
