@@ -29,10 +29,10 @@ flutter build web
 Kiểm tra luồng thực tế trên emulator demo:
 
 ~~~text
-flutter drive --driver=test_driver/integration_test.dart --target=integration_test/app_test.dart -d emulator-5554
+flutter drive --driver=test_driver/integration_test.dart --target=integration_test/app_test.dart -d emulator-5554 --keep-app-running
 ~~~
 
-Bài kiểm tra giữ lại và khôi phục danh sách yêu thích ban đầu. Sau khi chạy integration test, dùng flutter run để cài lại entry point app thông thường.
+Bài kiểm tra giữ lại và khôi phục danh sách yêu thích ban đầu. Luôn thêm --keep-app-running khi kiểm thử trên máy có dữ liệu: Flutter drive mặc định gỡ app sau khi chạy. Sau khi chạy integration test, dùng flutter run để cài lại entry point app thông thường.
 
 ## Kết quả kiểm tra
 
