@@ -34,6 +34,13 @@ flutter drive --driver=test_driver/integration_test.dart --target=integration_te
 
 Bài kiểm tra giữ lại và khôi phục danh sách yêu thích ban đầu. Sau khi chạy integration test, dùng flutter run để cài lại entry point app thông thường.
 
+## Kết quả kiểm tra
+
+- Flutter analyze: không có lỗi hoặc cảnh báo.
+- 8 bài kiểm tra logic/widget đạt; kiểm thử G/H trên emulator Android 16 (API 36) đạt.
+- Build APK debug và web release đạt. APK cập nhật đúng chữ ký; yêu thích từ bản MAUI vẫn được đọc và giữ lại.
+- Chưa build/chạy iOS, macOS, Windows hoặc Linux trên máy này.
+
 ## Nền tảng
 
 Có cấu hình Android, iOS, web, Windows, macOS và Linux. Android/web được kiểm tra trong quy trình build; iOS/macOS cần Mac và Xcode, Windows cần Visual Studio với C++, Linux cần các thư viện desktop Flutter. Có cấu hình không đồng nghĩa đã chạy thử trên mọi nền tảng.
