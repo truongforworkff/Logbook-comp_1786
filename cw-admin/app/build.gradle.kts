@@ -22,7 +22,8 @@ android {
     }
 }
 dependencies {
-    implementation(platform("com.google.firebase:firebase-bom:35.1.0"))
+    // Firebase 34.x supports this Java project's AGP 8.13 and Kotlin metadata reader.
+    implementation(platform("com.google.firebase:firebase-bom:34.19.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
     implementation("androidx.appcompat:appcompat:1.7.1")
