@@ -8,6 +8,7 @@ class PageFrame extends StatelessWidget {
   final Widget child;
   @override
   Widget build(BuildContext context) => Center(
+    heightFactor: 1,
     child: ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 620),
       child: child,
