@@ -45,7 +45,7 @@ Project dùng applicationId com.comp1786.eventa.admin và database riêng trong 
 
 ## Phạm vi
 
-Lần bàn giao này tập trung mục A. Session, cloud, tìm kiếm nâng cao và app người tham dự chưa được đưa vào project này. Có mã test không đồng nghĩa mọi kiểm tra đã chạy: xem kết quả GitHub Actions và chạy instrumentation trên thiết bị trước khi khai hoàn thành coursework.
+App quản trị hiện triển khai A–D: event, session, liên kết và tìm kiếm. Có bổ sung chủ đề/ảnh bìa tùy chọn. Cloud E chưa triển khai; app người tham dự G/H nằm riêng trong cw-user và hiện dùng dữ liệu cục bộ. Có mã test không đồng nghĩa mọi kiểm tra đã chạy: xem kết quả GitHub Actions và chạy instrumentation trên thiết bị trước khi khai hoàn thành coursework.
 
 ## Nguồn và cách dùng
 

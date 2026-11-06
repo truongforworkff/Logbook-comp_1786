@@ -32,6 +32,7 @@ APK debug trong app/bin/Debug/net10.0-android/. Có thể mở project bằng Vi
 - app/Features/Favourites/Data/FavouritesStore.cs: đọc/ghi Preferences, chỉ thay trạng thái sau khi ghi thành công.
 - app/Features/Favourites/Logic/FavouriteCodec.cs: kiểm tra JSON và loại ID không còn trong catalog.
 - app/Shared/Ui: icon và nhãn dùng chung.
+- app/Platforms/Android/MainActivity.cs: nối Back/predictive Back của Android với AgendaState, chỉ giữ phím Back khi đang ở bộ lọc/chi tiết/session.
 - app/wwwroot/app.css: kiểu giao diện; ui.js chỉ cuộn/focus, không chứa nghiệp vụ.
 - checks: kiểm tra C# không cần emulator. design/ giữ nguyên bản HTML để đối chiếu.
 
@@ -42,3 +43,11 @@ Tham khảo cấu trúc [MAUI Blazor template](https://github.com/dotnet/maui/tr
 ## Kiểm tra trên emulator
 
 Sau khi cài APK debug, chạy py checks/android_smoke.py --adb PATH_TO_ADB --output PATH_TO_SCREENSHOTS. Bài kiểm tra mở đúng app người tham dự, không xóa database của app nào; kiểm tra tìm/lọc, lịch chọn ngày, session và thêm/bỏ/giữ yêu thích sau khi khởi động lại. Để lại Microsoft Ignite trong Yêu thích cho demo. Chỉ chạy trên môi trường demo.
+
+## Kết quả kiểm tra 06/11/2026
+
+- Build APK Debug cho Android arm64/x64: 0 lỗi, 0 cảnh báo.
+- Kiểm tra C#: catalog 5 event/9 session, tên không dấu, ngày ISO độc lập lịch của thiết bị, tổ hợp bộ lọc, JSON yêu thích và điều hướng.
+- Emulator Android 16 / API 36: danh sách, chủ đề, nhập nhanh từ khóa, lịch chọn ngày, chi tiết event/session, Back, thêm/bỏ yêu thích và giữ yêu thích sau khi force-stop/mở lại đã chạy đạt.
+- App quản trị đã giữ nguyên 5 event/9 session qua nâng cấp database v3 → v4 và cập nhật chủ đề/4 ảnh minh họa.
+- Chưa chạy máy thật ARM64; chưa nối cloud E. Không có dữ liệu cloud tự động cập nhật giữa hai app.
