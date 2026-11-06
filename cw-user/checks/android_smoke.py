@@ -97,12 +97,14 @@ try:
     start()
     find("5 sự kiện")
     screenshot("01-explore.png")
+    print("Explore loaded.", flush=True)
 
     tap("Lọc theo chủ đề")
     find("Khám phá theo chủ đề")
     tap("Công nghệ")
     find("2 sự kiện")
     screenshot("02-category-and-no-cover.png")
+    print("Category filter passed.", flush=True)
     tap("Lọc theo chủ đề")
     tap("Tất cả chủ đề")
     find("5 sự kiện")
@@ -110,8 +112,10 @@ try:
     tap(kind="android.widget.EditText")
     adb("shell", "input", "text", "NVIDIA")
     find("2 sự kiện")
+    assert label(find(kind="android.widget.EditText")) == "NVIDIA", "Fast typing preserves every character"
     adb("shell", "input", "keyevent", "4")
     screenshot("03-name-search.png")
+    print("Name search passed.", flush=True)
     tap("Xóa từ khóa")
     find("5 sự kiện")
 
@@ -125,6 +129,7 @@ try:
     adb("shell", "input", "keyevent", "4")
     adb("shell", "input", "keyevent", "4")
     find("5 sự kiện")
+    print("Native date picker passed.", flush=True)
 
     tap("Xem sự kiện: " + EVENT)
     find("Về sự kiện")
@@ -132,6 +137,7 @@ try:
         tap("Lưu hoặc bỏ yêu thích sự kiện")
     assert "ignite-2026" in saved_ids(), "Favourite written to native storage"
     screenshot("04-event-detail.png")
+    tap("Đóng thông báo")
     tap("Xem phiên: Demo: AI agents trong doanh nghiệp", scroll=True)
     find("Bạn sẽ khám phá điều gì?")
     screenshot("05-session-detail.png")

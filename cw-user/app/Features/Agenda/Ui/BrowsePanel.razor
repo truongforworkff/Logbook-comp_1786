@@ -21,8 +21,9 @@ else
 {
     <div class="searchbar">
         <Icon Name="search" />
-        <input aria-label="Tìm sự kiện theo tên" placeholder="Tìm sự kiện bạn quan tâm…"
-               value="@State.Query" @oninput="ChangeQuery">
+        <label class="visually-hidden" for="query">Tìm sự kiện theo tên</label>
+        <input id="query" aria-label="Tìm sự kiện theo tên" placeholder="Tìm sự kiện bạn quan tâm…"
+               @bind="State.Query" @bind:event="oninput">
         @if (State.Query.Length > 0)
         {
             <button class="clear-search" aria-label="Xóa từ khóa" @onclick="() => State.Query = string.Empty">×</button>
@@ -78,7 +79,6 @@ else
         State.Month, State.Category, State.Route == AgendaRoute.Saved ? Favourites.Ids : null);
     private IEnumerable<string> Months => State.Events.Where(item => item.Status != "Completed")
         .Select(item => item.Date.ToString("yyyy-MM", System.Globalization.CultureInfo.InvariantCulture)).Distinct().Order().Take(2);
-    private void ChangeQuery(ChangeEventArgs value) => State.Query = value.Value?.ToString() ?? "";
     private void SelectMonth(string month) { State.Month = month; State.Date = ""; }
     private void EmptyAction()
     {
