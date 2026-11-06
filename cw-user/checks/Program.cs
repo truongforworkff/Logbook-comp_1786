@@ -49,6 +49,7 @@ Check(FavouriteCodec.Read(FavouriteCodec.Write(saved), valid).SetEquals(saved), 
 Check(EventSearch.Filter(events, saved:saved).Single().Id == "ignite-2026", "saved list");
 Check(EventSearch.Filter(events, saved:new HashSet<string>()).Count == 0, "empty favourites");
 var state = new AgendaState { Events = events };
+Check(!state.CanGoBack, "main tab uses system back");
 state.Navigate(AgendaRoute.Saved);
 state.OpenEvent("ignite-2026");
 state.OpenSession("ignite-2026-1");
@@ -56,6 +57,7 @@ Check(state.CurrentSession?.Name.StartsWith("Demo:") == true, "session belongs t
 state.OpenSession("gtc-2026-1");
 Check(state.SessionId == "ignite-2026-1", "reject foreign session");
 state.OpenSheet("category");
+Check(state.CanGoBack, "native callback consumes modal/session back");
 Check(state.Back() && state.Sheet.Length == 0 && state.Route == AgendaRoute.Session, "back closes sheet first");
 Check(state.Back() && state.Route == AgendaRoute.Event, "back to inline schedule");
 Check(state.Back() && state.Route == AgendaRoute.Saved, "back retains origin");

@@ -18,6 +18,7 @@ public sealed class AgendaState
     public string Category { get; set; } = "";
     public EventInfo? CurrentEvent => Events.FirstOrDefault(item => item.Id == EventId);
     public SessionInfo? CurrentSession => CurrentEvent?.Sessions.FirstOrDefault(item => item.Id == SessionId);
+    public bool CanGoBack => Sheet.Length > 0 || Route is AgendaRoute.Event or AgendaRoute.Session;
     public bool IsFiltered => Query.Length + Date.Length + Month.Length + Category.Length > 0;
     public event Action? Changed;
     public void Notify() => Changed?.Invoke();

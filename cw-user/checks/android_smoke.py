@@ -49,6 +49,8 @@ def find(name=None, *, kind=None, scroll=False):
             time.sleep(0.3)
             continue
         for node in root.iter("node"):
+            if name and node.get("package") != PACKAGE:
+                continue
             text = label(node)
             matches = (text == name or (name == "Yêu thích" and re.fullmatch(r"\d+\s*Yêu thích", text))) if name else node.get("class") == kind
             box = bounds(node)
