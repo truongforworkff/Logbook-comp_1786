@@ -93,6 +93,15 @@ def saved_ids():
     return set()
 
 
+def wait_saved(event_id):
+    deadline = time.monotonic() + 8
+    while time.monotonic() < deadline:
+        if event_id in saved_ids():
+            return
+        time.sleep(0.15)
+    raise AssertionError("Favourite not persisted: " + event_id)
+
+
 size = tuple(map(int, re.findall(r"\d+", adb("shell", "wm", "size").decode())[-2:]))
 try:
     adb("shell", "am", "force-stop", PACKAGE)
@@ -135,7 +144,7 @@ try:
     added = "ignite-2026" not in saved_ids()
     if added:
         tap("Lưu hoặc bỏ yêu thích sự kiện")
-    assert "ignite-2026" in saved_ids(), "Favourite written to native storage"
+    wait_saved("ignite-2026")
     screenshot("04-event-detail.png")
     if added:
         tap("Đóng thông báo")
@@ -153,13 +162,13 @@ try:
     start()
     tap("Yêu thích")
     find("Xem sự kiện: " + EVENT)
-    assert "ignite-2026" in saved_ids(), "Favourite survives process restart"
+    wait_saved("ignite-2026")
     tap("Bỏ yêu thích: " + EVENT)
     find("Dành một chỗ cho điều bạn thích")
     tap("Khám phá")
     tap("Xem sự kiện: " + EVENT)
     tap("Lưu hoặc bỏ yêu thích sự kiện")
-    assert "ignite-2026" in saved_ids(), "Favourite can be added again"
+    wait_saved("ignite-2026")
     tap("Khám phá")
     screenshot("07-final-explore.png")
     print("Android G/H passed: category, search, date picker, details/session, favourites add/remove/restart.")
