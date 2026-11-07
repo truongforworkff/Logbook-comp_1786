@@ -21,7 +21,7 @@ class RestartingCatalog extends CatalogRepository {
   StreamController<CatalogData> get current => streams.last;
   @override
   Stream<CatalogData> watch() {
-    final stream = StreamController<CatalogData>();
+    final stream = StreamController<CatalogData>.broadcast();
     streams.add(stream);
     return stream.stream;
   }
