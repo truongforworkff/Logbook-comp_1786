@@ -61,7 +61,9 @@ Review rules trước khi deploy. Không dùng test mode hoặc allow read, writ
 - Native: build, 14 unit test và lint đạt; 9 instrumentation test đạt trên máy thử Android 16, gồm migration v1–v4, CRUD/cascade, ID ổn định, revision chờ mạng, transaction và ảnh thu nhỏ.
 - Flutter: analyze sạch, 11 logic/widget test đạt; integration Firestore SDK thật trên emulator đạt, gồm stream sửa/xóa, metadata cache, tắt/bật network và giữ yêu thích.
 - Bản Admin trên máy người dùng đã nâng v4→v5: giữ nguyên 5 event, 9 session, nội dung các trường và 2 file ảnh gốc; ID demo cũ được giữ để tương thích yêu thích.
-- Quyền rules mới đã triển khai lên project FPT. Đang chờ người dùng tự tạo tài khoản trong app để cấp quyền và xác nhận lần đồng bộ production đầu tiên.
+- Production project FPT: tài khoản do người dùng tự tạo đã được cấp quyền phía server. Admin báo Đã đồng bộ với Cloud; revision 1 có đủ 5 event, 9 session, 4 ảnh thu nhỏ. Đối chiếu từng trường công bố và quan hệ session với SQLite đều khớp; không còn lỗi chờ đồng bộ.
+- Explore bản Android thông thường đã đọc danh mục production, hiển thị ảnh, lịch trình và chi tiết session. Cập nhật APK giữ đúng chữ ký và file yêu thích trước tác vụ.
+- GitHub Actions CW Admin và CW User Flutter đều đạt trên mã đồng bộ (bao gồm emulator/rules, build Android/web và luồng G/H).
 - Chưa cấu hình Firebase iOS/macOS/desktop hoặc kiểm tra tải lớn.
 
 Nguồn: [Firebase Android](https://firebase.google.com/docs/android/setup), [Flutter](https://firebase.google.com/docs/flutter/setup), [Transactions](https://firebase.google.com/docs/firestore/manage-data/transactions), [Rules](https://firebase.google.com/docs/firestore/security/get-started), [WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager).
