@@ -59,3 +59,13 @@ Cấu hình private trước khi cài bản Admin mới. Không mở allow write
 - Firebase hiện cấu hình Android/web; chưa kiểm thử iOS/desktop.
 
 Nguồn: [Firestore transaction](https://firebase.google.com/docs/firestore/manage-data/transactions), [Security Rules getAfter](https://firebase.google.com/docs/reference/rules/rules.firestore).
+
+## Tự đồng bộ khi có mạng
+
+- Admin dùng Room observer và WorkManager: thêm/sửa/xóa event hoặc session tự xếp việc gửi; dữ liệu lưu trong SQLite khi offline. NetworkType.CONNECTED cho phép việc đang chờ chạy khi mạng đáp ứng điều kiện, không cần mở tab Đồng bộ hoặc bấm gửi. Lỗi tạm thời được thử lại; có lịch phục hồi 15 phút.
+- Explore mở nguồn Firestore khi khởi động và tiếp tục lắng nghe thay đổi. Offline vẫn xem cache; có mạng SDK tự nối lại và cập nhật danh sách/chi tiết.
+- Nếu danh mục chưa được công bố hoặc có dữ liệu không hợp lệ, listener vẫn được giữ để tự nhận lần công bố/sửa tiếp theo. Lỗi kết nối làm listener đóng sẽ tự đăng ký lại với khoảng chờ 5–60 giây; đưa app trở lại màn hình cũng thử lại nếu đang lỗi/cache.
+- Android có thể trì hoãn việc nền vì tiết kiệm pin; khi người dùng Force stop, cần mở lại Admin để hoạt động tiếp. Explore nhận dữ liệu khi app hoạt động, không chạy một dịch vụ nền liên tục.
+- CloudQueueTest kiểm tra tạo/sửa/xóa tự xếp việc có điều kiện mạng. Flutter cloud integration kiểm tra chưa có danh mục → công bố, dữ liệu sai → sửa lại, mạng tắt → bật và cập nhật/xóa session mà không bấm tải lại.
+
+Kiểm tra bổ sung 08/11/2026: Android build/lint đạt; CloudQueueTest và các test đồng bộ native đạt. Flutter analyze sạch, 13 logic/widget test đạt. Integration Firestore trên Android đạt các luồng chưa có danh mục rồi công bố, sai schema rồi sửa, cache khi tắt mạng, tự nhận bản mới khi bật lại mạng và gỡ session; không bấm tải lại.

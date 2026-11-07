@@ -10,7 +10,7 @@ Project đang dùng **Flutter 3.47.4 / Dart 3.13**, giao diện Flutter widgets 
 - Thêm/bỏ yêu thích từ danh sách hoặc chi tiết; trang Yêu thích riêng, lưu trên thiết bị.
 - Navigator xử lý Back, sheet chủ đề và lịch chọn ngày theo giao diện sáng/xanh đã chốt.
 
-Admin được duyệt công bố dữ liệu lên Firestore; Explore cập nhật trực tiếp cả danh sách và trang chi tiết. Có tải lại, thông báo lỗi và cache offline; production không đọc JSON đóng gói.
+Admin được duyệt công bố dữ liệu lên Firestore; Explore cập nhật trực tiếp cả danh sách và trang chi tiết. Tự nhận dữ liệu khi có mạng, tự nối lại listener bị ngắt, phục hồi khi danh mục được công bố/sửa và khi trở lại app. Có thông báo lỗi và cache offline; production không đọc JSON đóng gói.
 
 ## Chạy và kiểm tra
 
@@ -37,7 +37,7 @@ Bài kiểm tra giữ lại và khôi phục danh sách yêu thích ban đầu. 
 ## Kết quả kiểm tra
 
 - Flutter analyze: không có lỗi hoặc cảnh báo.
-- 11 bài kiểm tra logic/widget đạt; kiểm thử Firestore SDK trên Android 16 (API 36) đạt, gồm cập nhật/xóa/cache và giữ yêu thích.
+- 13 bài kiểm tra logic/widget đạt (gồm tự kết nối lại và lifecycle); kiểm thử Firestore SDK trên Android 16 (API 36) đạt, gồm cập nhật/xóa/cache và giữ yêu thích.
 - Build APK debug và web release đạt. APK cập nhật đúng chữ ký; yêu thích từ bản MAUI vẫn được đọc và giữ lại.
 - Chưa build/chạy iOS, macOS, Windows hoặc Linux trên máy này.
 

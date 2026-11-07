@@ -66,3 +66,7 @@ Database v4 nâng cấp giữ nguyên event/session. Dữ liệu cũ mặc đị
 ## Firebase Spark
 
 Đã cấu hình project eventa-coursework-fpt, SDK Firestore và Google Services plugin. SQLite vẫn là nguồn dữ liệu. Tab Đồng bộ chỉ có trạng thái và gửi toàn bộ. Bản Admin dùng cấu hình kết nối riêng trong sync.properties hoặc EVENTA_SYNC_WRITE_KEY; cấu hình không đưa lên Git. Không dùng Firebase Authentication, đăng nhập ngầm hoặc vai trò tài khoản. WorkManager ghi nhận/sửa/xóa và gửi lại khi có mạng. Migration v5 giữ dữ liệu và ID yêu thích cũ. Xem [thiết lập và kiểm tra kết nối](../cloud/firebase/README.md).
+
+### Đồng bộ tự động
+
+Không cần bấm nút Đồng bộ tất cả cho mỗi lần sửa. Khi Room ghi thay đổi event/session, app tự xếp việc gửi có điều kiện mạng. Mất mạng vẫn lưu SQLite; có mạng WorkManager tiếp tục gửi. Nút Đồng bộ tất cả dùng khi muốn yêu cầu gửi lại. Android quản lý lịch chạy nền và có thể trì hoãn để tiết kiệm pin; Force stop cần mở lại app.
