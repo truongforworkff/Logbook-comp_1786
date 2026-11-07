@@ -23,6 +23,8 @@ android {
 }
 dependencies {
     implementation("androidx.work:work-runtime:2.10.5")
+    // Firestore supplies Guava at runtime; Worker also needs its future API at compile time.
+    implementation("com.google.guava:guava:33.4.8-android")
     // Firebase 34.x supports this Java project's AGP 8.13 and Kotlin metadata reader.
     implementation(platform("com.google.firebase:firebase-bom:34.19.0"))
     implementation("com.google.firebase:firebase-auth")
