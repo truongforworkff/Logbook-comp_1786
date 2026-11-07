@@ -1,8 +1,10 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
 }
-val syncProperties = java.util.Properties().apply {
+val syncProperties = Properties().apply {
     rootProject.file("sync.properties").takeIf { it.isFile }?.inputStream()?.use { load(it) }
 }
 val syncWriteKey = System.getenv("EVENTA_SYNC_WRITE_KEY") ?: syncProperties.getProperty("writeKey", "")
