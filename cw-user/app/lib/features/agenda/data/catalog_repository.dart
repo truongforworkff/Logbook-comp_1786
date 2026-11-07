@@ -16,8 +16,9 @@ class CatalogData {
     if (data['schemaVersion'] != 1 ||
         rows is! List ||
         rows.length > 100 ||
-        data['updatedAt'] is! Timestamp)
+        data['updatedAt'] is! Timestamp) {
       throw const FormatException('Invalid catalog');
+      }
     final events = <EventInfo>[];
     for (final row in rows) {
       if (row is! Map) throw const FormatException('Invalid event');
@@ -38,8 +39,9 @@ class CatalogData {
         'contactEmail',
         'contactPhone',
       ], optional: true);
-      if ((event['id'] as String).length > 160)
+      if ((event['id'] as String).length > 160) {
         throw const FormatException('Invalid event ID');
+        }
       final rawDate = event['date'] as String;
       if (!RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(rawDate) ||
           DateTime.parse(rawDate).toIso8601String().substring(0, 10) !=
@@ -58,8 +60,9 @@ class CatalogData {
         throw const FormatException('Invalid cover');
       }
       final sessions = event['sessions'];
-      if (sessions is! List || sessions.length > 500)
+      if (sessions is! List || sessions.length > 500) {
         throw const FormatException('Invalid sessions');
+        }
       final ids = <String>{};
       for (final session in sessions) {
         if (session is! Map) throw const FormatException('Invalid session');
@@ -73,14 +76,16 @@ class CatalogData {
         ], optional: true);
         if (!RegExp(r'^(?:[01]\d|2[0-3]):[0-5]\d$')
                 .hasMatch(value['time'] as String) ||
-            !ids.add(value['id'] as String))
+            !ids.add(value['id'] as String)) {
           throw const FormatException('Invalid time or duplicate session');
+          }
       }
       events.add(EventInfo.fromJson(event));
     }
     if (events.map((e) => e.id).toSet().length != events.length ||
-        events.fold<int>(0, (n, e) => n + e.sessions.length) > 500)
+        events.fold<int>(0, (n, e) => n + e.sessions.length) > 500) {
       throw const FormatException('Invalid catalog IDs or size');
+      }
     return CatalogData(
       List.unmodifiable(events),
       fromCache: fromCache,
@@ -106,11 +111,11 @@ void validateText(
 }
 
 class CatalogRepository {
-  CatalogRepository({FirebaseFirestore? firestore}) : _firestore = firestore;
-  final FirebaseFirestore? _firestore;
+  CatalogRepository({this.firestore});
+  final FirebaseFirestore? firestore;
   Stream<CatalogData> watch() async* {
     await for (final snapshot
-        in (_firestore ?? FirebaseFirestore.instance)
+        in (firestore ?? FirebaseFirestore.instance)
             .doc('catalogues/main')
             .snapshots(includeMetadataChanges: true)) {
       if (!snapshot.exists && snapshot.metadata.isFromCache) continue;

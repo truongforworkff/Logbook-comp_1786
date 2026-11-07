@@ -27,8 +27,9 @@ class EventDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: controller,
     builder: (context, _) {
-      if (!controller.events.any((value) => value.id == initialEvent.id))
+      if (!controller.events.any((value) => value.id == initialEvent.id)) {
         return const UnavailablePage();
+      }
       final sessions = [...event.sessions]
         ..sort((a, b) => a.time.compareTo(b.time));
       final saved = controller.saved.contains(event.id);

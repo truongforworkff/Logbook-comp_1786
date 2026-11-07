@@ -15,14 +15,16 @@ import 'package:eventa_user/features/favourites/data/favourite_store.dart';
 Map<String, dynamic> field(dynamic value) {
   if (value is String) return {'stringValue': value};
   if (value is int) return {'integerValue': value.toString()};
-  if (value is List)
+  if (value is List) {
     return {
       'arrayValue': {'values': value.map(field).toList()},
     };
-  if (value is Map)
+  }
+  if (value is Map) {
     return {
       'mapValue': {'fields': value.map((k, v) => MapEntry(k, field(v)))},
     };
+  }
   throw StateError('Unsupported fixture value');
 }
 
