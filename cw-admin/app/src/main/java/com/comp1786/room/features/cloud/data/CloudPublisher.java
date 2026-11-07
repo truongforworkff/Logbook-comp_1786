@@ -22,7 +22,10 @@ public final class CloudPublisher {
                 Long revision = remote.getLong("revision");
                 if (revision == null) throw new FirebaseFirestoreException("INVALID_CATALOG",
                         FirebaseFirestoreException.Code.FAILED_PRECONDITION);
-                if (revision >= snapshot.state.revision) return null;
+                if (revision > snapshot.state.revision)
+                    throw new FirebaseFirestoreException("LOCAL_BEHIND",
+                            FirebaseFirestoreException.Code.FAILED_PRECONDITION);
+                if (revision == snapshot.state.revision) return null;
             }
             transaction.set(reference, payload);
             return null;

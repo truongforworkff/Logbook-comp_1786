@@ -65,7 +65,12 @@ public class CloudSyncTest {
             assertEquals(stableId, db.events().getAll().get(0).publicId);
             CloudSnapshot second = CloudSnapshot.read(db);
             CloudPublisher.publish(cloud, second, second.payload(context, uid), uid);
-            CloudPublisher.publish(cloud, first, first.payload(context, uid), uid);
+            try {
+                CloudPublisher.publish(cloud, first, first.payload(context, uid), uid);
+                fail("An older local copy must not be silently acknowledged");
+            } catch (java.util.concurrent.ExecutionException expected) {
+                assertEquals("LOCAL_BEHIND", expected.getCause().getMessage());
+            }
             assertEquals(Long.valueOf(second.state.revision), await(target.get(Source.SERVER)).getLong("revision"));
             // An edit after snapshot capture cannot be acknowledged by an earlier upload.
             session.name = "New session title";

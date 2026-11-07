@@ -59,6 +59,8 @@ public final class CloudSyncWorker extends Worker {
             FirebaseFirestoreException problem = (FirebaseFirestoreException) error;
             if (problem.getCode() == FirebaseFirestoreException.Code.PERMISSION_DENIED)
                 return "Tài khoản chưa có quyền quản trị. Kiểm tra quyền rồi bấm đồng bộ lại.";
+            if ("LOCAL_BEHIND".equals(problem.getMessage()))
+                return "Bản dữ liệu trên thiết bị cũ hơn Cloud. Khôi phục bản sao Admin mới nhất trước khi đồng bộ.";
             if ("SOURCE_MISMATCH".equals(problem.getMessage()))
                 return "Cloud đang thuộc một bộ dữ liệu Admin khác. Khôi phục bản sao của bộ dữ liệu đó để tiếp tục.";
             if (!retryable(problem))
