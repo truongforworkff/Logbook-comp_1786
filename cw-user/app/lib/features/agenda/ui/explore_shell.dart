@@ -13,10 +13,20 @@ class ExploreShell extends StatefulWidget {
 }
 
 class _ExploreShellState extends State<ExploreShell> {
+  late final AppLifecycleListener _lifecycle;
   @override
   void initState() {
     super.initState();
     widget.controller.load();
+    _lifecycle = AppLifecycleListener(
+      onResume: widget.controller.refreshAfterResume,
+    );
+  }
+
+  @override
+  void dispose() {
+    _lifecycle.dispose();
+    super.dispose();
   }
 
   @override

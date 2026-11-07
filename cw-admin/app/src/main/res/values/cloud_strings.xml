@@ -11,7 +11,7 @@
     <string name="cloud_never">Chưa có lần đồng bộ thành công</string>
     <string name="cloud_last">Lần gần nhất: %1$s</string>
     <string name="cloud_upload">Đồng bộ tất cả</string>
-    <string name="cloud_upload_note">Event và session được cập nhật cùng một lần. Mất mạng vẫn có thể quản lý dữ liệu trên thiết bị.</string>
+    <string name="cloud_upload_note">Thay đổi tự gửi khi có mạng. Mất mạng vẫn lưu trên thiết bị và tự đồng bộ khi kết nối trở lại.</string>
     <string name="cloud_thumbnail_note">Ảnh bìa được gửi dưới dạng ảnh thu nhỏ. Ảnh gốc giữ trên thiết bị.</string>
     <string name="cloud_loading">Đang đọc trạng thái…</string>
 </resources>

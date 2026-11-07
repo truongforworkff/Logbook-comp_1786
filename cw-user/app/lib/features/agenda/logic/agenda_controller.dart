@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 
@@ -24,6 +25,8 @@ class AgendaController extends ChangeNotifier {
   AgendaTab tab = AgendaTab.explore;
   StreamSubscription<CatalogData>? _subscription;
   Timer? _initialTimer;
+  Timer? _retryTimer;
+  int _retrySeconds = 5;
   Completer<void>? _ready;
   int _generation = 0;
   bool _disposed = false;
@@ -31,6 +34,7 @@ class AgendaController extends ChangeNotifier {
   Future<void> load() async {
     final generation = ++_generation;
     _initialTimer?.cancel();
+    _retryTimer?.cancel();
     if (_ready != null && !_ready!.isCompleted) _ready!.complete();
     await _subscription?.cancel();
     if (_disposed || generation != _generation) return;
@@ -43,16 +47,17 @@ class AgendaController extends ChangeNotifier {
       if (!ready.isCompleted) ready.complete();
     }
 
-    void failed(Object problem) {
+    void failed(Object problem, {bool retry = false}) {
       if (_disposed || generation != _generation) return;
       loading = false;
       error = problem is CatalogNotPublished
-          ? 'Ban quản trị chưa công bố sự kiện. Hãy thử lại sau khi đồng bộ Admin.'
+          ? 'Ban quản trị chưa công bố sự kiện. Danh sách sẽ tự cập nhật khi có dữ liệu.'
           : problem is FormatException
           ? 'Dữ liệu Cloud chưa hợp lệ. Hãy báo ban quản trị và thử lại.'
-          : 'Chưa kết nối được Cloud. Kiểm tra Internet rồi tải lại.';
+          : 'Chưa kết nối được Cloud. App sẽ tự cập nhật khi kết nối trở lại.';
       notifyListeners();
       finish();
+      if (retry) _scheduleRetry(generation);
     }
 
     try {
@@ -68,6 +73,8 @@ class AgendaController extends ChangeNotifier {
       _subscription = _catalog.watch().listen(
         (snapshot) {
           if (_disposed || generation != _generation) return;
+          _retryTimer?.cancel();
+          _retrySeconds = 5;
           events = snapshot.events;
           fromCache = snapshot.fromCache;
           updatedAt = snapshot.updatedAt;
@@ -76,15 +83,35 @@ class AgendaController extends ChangeNotifier {
           notifyListeners();
           finish();
         },
-        onError: failed,
+        onError: (Object problem) => failed(
+          problem,
+          retry: problem is! CatalogNotPublished && problem is! FormatException,
+        ),
         onDone: () {
+          if (_disposed || generation != _generation) return;
           if (!ready.isCompleted) failed(StateError('No catalog received'));
+          if (error.isNotEmpty) _scheduleRetry(generation);
         },
       );
     } catch (problem) {
-      failed(problem);
+      failed(problem, retry: true);
     }
     await ready.future;
+  }
+
+  void _scheduleRetry(int generation) {
+    if (_disposed ||
+        generation != _generation ||
+        (_retryTimer?.isActive ?? false))
+      return;
+    _retryTimer = Timer(Duration(seconds: _retrySeconds), () {
+      if (!_disposed && generation == _generation) load();
+    });
+    _retrySeconds = math.min(_retrySeconds * 2, 60);
+  }
+
+  void refreshAfterResume() {
+    if (!_disposed && (error.isNotEmpty || fromCache)) load();
   }
 
   void selectTab(AgendaTab value) {
@@ -114,6 +141,7 @@ class AgendaController extends ChangeNotifier {
     _disposed = true;
     _generation++;
     _initialTimer?.cancel();
+    _retryTimer?.cancel();
     _subscription?.cancel();
     if (_ready != null && !_ready!.isCompleted) _ready!.complete();
     super.dispose();

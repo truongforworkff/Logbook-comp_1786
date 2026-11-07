@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'event_info.dart';
@@ -113,19 +115,34 @@ void validateText(
 class CatalogRepository {
   CatalogRepository({this.firestore});
   final FirebaseFirestore? firestore;
-  Stream<CatalogData> watch() async* {
-    await for (final snapshot
-        in (firestore ?? FirebaseFirestore.instance)
-            .doc('catalogues/main')
-            .snapshots(includeMetadataChanges: true)) {
-      if (!snapshot.exists && snapshot.metadata.isFromCache) continue;
-      if (!snapshot.exists) throw const CatalogNotPublished();
-      yield CatalogData.fromDocument(
-        snapshot.data()!,
-        fromCache: snapshot.metadata.isFromCache,
+  Stream<CatalogData> watch() => (firestore ?? FirebaseFirestore.instance)
+      .doc('catalogues/main')
+      .snapshots(includeMetadataChanges: true)
+      .transform(
+        StreamTransformer<
+          DocumentSnapshot<Map<String, dynamic>>,
+          CatalogData
+        >.fromHandlers(
+          handleData: (snapshot, sink) {
+            if (!snapshot.exists && snapshot.metadata.isFromCache) return;
+            if (!snapshot.exists) {
+              sink.addError(const CatalogNotPublished());
+              return;
+            }
+            try {
+              sink.add(
+                CatalogData.fromDocument(
+                  snapshot.data()!,
+                  fromCache: snapshot.metadata.isFromCache,
+                ),
+              );
+            } on FormatException catch (error, stack) {
+              // Keep listening so a later corrected catalog can recover automatically.
+              sink.addError(error, stack);
+            }
+          },
+        ),
       );
-    }
-  }
 
   Future<List<EventInfo>> load() async => (await watch().first).events;
 }

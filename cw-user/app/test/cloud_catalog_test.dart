@@ -16,6 +16,23 @@ class LiveCatalog extends CatalogRepository {
   Stream<CatalogData> watch() => changes.stream;
 }
 
+class RestartingCatalog extends CatalogRepository {
+  final streams = <StreamController<CatalogData>>[];
+  StreamController<CatalogData> get current => streams.last;
+  @override
+  Stream<CatalogData> watch() {
+    final stream = StreamController<CatalogData>();
+    streams.add(stream);
+    return stream.stream;
+  }
+
+  Future<void> close() async {
+    for (final stream in streams) {
+      if (!stream.isClosed) await stream.close();
+    }
+  }
+}
+
 Map<String, dynamic> document() => {
   'schemaVersion': 1,
   'updatedAt': Timestamp.fromDate(DateTime(2026, 11, 7)),
@@ -81,4 +98,63 @@ void main() {
     controller.dispose();
     await catalog.changes.close();
   });
+  testWidgets(
+    'terminal listener errors reconnect automatically with bounded backoff',
+    (tester) async {
+      final catalog = RestartingCatalog();
+      final controller = AgendaController(
+        catalog: catalog,
+        favourites: MemoryFavourites({'ignite-2026'}),
+      );
+      final ready = controller.load();
+      await tester.pump();
+      catalog.current.add(CatalogData(readCatalog()));
+      await tester.pump();
+      await ready;
+      catalog.current.addError(StateError('temporary transport error'));
+      catalog.current.close();
+      await tester.pump();
+      expect(controller.events.length, 5);
+      expect(controller.error, isNotEmpty);
+      await tester.pump(const Duration(seconds: 5));
+      expect(catalog.streams.length, 2);
+      catalog.current.addError(StateError('still unavailable'));
+      catalog.current.close();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 9));
+      expect(catalog.streams.length, 2);
+      await tester.pump(const Duration(seconds: 1));
+      expect(catalog.streams.length, 3);
+      catalog.current.add(CatalogData(readCatalog()));
+      await tester.pump();
+      expect(controller.error, isEmpty);
+      expect(controller.saved, {'ignite-2026'});
+      controller.dispose();
+      await catalog.close();
+    },
+  );
+
+  testWidgets(
+    'resume retries immediately and disposing cancels pending reconnection',
+    (tester) async {
+      final catalog = RestartingCatalog();
+      final controller = AgendaController(
+        catalog: catalog,
+        favourites: MemoryFavourites({}),
+      );
+      final ready = controller.load();
+      await tester.pump();
+      catalog.current.addError(StateError('connection closed'));
+      catalog.current.close();
+      await tester.pump();
+      await ready;
+      controller.refreshAfterResume();
+      await tester.pump();
+      expect(catalog.streams.length, 2);
+      controller.dispose();
+      await tester.pump(const Duration(minutes: 2));
+      expect(catalog.streams.length, 2);
+      await catalog.close();
+    },
+  );
 }

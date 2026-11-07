@@ -28,7 +28,7 @@ Map<String, dynamic> field(dynamic value) {
   throw StateError('Unsupported fixture value');
 }
 
-Future<void> publish(List<dynamic> events) async {
+Future<void> publish(List<dynamic> events, {int schemaVersion = 1}) async {
   final client = HttpClient();
   try {
     final request = await client.patchUrl(
@@ -41,7 +41,7 @@ Future<void> publish(List<dynamic> events) async {
     request.write(
       jsonEncode({
         'fields': {
-          'schemaVersion': field(1),
+          'schemaVersion': field(schemaVersion),
           'events': field(events),
           'updatedAt': {
             'timestampValue': DateTime.now().toUtc().toIso8601String(),
@@ -52,6 +52,23 @@ Future<void> publish(List<dynamic> events) async {
     final response = await request.close();
     await response.drain<void>();
     expect(response.statusCode, 200);
+  } finally {
+    client.close(force: true);
+  }
+}
+
+Future<void> removePublishedCatalog() async {
+  final client = HttpClient();
+  try {
+    final request = await client.deleteUrl(
+      Uri.parse(
+        'http://10.0.2.2:8086/v1/projects/demo-eventa/databases/(default)/documents/catalogues/main',
+      ),
+    );
+    request.headers.set('Authorization', 'Bearer owner');
+    final response = await request.close();
+    await response.drain<void>();
+    expect([200, 404], contains(response.statusCode));
   } finally {
     client.close(force: true);
   }
@@ -81,6 +98,7 @@ void main() {
       );
       final cloud = FirebaseFirestore.instanceFor(app: app);
       cloud.settings = const Settings(persistenceEnabled: true);
+      await cloud.clearPersistence();
       cloud.useFirestoreEmulator('10.0.2.2', 8086);
       final events = jsonDecode(
         await rootBundle.loadString('assets/data/events.json'),
@@ -95,13 +113,23 @@ void main() {
         favourites: favourites,
       );
       try {
-        await publish(events);
+        await removePublishedCatalog();
         await tester.pumpWidget(EventaApp(controller: controller));
+        await until(tester, () => controller.error.contains('chưa công bố'));
+        await publish(events);
         await until(
           tester,
           () => controller.events.length == 5 && !controller.fromCache,
         );
         expect(controller.saved, {id});
+        await publish(events, schemaVersion: 99);
+        await until(tester, () => controller.error.isNotEmpty);
+        expect(controller.events.length, 5);
+        await publish(events);
+        await until(
+          tester,
+          () => controller.error.isEmpty && !controller.fromCache,
+        );
         await tester.scrollUntilVisible(
           find.byKey(Key('event-$id')),
           200,
