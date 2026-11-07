@@ -4,13 +4,13 @@ Project đang dùng **Flutter 3.47.4 / Dart 3.13**, giao diện Flutter widgets 
 
 ## Chức năng
 
-- Danh sách 5 event/9 session, ảnh bìa tùy chọn và chủ đề.
+- Danh sách event/session đọc trực tiếp từ Firestore, ảnh bìa tùy chọn và chủ đề.
 - Tìm tên không phân biệt dấu/hoa thường; lọc ngày, tháng và chủ đề.
 - Chi tiết event có timeline session, chi tiết session chỉ đọc.
 - Thêm/bỏ yêu thích từ danh sách hoặc chi tiết; trang Yêu thích riêng, lưu trên thiết bị.
 - Navigator xử lý Back, sheet chủ đề và lịch chọn ngày theo giao diện sáng/xanh đã chốt.
 
-**G hiện dùng snapshot cục bộ theo phương án đề cho phép. Cloud E chưa triển khai; sửa dữ liệu admin chưa tự đồng bộ sang app này.**
+Admin được duyệt công bố dữ liệu lên Firestore; Explore cập nhật trực tiếp cả danh sách và trang chi tiết. Có tải lại, thông báo lỗi và cache offline; production không đọc JSON đóng gói.
 
 ## Chạy và kiểm tra
 
@@ -37,25 +37,25 @@ Bài kiểm tra giữ lại và khôi phục danh sách yêu thích ban đầu. 
 ## Kết quả kiểm tra
 
 - Flutter analyze: không có lỗi hoặc cảnh báo.
-- 8 bài kiểm tra logic/widget đạt; kiểm thử G/H trên emulator Android 16 (API 36) đạt.
+- 11 bài kiểm tra logic/widget đạt; kiểm thử Firestore SDK trên Android 16 (API 36) đạt, gồm cập nhật/xóa/cache và giữ yêu thích.
 - Build APK debug và web release đạt. APK cập nhật đúng chữ ký; yêu thích từ bản MAUI vẫn được đọc và giữ lại.
 - Chưa build/chạy iOS, macOS, Windows hoặc Linux trên máy này.
 
 ## Nền tảng
 
-Có cấu hình Android, iOS, web, Windows, macOS và Linux. Android/web được kiểm tra trong quy trình build; iOS/macOS cần Mac và Xcode, Windows cần Visual Studio với C++, Linux cần các thư viện desktop Flutter. Có cấu hình không đồng nghĩa đã chạy thử trên mọi nền tảng.
+Có cấu hình Android, iOS, web, Windows, macOS và Linux. Android/web được kiểm tra trong quy trình build; iOS/macOS cần Mac và Xcode, Windows cần Visual Studio với C++, Linux cần các thư viện desktop Flutter. Firebase hiện chỉ cấu hình Android/web; các nền tảng còn lại cần cấu hình Firebase phù hợp trước khi dùng Cloud. Có cấu hình không đồng nghĩa đã chạy thử trên mọi nền tảng.
 
 ## Đọc code
 
 - app/lib/main.dart, app.dart: khởi động và cấu hình ứng dụng.
 - lib/features/agenda/ui: màn danh sách, thẻ event, sheet chủ đề, chi tiết event/session và khung chính.
 - lib/features/agenda/logic: AgendaController đọc/lưu trạng thái; EventSearch tìm/lọc.
-- lib/features/agenda/data: EventInfo/SessionInfo và CatalogRepository đọc asset.
+- lib/features/agenda/data: EventInfo/SessionInfo và CatalogRepository kiểm tra/lắng nghe document catalogues/main.
 - lib/features/favourites/ui: nút yêu thích và thông báo kết quả.
 - lib/features/favourites/data: FavouriteStore đọc/ghi SharedPreferencesAsync.
-- lib/features/favourites/logic: JSON yêu thích, loại ID không còn hợp lệ.
+- lib/features/favourites/logic: JSON yêu thích, giữ ID đã lưu khi danh mục đang lỗi hoặc tạm bị gỡ.
 - lib/shared/ui: theme, nhãn và thành phần dùng chung.
-- assets/data/events.json: snapshot; assets/images: ảnh đóng gói offline.
+- assets/data/events.json và assets/images: dữ liệu cố định cho kiểm thử G/H; không thay thế nguồn Cloud production.
 - test/: logic và widget tests; integration_test/: luồng thực tế; test_driver/: lưu ảnh kiểm thử.
 - android/ios/web/windows/macos/linux: khung nền tảng do Flutter tạo.
 
@@ -69,4 +69,4 @@ Tham khảo [Flutter](https://docs.flutter.dev/) và [shared_preferences](https:
 
 ## Firebase Spark
 
-Đã đăng ký Android/web với project eventa-coursework-fpt và khởi tạo Firebase trong lib/main.dart. Cấu hình: lib/shared/data/firebase_options.dart. CatalogRepository vẫn đọc snapshot; danh sách Cloud sẽ triển khai cùng E. Xem [thiết lập và kiểm tra kết nối](../cloud/firebase/README.md).
+Đã đăng ký Android/web với project eventa-coursework-fpt và khởi tạo Firebase trong lib/main.dart. Cấu hình: lib/shared/data/firebase_options.dart. CatalogRepository lắng nghe Firestore và metadata cache. Xem [thiết lập và kiểm tra kết nối](../cloud/firebase/README.md).

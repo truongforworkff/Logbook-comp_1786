@@ -1,4 +1,4 @@
-# Eventa Admin — COMP1786, mục A
+# Eventa Admin — COMP1786, mục A–E
 
 Ứng dụng Android native Java + XML Views, palette trắng ấm/hồng dịu theo bản thiết kế Eventa. Đây là project coursework riêng; các bài trong logbook vẫn được giữ.
 
@@ -16,7 +16,7 @@ Mở thư mục **cw-admin** bằng Android Studio, không mở logbook. Dùng J
 
 Windows: `gradlew.bat assembleDebug testDebugUnitTest lintDebug`
 macOS/Linux: `./gradlew assembleDebug testDebugUnitTest lintDebug`
-Kiểm tra database trên emulator đang chạy: `./gradlew connectedDebugAndroidTest`.
+Chỉ kiểm tra database trên emulator thử riêng (lệnh này có thể tự gỡ app): `./gradlew connectedDebugAndroidTest`.
 
 APK debug ở app/build/outputs/apk/debug/app-debug.apk. Workflow GitHub CW Admin kiểm tra build/unit test/lint; kiểm thử database trên thiết bị là bài instrumentation riêng.
 
@@ -45,7 +45,7 @@ Project dùng applicationId com.comp1786.eventa.admin và database riêng trong 
 
 ## Phạm vi
 
-App quản trị hiện triển khai A–D: event, session, liên kết và tìm kiếm. Có bổ sung chủ đề/ảnh bìa tùy chọn. Cloud E chưa triển khai; app người tham dự G/H nằm riêng trong cw-user và hiện dùng dữ liệu cục bộ. Có mã test không đồng nghĩa mọi kiểm tra đã chạy: xem kết quả GitHub Actions và chạy instrumentation trên thiết bị trước khi khai hoàn thành coursework.
+App quản trị hiện triển khai A–D: event, session, liên kết và tìm kiếm. Có bổ sung chủ đề/ảnh bìa tùy chọn. Cloud E có đăng nhập, đồng bộ toàn bộ/thay đổi và thử lại khi có mạng; app người tham dự G/H nằm riêng trong cw-user và đọc Cloud. Có mã test không đồng nghĩa mọi kiểm tra đã chạy: xem kết quả GitHub Actions và chạy instrumentation trên thiết bị trước khi khai hoàn thành coursework.
 
 ## Nguồn và cách dùng
 
@@ -61,8 +61,8 @@ Mục D: tìm event theo tên/mô tả; lọc ngày/người tổ chức; tìm s
 
 Chọn chủ đề trong form tạo/sửa. Mở phần tùy chọn để thêm, thay hoặc bỏ ảnh bìa. Có thể tạo sự kiện không có ảnh. Danh sách/chi tiết hiển thị ảnh và chủ đề; bộ lọc bổ sung chủ đề.
 
-Database v4 nâng cấp giữ nguyên event/session. Dữ liệu cũ mặc định chủ đề Khác, ảnh trống. Ảnh dùng URI cục bộ có quyền đọc lâu dài; ảnh chưa được đồng bộ cloud và có thể mất truy cập nếu ảnh gốc bị xóa/di chuyển.
+Database v4 nâng cấp giữ nguyên event/session. Dữ liệu cũ mặc định chủ đề Khác, ảnh trống. Ảnh dùng URI cục bộ có quyền đọc lâu dài; ảnh thu nhỏ được gửi lên Cloud; URI gốc có thể mất truy cập nếu ảnh gốc bị xóa/di chuyển.
 
 ## Firebase Spark
 
-Đã cấu hình project eventa-coursework-fpt, SDK Firestore/Auth và Google Services plugin. SQLite và giao diện giữ nguyên. Cloud đang từ chối client; chưa viết upload/đồng bộ E. Xem [thiết lập và kiểm tra kết nối](../cloud/firebase/README.md).
+Đã cấu hình project eventa-coursework-fpt, SDK Firestore/Auth và Google Services plugin. SQLite vẫn là nguồn dữ liệu. Tab Đồng bộ cho phép tạo tài khoản/đăng nhập, xem trạng thái và gửi toàn bộ; tài khoản cần được cấp quyền phía server. WorkManager ghi nhận/sửa/xóa và gửi lại khi có mạng. Migration v5 giữ dữ liệu và ID yêu thích cũ. Xem [thiết lập và kiểm tra kết nối](../cloud/firebase/README.md).

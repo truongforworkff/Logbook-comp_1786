@@ -117,7 +117,7 @@ Chọn ngày: shared/ui/DateField.java dùng chung cho ô ngày form event và b
 - Form tạo/sửa cho chọn một chủ đề. Ảnh bìa nằm trong phần tùy chọn: chọn, xem trước, thay hoặc bỏ ảnh. Bản nháp được giữ khi xoay màn hình.
 - MainActivity mở bộ chọn tài liệu Android (OpenDocument, image/*). EventEditor giữ quyền đọc lâu dài của URI, kiểm tra MIME và khả năng giải mã trước khi chấp nhận ảnh.
 - Không có ảnh thì thẻ/chi tiết bỏ hẳn khung ảnh. URI không còn đọc được cũng không làm app bị dừng.
-- shortcut: imageUri là tham chiếu ảnh cục bộ; khi làm phần cloud cần tải nội dung ảnh lên và lưu URL truy cập được từ app người tham dự. Di chuyển/xóa ảnh gốc có thể làm mất quyền đọc.
+- imageUri giữ ảnh gốc cục bộ; CloudCover giải mã/nén JPEG thumbnail để Flutter đọc được. Di chuyển/xóa ảnh gốc có thể làm mất quyền đọc.
 - EventCategoriesTest, EventSearchTest kiểm tra chủ đề; EventDatabaseTest kiểm tra lưu/sửa/bỏ ảnh; SessionDatabaseTest kiểm tra migration v1/v2/v3 và giữ quan hệ; EventPhotoTest kiểm tra ảnh lớn, hướng ảnh và ảnh lỗi; DesignScreenshotTest kiểm tra chọn/lọc chủ đề trên UI.
 
 ## Firebase — thiết lập
@@ -125,4 +125,13 @@ Chọn ngày: shared/ui/DateField.java dùng chung cho ô ngày form event và b
 - app/google-services.json + build.gradle.kts: định danh Firebase và SDK Firestore/Auth; FirebaseInitProvider khởi tạo tự động.
 - AndroidManifest.xml: quyền Internet/trạng thái mạng.
 - androidTest/.../features/cloud/data/FirebaseSetupTest.java: kiểm tra project và server từ chối setup_checks, không sửa dữ liệu app.
-- ../cloud/firebase: database/rules/hướng dẫn; chưa có UI upload/đồng bộ E.
+- ../cloud/firebase: database, rules, emulator và hướng dẫn đồng bộ E.
+
+## Mục E — đồng bộ Cloud
+
+- UI: features/cloud/ui/CloudActivity.java + res/layout/cloud_screen.xml + values/cloud_strings.xml. Tab từ danh sách event/session mở màn đăng nhập/tạo tài khoản, trạng thái, gửi tất cả và đăng xuất.
+- Logic: CloudViewModel giữ auth/trạng thái; CloudSync đăng ký thay đổi Room, quyền admin và lịch WorkManager; CloudSyncWorker chụp/gửi/ghi nhận revision, xử lý lỗi và thử lại.
+- Data: SyncState/SyncStateDao lưu trạng thái bền vững; SyncSchema migration/trigger; CloudSnapshot lấy event/session trong transaction; CloudCover dùng shared/data/PhotoDecoder; CloudPublisher gửi Firestore transaction.
+- EventDatabase v5 giữ toàn bộ dữ liệu; EventDao giữ publicId khi sửa. Trigger theo dõi cả xóa cascade. ID 5 event cũ khớp Flutter để giữ yêu thích.
+- Không đặt mật khẩu/email cá nhân/vai trò vào mã nguồn. Đăng nhập không tự có quyền; admins/UID.enabled phải được chủ project cấp.
+- CloudSyncTest/CloudCoverTest/CloudSyncWorkerTest chạy với Android runtime. Test Firestore tạo/xóa dữ liệu chỉ dùng demo-eventa và máy thử riêng.

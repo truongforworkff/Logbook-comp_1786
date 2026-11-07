@@ -21,6 +21,9 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.47.4'
@@ -50,7 +53,9 @@ jobs:
           profile: pixel_6
           disable-animations: true
           working-directory: cw-user/app
-          script: flutter drive --driver=test_driver/integration_test.dart --target=integration_test/app_test.dart -d emulator-5554 --keep-app-running
+          script: |
+            flutter drive --driver=test_driver/integration_test.dart --target=integration_test/app_test.dart -d emulator-5554 --keep-app-running
+            npx --yes firebase-tools@14.17.0 emulators:exec --only firestore,auth --project demo-eventa --config ../../cloud/firebase/firebase.test.json "flutter drive --driver=test_driver/integration_test.dart --target=integration_test/cloud_sync_test.dart -d emulator-5554 --keep-app-running"
       - uses: actions/upload-artifact@v4
         if: always()
         with:

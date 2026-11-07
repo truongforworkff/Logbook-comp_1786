@@ -1,68 +1,67 @@
-# Firebase — thiết lập Cloud cho Eventa
+# Firebase — Eventa Admin → Explore
 
-Project **eventa-coursework-fpt**, số **1011104656179**. Gói **Spark**, Firestore Standard **(default)** tại **asia-southeast1 (Singapore)**. Không bật thanh toán, Storage, Functions hoặc Analytics.
+Project **eventa-coursework-fpt**, số **1011104656179**, thuộc tài khoản FPT. Gói **Spark**, Firestore Standard **(default)** tại **asia-southeast1**. Không bật thanh toán, Storage, Functions hoặc Analytics. Project cũ eventa-coursework được giữ nguyên.
 
-## Đã thiết lập
+## Luồng dữ liệu
 
-- Android Admin com.comp1786.eventa.admin, Android Explore com.comp1786.eventa.user và Explore Web cùng project.
-- Admin: Google Services plugin, Firestore/Auth SDK; FirebaseInitProvider tự khởi tạo từ app/google-services.json.
-- Flutter: Firebase Core/Firestore, lib/shared/data/firebase_options.dart; main khởi tạo Android/web. Chưa cấu hình Firebase cho Apple/desktop; các nền tảng đó vẫn đọc snapshot như trước.
-- Authentication Email/Password đã bật. Chưa tạo tài khoản hay cấp vai trò admin.
-- Firestore từ chối toàn bộ client. Đây là bước thiết lập, chưa hoàn thành upload/đồng bộ E hoặc đọc Cloud G.
+Admin Java/XML lưu event/session trong Room/SQLite. Database v5 có publicId ổn định, nguồn dữ liệu riêng và số phiên bản. Trigger SQLite ghi nhận mọi thêm/sửa/xóa; WorkManager gửi lại khi có mạng, có lịch phục hồi 15 phút và nút Đồng bộ tất cả. Giao diện báo lỗi/quyền/trạng thái chờ; ghi cục bộ không phụ thuộc kết nối Cloud.
 
-## Kiểm tra kết nối
+Một lần gửi ghi nguyên danh mục vào **catalogues/main**, gồm schemaVersion, sourceId, revision, publisherUid, events (session nằm trong event), updatedAt. Firestore transaction chặn bản cũ và nguồn khác ghi đè. Sửa/xóa event hoặc session được phản ánh nguyên tử; xóa event vẫn cascade trong SQLite. Không có luồng kéo Cloud về ghi đè Admin.
 
-Admin, chỉ đọc, không tạo/xóa dữ liệu hoặc sửa SQLite:
+Explore Flutter lắng nghe Firestore trực tiếp, hiển thị cập nhật và cache offline. Không dùng JSON đóng gói làm dữ liệu production. Các ID yêu thích được giữ qua cập nhật, lỗi mạng và sự kiện tạm bị gỡ. Trang chi tiết đang mở cũng cập nhật; nội dung bị gỡ có thông báo và đường quay lại.
 
-~~~text
-cd cw-admin
-gradlew.bat assembleDebug assembleDebugAndroidTest
-adb install -r app/build/outputs/apk/debug/app-debug.apk
-adb install -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
-adb shell am instrument -w -e class com.comp1786.room.features.cloud.data.FirebaseSetupTest com.comp1786.eventa.admin.test/androidx.test.runner.AndroidJUnitRunner
-~~~
+## Tài khoản và quyền
 
-Nếu adb chưa có trong PATH, dùng đường dẫn Android SDK/platform-tools/adb. Cài cập nhật bằng cùng chữ ký; không gỡ app. Chỉ dùng Gradle connectedDebugAndroidTest trên emulator thử riêng: UTP có thể tự gỡ app sau test. Luồng adb phía trên không tự gỡ hoặc xóa dữ liệu.
+Email/Password đã bật. Trong Admin → Đồng bộ, người dùng tự tạo tài khoản hoặc đăng nhập; không gửi mật khẩu vào chat/Git. Tạo tài khoản không tự cấp quyền quản trị.
 
-Flutter trên emulator:
+Chủ project xác nhận đúng UID của tài khoản được chỉ định rồi tạo document **admins/UID** với **enabled: true** bằng Firebase Console/owner API. Client không được tạo/sửa vai trò. Khi được cấp quyền, app tự thử đồng bộ lại. Tắt enabled thu hồi quyền ghi.
 
-~~~text
-cd cw-user/app
-flutter drive --driver=test_driver/integration_test.dart --target=integration_test/firebase_setup_test.dart -d emulator-5554 --keep-app-running
-~~~
+Người tham dự đọc được duy nhất catalogues/main; không liệt kê collection hoặc đọc vai trò người khác. Chỉ quản trị được duyệt mới ghi; không cho client xóa document danh mục. Danh mục rỗng biểu diễn xóa hết event. Mọi đường dẫn khác đều bị từ chối.
 
-Các test xác nhận đúng project và server trả PERMISSION_DENIED cho setup_checks. Lỗi mạng/timeout phải làm test thất bại. Cài/chạy lại entry lib/main.dart sau integration test. Dùng đúng EVENTA_DEBUG_KEYSTORE khi cập nhật bản debug cũ; không gỡ app.
+## Ảnh và giới hạn
 
-## Triển khai database
+Ảnh tùy chọn được nén thành JPEG data URL tối đa 32 KiB/ảnh, cạnh tối đa 640 px; ảnh gốc vẫn trên Admin. Không cần Firebase Storage hoặc gói trả phí. Không đọc được ảnh sẽ báo lỗi để chọn lại/bỏ ảnh, không âm thầm công bố thiếu ảnh.
+
+shortcut: toàn bộ danh mục trong một document, tối đa 100 event, 500 session và JSON 512 KiB. Khi vượt giới hạn này, cần tách document và thiết kế lại việc lưu ảnh. App báo lỗi và giữ thay đổi trên thiết bị khi vượt giới hạn. Session cũ chưa gắn event phải được gắn trước khi công bố. Một bộ SQLite/một tài khoản xuất bản sở hữu danh mục; muốn đổi thiết bị cần phục hồi cùng bộ dữ liệu và tài khoản.
+
+## Kiểm thử tách biệt
+
+Dùng project giả **demo-eventa**, Firestore 8086/Auth 9098 và emulator Android thử nghiệm riêng. Không chạy test tạo/xóa dữ liệu trên máy chứa dữ liệu thật.
 
 ~~~text
 cd cloud/firebase
-firebase login
-firebase deploy --only firestore:rules,firestore:indexes --project eventa-coursework-fpt
+npm ci
+firebase emulators:start --only firestore,auth --project demo-eventa --config firebase.test.json
 ~~~
 
-Review rules trước khi deploy: file hiện tại đóng toàn bộ client; deploy sau khi hoàn thành E sẽ chặn chức năng đó. Không dùng test mode hoặc allow read, write: if true.
+Ở cửa sổ khác: npm test kiểm tra rules. Native: build assembleDebug/assembleDebugAndroidTest rồi cài bằng adb -r và chạy CloudSyncTest, CloudCoverTest, CloudSyncWorkerTest, SessionDatabaseTest, EventDatabaseTest trên máy thử. Flutter:
 
-## Tiếp theo
+~~~text
+cd cw-user/app
+flutter analyze
+flutter test
+flutter drive --driver=test_driver/integration_test.dart --target=integration_test/cloud_sync_test.dart -d emulator-5556 --keep-app-running
+flutter drive --driver=test_driver/integration_test.dart --target=integration_test/app_test.dart -d emulator-5556 --keep-app-running
+~~~
 
-- Người dùng tự đặt mật khẩu tài khoản; cấp vai trò quản trị phía server. Đăng nhập không tự cấp quyền ghi.
-- Admin: SQLite vẫn là nguồn dữ liệu, upload tất cả, ID ổn định, hàng đợi sửa/xóa và thử lại khi có mạng.
-- Định nghĩa cấu trúc event/session, validation và quyền đọc dữ liệu công bố; kiểm thử rules trước khi mở quyền.
-- Flutter: chuyển CatalogRepository sang Firestore, thêm tải/lỗi/cache. Hiện vẫn đọc snapshot.
-- Ảnh vẫn cục bộ: Firebase Storage yêu cầu Blaze nên chưa đồng bộ ảnh ở Spark.
+Không thêm --no-pub sau một build thông thường: integration_test cần plugin registrant riêng. Luôn cài lại entry lib/main.dart sau bài integration. Gradle connectedDebugAndroidTest và Flutter drive mặc định có thể gỡ app; chỉ dùng máy thử. Khi cập nhật app người dùng bằng adb -r, giữ chữ ký cũ và biến EVENTA_DEBUG_KEYSTORE nếu đã dùng bản MAUI.
 
-## Cấu hình công khai
+## Triển khai project thật
 
-Project/app ID và API key client là định danh công khai; Security Rules bảo vệ dữ liệu. Không commit service-account JSON, private key, token CLI hoặc mật khẩu.
+~~~text
+cd cloud/firebase
+firebase deploy --only firestore:rules,firestore:indexes --project eventa-coursework-fpt --account YOUR_OWNER_EMAIL
+~~~
 
-Nguồn: [Android](https://firebase.google.com/docs/android/setup), [Flutter](https://firebase.google.com/docs/flutter/setup), [Rules](https://firebase.google.com/docs/firestore/security/get-started), [Pricing](https://firebase.google.com/pricing), [Storage](https://firebase.google.com/docs/storage/faqs-storage-changes-announced-sept-2024).
+Review rules trước khi deploy. Không dùng test mode hoặc allow read, write: if true. Các config client/project ID/API key Firebase là định danh công khai; không commit service account, khóa riêng, token CLI hoặc mật khẩu.
 
-## Kết quả kiểm tra ngày 07/11/2026
+## Đã kiểm tra ngày 07/11/2026
 
-- Admin: assembleDebug, unit tests và lint đạt với BoM 34.19.0 tương thích AGP 8.13; test Firebase qua Gradle và luồng adb trực tiếp đều đạt.
-- Flutter: analyze không có vấn đề, 8 logic/widget tests đạt, build Android debug/web release đạt; integration test Firebase đạt trên Android 16 API 36.
-- Cả hai app nhận PERMISSION_DENIED từ server cho setup_checks, xác nhận kết nối đúng project và rules đang đóng.
-- Sau khi Gradle UTP dọn app, Admin đã được cài lại và phục hồi database cùng ảnh mẫu; đối chiếu file database và ảnh khớp bản gốc. Yêu thích Flutter giữ nguyên sau kiểm thử/cập nhật.
-- Chưa kiểm thử Firebase trên iOS/desktop, chưa viết upload/đồng bộ E hoặc nguồn Cloud cho G.
+- Rules: 5 test đạt, gồm người lạ, tự nâng quyền, thu hồi quyền, timestamp/schema, dữ liệu cũ/nguồn khác.
+- Native: build, 14 unit test và lint đạt; 9 instrumentation test đạt trên máy thử Android 16, gồm migration v1–v4, CRUD/cascade, ID ổn định, revision chờ mạng, transaction và ảnh thu nhỏ.
+- Flutter: analyze sạch, 11 logic/widget test đạt; integration Firestore SDK thật trên emulator đạt, gồm stream sửa/xóa, metadata cache, tắt/bật network và giữ yêu thích.
+- Bản Admin trên máy người dùng đã nâng v4→v5: giữ nguyên 5 event, 9 session, nội dung các trường và 2 file ảnh gốc; ID demo cũ được giữ để tương thích yêu thích.
+- Quyền rules mới đã triển khai lên project FPT. Đang chờ người dùng tự tạo tài khoản trong app để cấp quyền và xác nhận lần đồng bộ production đầu tiên.
+- Chưa cấu hình Firebase iOS/macOS/desktop hoặc kiểm tra tải lớn.
 
-Project này thuộc tài khoản FPT. Project eventa-coursework cũ được giữ nguyên và không còn là đích cấu hình của hai app.
+Nguồn: [Firebase Android](https://firebase.google.com/docs/android/setup), [Flutter](https://firebase.google.com/docs/flutter/setup), [Transactions](https://firebase.google.com/docs/firestore/manage-data/transactions), [Rules](https://firebase.google.com/docs/firestore/security/get-started), [WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager).

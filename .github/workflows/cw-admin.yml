@@ -2,7 +2,7 @@ name: CW Admin
 on:
   push:
     branches: [CW]
-    paths: ['cw-admin/**', '.github/workflows/cw-admin.yml']
+    paths: ['cw-admin/**', 'cloud/firebase/**', '.github/workflows/cw-admin.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -16,6 +16,11 @@ jobs:
           distribution: temurin
           java-version: '17'
       - run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36" "build-tools;36.0.0"'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+        working-directory: cloud/firebase
       - uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: false
@@ -31,7 +36,7 @@ jobs:
           profile: pixel_3a
           disable-animations: true
           script: |
-            ./cw-admin/gradlew -p cw-admin connectedDebugAndroidTest
+            npx --yes firebase-tools@14.17.0 emulators:exec --only firestore,auth --project demo-eventa --config cloud/firebase/firebase.test.json "npm --prefix cloud/firebase test && ./cw-admin/gradlew -p cw-admin connectedDebugAndroidTest"
             adb pull /data/local/tmp/eventa-screenshots screenshots
       - name: Upload UI screenshots
         if: always()
