@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:eventa_user/app.dart';
-import 'package:eventa_user/features/agenda/data/catalog_repository.dart';
+
+import 'support/demo_catalog.dart';
+
 import 'package:eventa_user/features/agenda/logic/agenda_controller.dart';
 import 'package:eventa_user/features/favourites/data/favourite_store.dart';
 
@@ -12,10 +14,13 @@ void main() {
     tester,
   ) async {
     final store = FavouriteStore();
-    final events = await CatalogRepository().load();
+    final events = await DemoCatalog().load();
     final original = await store.load(events.map((event) => event.id));
     addTearDown(() async => store.save(original));
-    final controller = AgendaController(favourites: store);
+    final controller = AgendaController(
+      catalog: DemoCatalog(),
+      favourites: store,
+    );
     await tester.pumpWidget(EventaApp(controller: controller));
     await tester.pumpAndSettle();
     await binding.convertFlutterSurfaceToImage();

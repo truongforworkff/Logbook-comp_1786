@@ -21,7 +21,7 @@ class FavouriteStore {
         : const SharedPreferencesOptions(),
   );
 
-  Future<Set<String>> load(Iterable<String> validIds) async =>
+  Future<Set<String>> load([Iterable<String>? validIds]) async =>
       readFavourites(await _store.getString(key), validIds);
 
   Future<void> save(Set<String> ids) =>

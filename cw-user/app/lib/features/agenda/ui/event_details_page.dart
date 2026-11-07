@@ -7,20 +7,28 @@ import '../../../shared/ui/app_theme.dart';
 import '../../../shared/ui/app_widgets.dart';
 import '../../../shared/ui/event_labels.dart';
 import 'session_details_page.dart';
+import 'event_cover.dart';
+import 'unavailable_page.dart';
 
 class EventDetailsPage extends StatelessWidget {
   const EventDetailsPage({
     super.key,
-    required this.event,
+    required EventInfo event,
     required this.controller,
-  });
-  final EventInfo event;
+  }) : initialEvent = event;
+  final EventInfo initialEvent;
+  EventInfo get event => controller.events.firstWhere(
+    (value) => value.id == initialEvent.id,
+    orElse: () => initialEvent,
+  );
   final AgendaController controller;
 
   @override
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: controller,
     builder: (context, _) {
+      if (!controller.events.any((value) => value.id == initialEvent.id))
+        return const UnavailablePage();
       final sessions = [...event.sessions]
         ..sort((a, b) => a.time.compareTo(b.time));
       final saved = controller.saved.contains(event.id);
@@ -53,17 +61,10 @@ class EventDetailsPage extends StatelessWidget {
             key: Key('event-details-${event.id}'),
             padding: const EdgeInsets.fromLTRB(18, 10, 18, 24),
             children: [
-              if (event.imageAsset.isNotEmpty) ...[
+              if (event.image.isNotEmpty) ...[
                 ClipRRect(
                   borderRadius: BorderRadius.circular(18),
-                  child: Image.asset(
-                    event.imageAsset,
-                    height: 190,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    semanticLabel: 'Ảnh bìa minh họa',
-                    errorBuilder: (_, _, _) => const SizedBox.shrink(),
-                  ),
+                  child: EventCover(event: event, height: 190),
                 ),
                 const SizedBox(height: 18),
               ],
@@ -112,6 +113,21 @@ class EventDetailsPage extends StatelessWidget {
                   height: 1.8,
                 ),
               ),
+              if (event.contactEmail.isNotEmpty ||
+                  event.contactPhone.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                SurfaceBox(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (event.contactEmail.isNotEmpty)
+                        SelectableText(event.contactEmail),
+                      if (event.contactPhone.isNotEmpty)
+                        SelectableText(event.contactPhone),
+                    ],
+                  ),
+                ),
+              ],
               const SizedBox(height: 24),
               Row(
                 children: [
@@ -145,7 +161,7 @@ class EventDetailsPage extends StatelessWidget {
               ),
               const SizedBox(height: 17),
               const Text(
-                'Dữ liệu cục bộ dùng để demo. Các phiên có tiền tố Demo và ảnh bìa mang tính minh họa.',
+                'Các phiên có tiền tố Demo là lịch minh họa. Lịch trình có thể được ban tổ chức cập nhật.',
                 style: TextStyle(
                   fontSize: 10,
                   color: AppColors.muted,

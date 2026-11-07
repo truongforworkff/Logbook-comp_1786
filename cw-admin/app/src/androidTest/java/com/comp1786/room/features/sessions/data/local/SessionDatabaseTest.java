@@ -10,6 +10,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class SessionDatabaseTest {
+    @Test public void upgradeFromVersion4KeepsPhotosAndCreatesSyncState() { verifyUpgrade(4); }
     @Test public void upgradeFromVersion1() { verifyUpgrade(1); }
     @Test public void upgradeFromVersion2KeepsUnassignedSessions() { verifyUpgrade(2); }
     @Test public void upgradeFromVersion3KeepsLinkedSessionsAndDefaultsMedia() { verifyUpgrade(3); }
@@ -26,18 +27,26 @@ public class SessionDatabaseTest {
             old.execSQL("CREATE TABLE sessions (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT NOT NULL, time TEXT NOT NULL, speaker TEXT NOT NULL, room TEXT NOT NULL, type TEXT NOT NULL, description TEXT NOT NULL)");
             old.execSQL("INSERT INTO sessions VALUES(42, 'Legacy', '08:00', 'Guest', 'Hall', 'Keynote', 'Keep all fields')");
         }
-        if (version == 3) {
+        if (version >= 3) {
             old.execSQL("ALTER TABLE sessions ADD COLUMN eventId INTEGER REFERENCES events(id) ON DELETE CASCADE");
             old.execSQL("CREATE INDEX index_sessions_eventId ON sessions(eventId)");
             old.execSQL("UPDATE sessions SET eventId=1");
+        }
+        if (version >= 4) {
+            old.execSQL("ALTER TABLE events ADD COLUMN categoryCode TEXT NOT NULL DEFAULT 'Other'");
+            old.execSQL("ALTER TABLE events ADD COLUMN imageUri TEXT NOT NULL DEFAULT ''");
+            old.execSQL("UPDATE events SET categoryCode='AI', imageUri='file:///cover.jpg'");
         }
         old.setVersion(version);
         old.close();
         EventDatabase db = open(context, name);
         try {
             assertEquals("Keep me", db.events().getAll().get(0).name);
-            assertEquals("Other", db.events().getAll().get(0).categoryCode);
-            assertEquals("", db.events().getAll().get(0).imageUri);
+            assertEquals(version >= 4 ? "AI" : "Other", db.events().getAll().get(0).categoryCode);
+            assertEquals(version >= 4 ? "file:///cover.jpg" : "", db.events().getAll().get(0).imageUri);
+            String publicId = db.events().getAll().get(0).publicId;
+            assertFalse(publicId.isEmpty());
+            assertNotNull(db.sync().get());
             if (version >= 2) {
                 Session legacy = db.sessions().getAll().get(0);
                 assertEquals(42, legacy.id);
@@ -55,6 +64,8 @@ public class SessionDatabaseTest {
             assertNotEquals(first.id, second);
             db.close();
             db = open(context, name);
+            assertEquals(publicId, db.events().getAll().get(0).publicId);
+            assertTrue(db.sync().get().pending());
             assertEquals(2, db.sessions().getAll().size());
             Session loaded = db.sessions().getAll().get(0);
             assertEquals("Speaker", loaded.speaker);
@@ -83,6 +94,7 @@ public class SessionDatabaseTest {
 
     private EventDatabase open(Context context, String name) {
         return Room.databaseBuilder(context, EventDatabase.class, name)
-                .addMigrations(EventDatabase.MIGRATION_1_2, EventDatabase.MIGRATION_2_3, EventDatabase.MIGRATION_3_4).build();
+                .addMigrations(EventDatabase.MIGRATION_1_2, EventDatabase.MIGRATION_2_3, EventDatabase.MIGRATION_3_4, EventDatabase.MIGRATION_4_5)
+                .addCallback(com.comp1786.room.features.cloud.data.SyncSchema.CALLBACK).build();
     }
 }

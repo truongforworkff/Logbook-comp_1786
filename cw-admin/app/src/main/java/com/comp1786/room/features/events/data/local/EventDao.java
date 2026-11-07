@@ -9,7 +9,18 @@ public interface EventDao {
     @Query("SELECT * FROM events ORDER BY date ASC, id ASC") LiveData<List<Event>> observeAll();
     @Query("SELECT * FROM events ORDER BY date ASC, id ASC") List<Event> getAll();
     @Query("SELECT * FROM events WHERE id = :id") LiveData<Event> observeById(long id);
-    @Insert long insert(Event event);
-    @Update void update(Event event);
+    @Query("SELECT publicId FROM events WHERE id = :id") String getPublicId(long id);
+    @Insert long insertRow(Event event);
+    @Update void updateRow(Event event);
+    @Transaction default long insert(Event event) {
+        if (event.publicId.isEmpty()) event.publicId = java.util.UUID.randomUUID().toString();
+        return insertRow(event);
+    }
+    @Transaction default void update(Event event) {
+        String publicId = getPublicId(event.id);
+        if (publicId == null) throw new IllegalStateException("Event no longer exists");
+        event.publicId = publicId;
+        updateRow(event);
+    }
     @Delete void delete(Event event);
 }

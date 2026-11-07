@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 class EventInfo {
   const EventInfo({
     required this.id,
@@ -12,11 +15,16 @@ class EventInfo {
     required this.description,
     required this.source,
     required this.sessions,
+    this.imageBytes,
+    this.contactEmail = '',
+    this.contactPhone = '',
   });
 
   final String id, name, location, organiser, type, status;
   final String categoryCode, image, description, source;
   final DateTime date;
+  final Uint8List? imageBytes;
+  final String contactEmail, contactPhone;
   final List<SessionInfo> sessions;
 
   factory EventInfo.fromJson(Map<String, dynamic> json) => EventInfo(
@@ -29,6 +37,9 @@ class EventInfo {
     status: json['status'] as String,
     categoryCode: json['categoryCode'] as String? ?? 'Other',
     image: json['image'] as String? ?? '',
+    imageBytes: decodeCover(json['image'] as String? ?? ''),
+    contactEmail: json['contactEmail'] as String? ?? '',
+    contactPhone: json['contactPhone'] as String? ?? '',
     description: json['description'] as String? ?? '',
     source: json['source'] as String? ?? '',
     sessions: List.unmodifiable(
@@ -38,7 +49,7 @@ class EventInfo {
     ),
   );
 
-  String get imageAsset => image.isEmpty ? '' : 'assets/$image';
+  String get imageAsset => image.startsWith('images/') ? 'assets/$image' : '';
 }
 
 class SessionInfo {
@@ -62,4 +73,17 @@ class SessionInfo {
     type: json['type'] as String? ?? '',
     description: json['description'] as String? ?? '',
   );
+}
+
+Uint8List? decodeCover(String image) {
+  if (!image.startsWith('data:image/jpeg;base64,')) return null;
+  if (image.length > 45000) throw const FormatException('Thumbnail too large');
+  final bytes = base64Decode(image.substring(23));
+  if (bytes.length < 3 ||
+      bytes.length > 32768 ||
+      bytes[0] != 255 ||
+      bytes[1] != 216) {
+    throw const FormatException('Invalid thumbnail');
+  }
+  return bytes;
 }

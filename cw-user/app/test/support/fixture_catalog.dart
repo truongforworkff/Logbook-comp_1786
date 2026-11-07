@@ -12,5 +12,5 @@ List<EventInfo> readCatalog() =>
 
 class FixtureCatalog extends CatalogRepository {
   @override
-  Future<List<EventInfo>> load() async => readCatalog();
+  Stream<CatalogData> watch() => Stream.value(CatalogData(readCatalog()));
 }

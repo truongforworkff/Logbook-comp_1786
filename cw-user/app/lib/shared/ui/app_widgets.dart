@@ -17,10 +17,12 @@ class PageFrame extends StatelessWidget {
 }
 
 class BrandHeader extends StatelessWidget {
-  const BrandHeader({super.key});
+  const BrandHeader({super.key, this.fromCache = false, this.onRefresh});
+  final bool fromCache;
+  final VoidCallback? onRefresh;
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.fromLTRB(18, 8, 18, 10),
+    padding: const EdgeInsets.fromLTRB(18, 8, 10, 10),
     child: Row(
       children: [
         Container(
@@ -50,25 +52,26 @@ class BrandHeader extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: AppColors.line),
           ),
-          child: const Row(
+          child: Row(
             children: [
-              Icon(Icons.circle, size: 6, color: Color(0xFF25B66B)),
-              SizedBox(width: 4),
+              Icon(
+                Icons.circle,
+                size: 6,
+                color: fromCache ? AppColors.muted : const Color(0xFF25B66B),
+              ),
+              const SizedBox(width: 4),
               Text(
-                'Cục bộ',
-                style: TextStyle(fontSize: 10, color: AppColors.muted),
+                fromCache ? 'Bản đã lưu' : 'Cloud',
+                style: const TextStyle(fontSize: 10, color: AppColors.muted),
               ),
             ],
           ),
         ),
-        const SizedBox(width: 16),
-        const CircleAvatar(
-          radius: 16,
-          backgroundColor: AppColors.blueSoft,
-          child: Text(
-            'EA',
-            style: TextStyle(fontSize: 11, color: AppColors.blue),
-          ),
+        IconButton(
+          key: const Key('refresh-cloud'),
+          onPressed: onRefresh,
+          tooltip: 'Tải lại từ Cloud',
+          icon: const Icon(Icons.refresh, color: AppColors.blue, size: 21),
         ),
       ],
     ),

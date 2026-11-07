@@ -79,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupNavigation() {
+        binding.cloudTab.setOnClickListener(view -> startActivity(new android.content.Intent(this,
+                com.comp1786.room.features.cloud.ui.CloudActivity.class)));
         binding.sessionsTab.setOnClickListener(view ->
                 startActivity(new Intent(this, SessionActivity.class)));
         binding.add.setOnClickListener(view -> editor.show(null, null));

@@ -31,7 +31,24 @@ class _ExploreShellState extends State<ExploreShell> {
           child: PageFrame(
             child: Column(
               children: [
-                const BrandHeader(),
+                BrandHeader(
+                  fromCache: controller.fromCache,
+                  onRefresh: controller.loading ? null : controller.load,
+                ),
+                if (controller.error.isNotEmpty && controller.events.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 8,
+                    ),
+                    child: Text(
+                      controller.error,
+                      style: const TextStyle(
+                        color: AppColors.muted,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
                 Expanded(
                   child: controller.loading
                       ? const Center(
@@ -39,7 +56,7 @@ class _ExploreShellState extends State<ExploreShell> {
                             color: AppColors.blue,
                           ),
                         )
-                      : controller.error.isNotEmpty
+                      : controller.error.isNotEmpty && controller.events.isEmpty
                       ? _error(controller)
                       : BrowsePage(
                           key: ValueKey(controller.tab),

@@ -21,7 +21,7 @@ public class EventPhotoTest {
             android.media.ExifInterface exif = new android.media.ExifInterface(file.getPath());
             exif.setAttribute(android.media.ExifInterface.TAG_ORIENTATION, "6");
             exif.saveAttributes();
-            Bitmap result = EventPhoto.decode(context.getContentResolver(), Uri.fromFile(file));
+            Bitmap result = com.comp1786.room.shared.data.PhotoDecoder.decode(context.getContentResolver(), Uri.fromFile(file));
             assertNotNull(result);
             assertTrue(result.getWidth() <= 1024 && result.getHeight() <= 1024);
             assertEquals(result.getWidth() * 2, result.getHeight());
@@ -30,9 +30,9 @@ public class EventPhotoTest {
             source.recycle();
             file.delete();
         }
-        assertNull(EventPhoto.decode(context.getContentResolver(), Uri.fromFile(file)));
+        assertNull(com.comp1786.room.shared.data.PhotoDecoder.decode(context.getContentResolver(), Uri.fromFile(file)));
         try (FileOutputStream output = new FileOutputStream(file)) { output.write(new byte[]{1, 2, 3}); }
-        try { assertNull(EventPhoto.decode(context.getContentResolver(), Uri.fromFile(file))); }
+        try { assertNull(com.comp1786.room.shared.data.PhotoDecoder.decode(context.getContentResolver(), Uri.fromFile(file))); }
         finally { file.delete(); }
     }
 }

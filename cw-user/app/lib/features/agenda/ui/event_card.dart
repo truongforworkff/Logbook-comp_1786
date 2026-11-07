@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../data/event_info.dart';
+import 'event_cover.dart';
 import '../logic/agenda_controller.dart';
 import '../../favourites/ui/favourite_button.dart';
 import '../../../shared/ui/app_theme.dart';
@@ -147,17 +148,10 @@ class EventCard extends StatelessWidget {
 
   Widget _cover() => Stack(
     children: [
-      event.imageAsset.isEmpty
+      event.image.isEmpty
           ? _emptyCover()
-          : Image.asset(
-              event.imageAsset,
-              width: double.infinity,
-              height: 150,
-              fit: BoxFit.cover,
-              semanticLabel: 'Ảnh bìa minh họa',
-              errorBuilder: (_, _, _) => _emptyCover(),
-            ),
-      if (event.imageAsset.isNotEmpty)
+          : EventCover(event: event, height: 150),
+      if (event.image.isNotEmpty)
         const Positioned.fill(
           child: IgnorePointer(
             child: DecoratedBox(

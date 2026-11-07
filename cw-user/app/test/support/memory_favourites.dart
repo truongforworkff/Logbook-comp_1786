@@ -5,8 +5,8 @@ class MemoryFavourites extends FavouriteStore {
   Set<String> ids;
   bool failWrites = false;
   @override
-  Future<Set<String>> load(Iterable<String> validIds) async =>
-      ids.intersection(validIds.toSet());
+  Future<Set<String>> load([Iterable<String>? validIds]) async =>
+      validIds == null ? {...ids} : ids.intersection(validIds.toSet());
   @override
   Future<void> save(Set<String> value) async {
     if (failWrites) throw StateError('Storage unavailable');

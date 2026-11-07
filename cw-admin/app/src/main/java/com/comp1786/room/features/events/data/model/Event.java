@@ -5,10 +5,11 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.ColumnInfo;
 import androidx.room.PrimaryKey;
-@Entity(tableName = "events", indices = @androidx.room.Index(value = {"normalizedName", "date"}, unique = true))
+@Entity(tableName = "events", indices = {@androidx.room.Index(value = {"normalizedName", "date"}, unique = true), @androidx.room.Index(value = "publicId", unique = true)})
 public class Event {
     @PrimaryKey(autoGenerate = true)
     public long id;
+    @NonNull @ColumnInfo(defaultValue = "''") public String publicId = "";
     @NonNull
     public String name;
     @NonNull
@@ -41,7 +42,7 @@ public class Event {
         if (this == value) return true;
         if (!(value instanceof Event)) return false;
         Event other = (Event) value;
-        return id == other.id && Objects.equals(name, other.name) && Objects.equals(date, other.date) && Objects.equals(location, other.location) && Objects.equals(organiser, other.organiser) && Objects.equals(type, other.type) && Objects.equals(status, other.status) && Objects.equals(description, other.description) && Objects.equals(contactEmail, other.contactEmail) && Objects.equals(contactPhone, other.contactPhone) && Objects.equals(categoryCode, other.categoryCode) && Objects.equals(imageUri, other.imageUri);
+        return id == other.id && Objects.equals(publicId, other.publicId) && Objects.equals(name, other.name) && Objects.equals(date, other.date) && Objects.equals(location, other.location) && Objects.equals(organiser, other.organiser) && Objects.equals(type, other.type) && Objects.equals(status, other.status) && Objects.equals(description, other.description) && Objects.equals(contactEmail, other.contactEmail) && Objects.equals(contactPhone, other.contactPhone) && Objects.equals(categoryCode, other.categoryCode) && Objects.equals(imageUri, other.imageUri);
     }
-    @Override public int hashCode() { return Objects.hash(id, name, date, location, organiser, type, status, description, contactEmail, contactPhone, categoryCode, imageUri); }
+    @Override public int hashCode() { return Objects.hash(id, publicId, name, date, location, organiser, type, status, description, contactEmail, contactPhone, categoryCode, imageUri); }
 }
