@@ -65,4 +65,4 @@ Database v4 nâng cấp giữ nguyên event/session. Dữ liệu cũ mặc đị
 
 ## Firebase Spark
 
-Đã cấu hình project eventa-coursework, SDK Firestore/Auth và Google Services plugin. SQLite và giao diện giữ nguyên. Cloud đang từ chối client; chưa viết upload/đồng bộ E. Xem [thiết lập và kiểm tra kết nối](../cloud/firebase/README.md).
+Đã cấu hình project eventa-coursework-fpt, SDK Firestore/Auth và Google Services plugin. SQLite và giao diện giữ nguyên. Cloud đang từ chối client; chưa viết upload/đồng bộ E. Xem [thiết lập và kiểm tra kết nối](../cloud/firebase/README.md).

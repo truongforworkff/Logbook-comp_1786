@@ -10,17 +10,16 @@ abstract final class DefaultFirebaseOptions {
   }
 
   static const android = FirebaseOptions(
-    apiKey: "AIzaSyAVeRAhTGLE2cNiFU_iM2wtoUfF4dzWvzA",
-    appId: "1:298519879781:android:0cde9e115aec7b89f1e68c",
-    messagingSenderId: "298519879781",
-    projectId: "eventa-coursework",
+    apiKey: "AIzaSyCRDAKvbGdrwsV1k4v6ify8afk-zxI3g48",
+    appId: "1:1011104656179:android:be93151b56c252138fac46",
+    messagingSenderId: "1011104656179",
+    projectId: "eventa-coursework-fpt",
   );
-
   static const web = FirebaseOptions(
-    apiKey: "AIzaSyB3vKvWNcbSXM3HSiInc2yBqpvXVJZruLU",
-    appId: "1:298519879781:web:2df9c9ee040eb526f1e68c",
-    messagingSenderId: "298519879781",
-    projectId: "eventa-coursework",
-    authDomain: "eventa-coursework.firebaseapp.com",
+    apiKey: "AIzaSyAahQ1OJffTpAatVakIz0HRNyhhLV6sJ_k",
+    appId: "1:1011104656179:web:28e6e979f4ef37f98fac46",
+    messagingSenderId: "1011104656179",
+    projectId: "eventa-coursework-fpt",
+    authDomain: "eventa-coursework-fpt.firebaseapp.com",
   );
 }

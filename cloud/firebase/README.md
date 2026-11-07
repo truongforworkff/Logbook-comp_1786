@@ -1,6 +1,6 @@
 # Firebase — thiết lập Cloud cho Eventa
 
-Project **eventa-coursework**, số **298519879781**. Gói **Spark**, Firestore Standard **(default)** tại **asia-southeast1 (Singapore)**. Không bật thanh toán, Storage, Functions hoặc Analytics.
+Project **eventa-coursework-fpt**, số **1011104656179**. Gói **Spark**, Firestore Standard **(default)** tại **asia-southeast1 (Singapore)**. Không bật thanh toán, Storage, Functions hoặc Analytics.
 
 ## Đã thiết lập
 
@@ -38,7 +38,7 @@ Các test xác nhận đúng project và server trả PERMISSION_DENIED cho setu
 ~~~text
 cd cloud/firebase
 firebase login
-firebase deploy --only firestore:rules,firestore:indexes --project eventa-coursework
+firebase deploy --only firestore:rules,firestore:indexes --project eventa-coursework-fpt
 ~~~
 
 Review rules trước khi deploy: file hiện tại đóng toàn bộ client; deploy sau khi hoàn thành E sẽ chặn chức năng đó. Không dùng test mode hoặc allow read, write: if true.
@@ -64,3 +64,5 @@ Nguồn: [Android](https://firebase.google.com/docs/android/setup), [Flutter](ht
 - Cả hai app nhận PERMISSION_DENIED từ server cho setup_checks, xác nhận kết nối đúng project và rules đang đóng.
 - Sau khi Gradle UTP dọn app, Admin đã được cài lại và phục hồi database cùng ảnh mẫu; đối chiếu file database và ảnh khớp bản gốc. Yêu thích Flutter giữ nguyên sau kiểm thử/cập nhật.
 - Chưa kiểm thử Firebase trên iOS/desktop, chưa viết upload/đồng bộ E hoặc nguồn Cloud cho G.
+
+Project này thuộc tài khoản FPT. Project eventa-coursework cũ được giữ nguyên và không còn là đích cấu hình của hai app.

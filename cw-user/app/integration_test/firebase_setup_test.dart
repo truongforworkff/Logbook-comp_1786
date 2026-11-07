@@ -10,7 +10,7 @@ void main() {
     final app = await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform!,
     );
-    expect(app.options.projectId, 'eventa-coursework');
+    expect(app.options.projectId, 'eventa-coursework-fpt');
     await expectLater(
       FirebaseFirestore.instance
           .collection('setup_checks')

@@ -69,4 +69,4 @@ Tham khảo [Flutter](https://docs.flutter.dev/) và [shared_preferences](https:
 
 ## Firebase Spark
 
-Đã đăng ký Android/web với project eventa-coursework và khởi tạo Firebase trong lib/main.dart. Cấu hình: lib/shared/data/firebase_options.dart. CatalogRepository vẫn đọc snapshot; danh sách Cloud sẽ triển khai cùng E. Xem [thiết lập và kiểm tra kết nối](../cloud/firebase/README.md).
+Đã đăng ký Android/web với project eventa-coursework-fpt và khởi tạo Firebase trong lib/main.dart. Cấu hình: lib/shared/data/firebase_options.dart. CatalogRepository vẫn đọc snapshot; danh sách Cloud sẽ triển khai cùng E. Xem [thiết lập và kiểm tra kết nối](../cloud/firebase/README.md).

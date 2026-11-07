@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 
 public class FirebaseSetupTest {
     @Test public void connectsWithoutGrantingUnapprovedAccess() throws Exception {
-        assertEquals("eventa-coursework", FirebaseApp.getInstance().getOptions().getProjectId());
+        assertEquals("eventa-coursework-fpt", FirebaseApp.getInstance().getOptions().getProjectId());
         try {
             Tasks.await(FirebaseFirestore.getInstance().collection("setup_checks")
                     .document("probe").get(Source.SERVER), 25, TimeUnit.SECONDS);
