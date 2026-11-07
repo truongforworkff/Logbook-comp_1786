@@ -16,6 +16,7 @@ android {
     compileSdk = 36
     defaultConfig {
         applicationId = "com.comp1786.eventa.admin"
+        // shortcut: the internal Admin APK carries its write key; use a server for wider distribution.
         buildConfigField("String", "CLOUD_WRITE_KEY", "\"$syncWriteKey\"")
         minSdk = 24
         targetSdk = 36

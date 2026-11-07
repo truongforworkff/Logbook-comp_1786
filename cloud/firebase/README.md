@@ -1,69 +1,61 @@
-# Firebase — Eventa Admin → Explore
+# Firebase — đồng bộ Eventa
 
-Project **eventa-coursework-fpt**, số **1011104656179**, thuộc tài khoản FPT. Gói **Spark**, Firestore Standard **(default)** tại **asia-southeast1**. Không bật thanh toán, Storage, Functions hoặc Analytics. Project cũ eventa-coursework được giữ nguyên.
+Project **eventa-coursework-fpt**, số **1011104656179**, gói Spark. Firestore Standard tại asia-southeast1. Không bật thanh toán, Storage hoặc Functions.
 
-## Luồng dữ liệu
+## Sử dụng
 
-Admin Java/XML lưu event/session trong Room/SQLite. Database v5 có publicId ổn định, nguồn dữ liệu riêng và số phiên bản. Trigger SQLite ghi nhận mọi thêm/sửa/xóa; WorkManager gửi lại khi có mạng, có lịch phục hồi 15 phút và nút Đồng bộ tất cả. Giao diện báo lỗi/quyền/trạng thái chờ; ghi cục bộ không phụ thuộc kết nối Cloud.
+Admin không có tài khoản, đăng ký, đăng nhập hoặc phân quyền theo người dùng; không dùng Firebase Authentication, kể cả đăng nhập ẩn danh/ngầm. Tab Đồng bộ chỉ hiển thị trạng thái, lần thành công gần nhất và nút Đồng bộ tất cả. Thêm/sửa/xóa được ghi nhận và gửi tự động khi có mạng.
 
-Một lần gửi ghi nguyên danh mục vào **catalogues/main**, gồm schemaVersion, sourceId, revision, publisherUid, events (session nằm trong event), updatedAt. Firestore transaction chặn bản cũ và nguồn khác ghi đè. Sửa/xóa event hoặc session được phản ánh nguyên tử; xóa event vẫn cascade trong SQLite. Không có luồng kéo Cloud về ghi đè Admin.
+SQLite vẫn là nguồn dữ liệu của Admin. WorkManager giữ hàng đợi/thử lại và lịch phục hồi 15 phút. Event/session được công bố nguyên tử trong catalogues/main; sourceId và revision chặn dữ liệu cũ hoặc bộ SQLite khác ghi đè. Cloud không kéo về ghi đè dữ liệu Admin.
 
-Explore Flutter lắng nghe Firestore trực tiếp, hiển thị cập nhật và cache offline. Không dùng JSON đóng gói làm dữ liệu production. Các ID yêu thích được giữ qua cập nhật, lỗi mạng và sự kiện tạm bị gỡ. Trang chi tiết đang mở cũng cập nhật; nội dung bị gỡ có thông báo và đường quay lại.
+Explore Flutter tiếp tục đọc Firestore trực tiếp, có cache và cập nhật trang chi tiết. Gỡ session/event được phản ánh trên app người tham dự. ID yêu thích giữ nguyên. Cấu trúc danh mục gồm schemaVersion, sourceId, revision, events (chứa session) và updatedAt; không còn publisherUid.
 
-## Tài khoản và quyền
+## Cấu hình dành cho bản Admin
 
-Email/Password đã bật. Trong Admin → Đồng bộ, người dùng tự tạo tài khoản hoặc đăng nhập; không gửi mật khẩu vào chat/Git. Tạo tài khoản không tự cấp quyền quản trị.
+Quyền ghi dùng khóa kết nối riêng của bản Admin, không dùng người dùng/mật khẩu. Khóa này chỉ cho phép công bố danh mục và biên nhận đồng bộ, không cấp quyền quản lý project.
 
-Chủ project xác nhận đúng UID của tài khoản được chỉ định rồi tạo document **admins/UID** với **enabled: true** bằng Firebase Console/owner API. Client không được tạo/sửa vai trò. Khi được cấp quyền, app tự thử đồng bộ lại. Tắt enabled thu hồi quyền ghi.
+File **cw-admin/sync.properties** chứa thuộc tính **writeKey** là 64 ký tự hex ngẫu nhiên, được Git bỏ qua. Khi build cũng có thể đặt biến môi trường **EVENTA_SYNC_WRITE_KEY**. Không commit khóa vào Git, không đưa khóa hoặc service account vào google-services.json. Bản build không có cấu hình vẫn quản lý cục bộ và báo chưa cấu hình khi đồng bộ; không gửi dữ liệu công khai.
 
-Người tham dự đọc được duy nhất catalogues/main; không liệt kê collection hoặc đọc vai trò người khác. Chỉ quản trị được duyệt mới ghi; không cho client xóa document danh mục. Danh mục rỗng biểu diễn xóa hết event. Mọi đường dẫn khác đều bị từ chối.
+Chủ project cấu hình cùng khóa trong document private **sync_config/publisher**, trường **writeKey**, bằng công cụ owner. Không cần tạo Firebase Auth user hay document admins/UID. Máy clone mới cần sao chép file cấu hình riêng qua kênh riêng trước khi build để kết nối project này; APK CI không chứa khóa production.
 
-## Ảnh và giới hạn
+CloudPublisher gửi danh mục cùng **sync_writes/current** trong một transaction. Biên nhận có khóa, sourceId, revision và server timestamp. Rules kiểm tra getAfter(), cùng revision/source và thời điểm để buộc hai document được ghi nguyên tử. Danh mục public không chứa khóa; client không đọc được cấu hình hoặc biên nhận, không liệt kê/xóa danh mục và không ghi các đường dẫn khác. Các vai trò tài khoản cũ không còn có quyền ghi.
 
-Ảnh tùy chọn được nén thành JPEG data URL tối đa 32 KiB/ảnh, cạnh tối đa 640 px; ảnh gốc vẫn trên Admin. Không cần Firebase Storage hoặc gói trả phí. Không đọc được ảnh sẽ báo lỗi để chọn lại/bỏ ảnh, không âm thầm công bố thiếu ảnh.
+shortcut: khóa nằm trong bản cài Admin và có thể bị trích xuất từ APK. Chỉ phân phối APK đã cấu hình cho người được phép đồng bộ. Khi cần phân phối rộng/thu hồi theo từng thiết bị, chuyển quyền ghi sang backend hoặc cơ chế chứng thực thiết bị. Đây là giới hạn của bản coursework không có hệ thống tài khoản.
 
-shortcut: toàn bộ danh mục trong một document, tối đa 100 event, 500 session và JSON 512 KiB. Khi vượt giới hạn này, cần tách document và thiết kế lại việc lưu ảnh. App báo lỗi và giữ thay đổi trên thiết bị khi vượt giới hạn. Session cũ chưa gắn event phải được gắn trước khi công bố. Một bộ SQLite/một tài khoản xuất bản sở hữu danh mục; muốn đổi thiết bị cần phục hồi cùng bộ dữ liệu và tài khoản.
+## Giới hạn dữ liệu
 
-## Kiểm thử tách biệt
+Một document chứa toàn bộ danh mục: tối đa 100 event, 500 session và JSON 512 KiB. Ảnh tùy chọn được nén JPEG <=32 KiB/ảnh, cạnh tối đa 640 px; ảnh gốc giữ trên Admin. Khi vượt giới hạn cần tách document và cơ chế ảnh. Ảnh lỗi hoặc session cũ chưa gắn event sẽ được báo để sửa, không bị âm thầm bỏ khỏi dữ liệu gửi đi.
 
-Dùng project giả **demo-eventa**, Firestore 8086/Auth 9098 và emulator Android thử nghiệm riêng. Không chạy test tạo/xóa dữ liệu trên máy chứa dữ liệu thật.
+## Kiểm thử
+
+Chỉ dùng project demo-eventa và máy ảo thử riêng cho test tạo/xóa dữ liệu.
 
 ~~~text
 cd cloud/firebase
 npm ci
-firebase emulators:start --only firestore,auth --project demo-eventa --config firebase.test.json
+firebase emulators:start --only firestore --project demo-eventa --config firebase.test.json
 ~~~
 
-Ở cửa sổ khác: npm test kiểm tra rules. Native: build assembleDebug/assembleDebugAndroidTest rồi cài bằng adb -r và chạy CloudSyncTest, CloudCoverTest, CloudSyncWorkerTest, SessionDatabaseTest, EventDatabaseTest trên máy thử. Flutter:
+Ở cửa sổ khác chạy npm test. Sáu bài kiểm tra bao gồm đồng bộ không tài khoản, sai/thiếu khóa, giữ khóa private, tính nguyên tử, chống dữ liệu cũ, giới hạn schema và thay cấu hình kết nối.
 
-~~~text
-cd cw-user/app
-flutter analyze
-flutter test
-flutter drive --driver=test_driver/integration_test.dart --target=integration_test/cloud_sync_test.dart -d emulator-5556 --keep-app-running
-flutter drive --driver=test_driver/integration_test.dart --target=integration_test/app_test.dart -d emulator-5556 --keep-app-running
-~~~
+Admin: assembleDebug, assembleDebugAndroidTest, testDebugUnitTest và lintDebug. CloudSyncTest sử dụng Firestore emulator, không tạo tài khoản; kiểm tra CRUD/cascade, revision, mất mạng và nguồn dữ liệu khác. CloudSyncWorkerTest kiểm tra phân loại lỗi.
 
-Không thêm --no-pub sau một build thông thường: integration_test cần plugin registrant riêng. Luôn cài lại entry lib/main.dart sau bài integration. Gradle connectedDebugAndroidTest và Flutter drive mặc định có thể gỡ app; chỉ dùng máy thử. Khi cập nhật app người dùng bằng adb -r, giữ chữ ký cũ và biến EVENTA_DEBUG_KEYSTORE nếu đã dùng bản MAUI.
+Flutter giữ các kiểm tra analyze, test, integration_test/app_test.dart và integration_test/cloud_sync_test.dart. Khi drive cần --keep-app-running; cài lại entry lib/main.dart sau integration test. Không chạy Gradle connectedDebugAndroidTest trên máy có dữ liệu vì có thể tự gỡ app.
 
-## Triển khai project thật
+## Triển khai
 
 ~~~text
 cd cloud/firebase
 firebase deploy --only firestore:rules,firestore:indexes --project eventa-coursework-fpt --account YOUR_OWNER_EMAIL
 ~~~
 
-Review rules trước khi deploy. Không dùng test mode hoặc allow read, write: if true. Các config client/project ID/API key Firebase là định danh công khai; không commit service account, khóa riêng, token CLI hoặc mật khẩu.
+Cấu hình private trước khi cài bản Admin mới. Không mở allow write: if true. Khi đổi khóa, cập nhật cấu hình owner và build lại Admin. Không cần sửa app Explore.
 
-## Đã kiểm tra ngày 07/11/2026
+## Xác minh
 
-- Rules: 5 test đạt, gồm người lạ, tự nâng quyền, thu hồi quyền, timestamp/schema, dữ liệu cũ/nguồn khác.
-- Native: build, 14 unit test và lint đạt; 9 instrumentation test đạt trên máy thử Android 16, gồm migration v1–v4, CRUD/cascade, ID ổn định, revision chờ mạng, transaction và ảnh thu nhỏ.
-- Flutter: analyze sạch, 11 logic/widget test đạt; integration Firestore SDK thật trên emulator đạt, gồm stream sửa/xóa, metadata cache, tắt/bật network và giữ yêu thích.
-- Bản Admin trên máy người dùng đã nâng v4→v5: giữ nguyên 5 event, 9 session, nội dung các trường và 2 file ảnh gốc; ID demo cũ được giữ để tương thích yêu thích.
-- Production project FPT: tài khoản do người dùng tự tạo đã được cấp quyền phía server. Admin báo Đã đồng bộ với Cloud; revision 1 có đủ 5 event, 9 session, 4 ảnh thu nhỏ. Đối chiếu từng trường công bố và quan hệ session với SQLite đều khớp; không còn lỗi chờ đồng bộ.
-- Explore bản Android thông thường đã đọc danh mục production, hiển thị ảnh, lịch trình và chi tiết session. Cập nhật APK giữ đúng chữ ký và file yêu thích trước tác vụ.
-- GitHub Actions CW Admin và CW User Flutter đều đạt trên mã đồng bộ (bao gồm emulator/rules, build Android/web và luồng G/H).
-- Chưa cấu hình Firebase iOS/macOS/desktop hoặc kiểm tra tải lớn.
+- Bản bỏ Authentication: build, lint và 14 unit test đạt; 6 rules test và 3 instrumentation test đồng bộ đạt trên máy ảo thử riêng.
+- Đã kiểm tra APK không chứa Firebase Authentication SDK và mã production không còn đăng nhập/đăng ký/vai trò tài khoản. Khóa build không xuất hiện trong file được Git theo dõi.
+- Trên máy ảo người dùng: phiên đăng nhập cũ đã được gỡ, màn Đồng bộ chỉ còn trạng thái và một nút gửi tất cả. Đồng bộ production không cần tài khoản đã đạt; dữ liệu vẫn đủ 5 event, 9 session, 4 ảnh bìa, giữ SQLite/yêu thích và không công bố khóa kết nối.
+- Firebase hiện cấu hình Android/web; chưa kiểm thử iOS/desktop.
 
-Nguồn: [Firebase Android](https://firebase.google.com/docs/android/setup), [Flutter](https://firebase.google.com/docs/flutter/setup), [Transactions](https://firebase.google.com/docs/firestore/manage-data/transactions), [Rules](https://firebase.google.com/docs/firestore/security/get-started), [WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager).
+Nguồn: [Firestore transaction](https://firebase.google.com/docs/firestore/manage-data/transactions), [Security Rules getAfter](https://firebase.google.com/docs/reference/rules/rules.firestore).

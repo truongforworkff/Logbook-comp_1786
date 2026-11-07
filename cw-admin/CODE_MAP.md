@@ -122,16 +122,16 @@ Chọn ngày: shared/ui/DateField.java dùng chung cho ô ngày form event và b
 
 ## Firebase — thiết lập
 
-- app/google-services.json + build.gradle.kts: định danh Firebase và SDK Firestore/Auth; FirebaseInitProvider khởi tạo tự động.
+- app/google-services.json + build.gradle.kts: định danh Firebase và SDK Firestore; FirebaseInitProvider khởi tạo tự động.
 - AndroidManifest.xml: quyền Internet/trạng thái mạng.
 - androidTest/.../features/cloud/data/FirebaseSetupTest.java: kiểm tra project và server từ chối setup_checks, không sửa dữ liệu app.
 - ../cloud/firebase: database, rules, emulator và hướng dẫn đồng bộ E.
 
 ## Mục E — đồng bộ Cloud
 
-- UI: features/cloud/ui/CloudActivity.java + res/layout/cloud_screen.xml + values/cloud_strings.xml. Tab từ danh sách event/session mở màn đăng nhập/tạo tài khoản, trạng thái, gửi tất cả và đăng xuất.
-- Logic: CloudViewModel giữ auth/trạng thái; CloudSync đăng ký thay đổi Room, quyền admin và lịch WorkManager; CloudSyncWorker chụp/gửi/ghi nhận revision, xử lý lỗi và thử lại.
-- Data: SyncState/SyncStateDao lưu trạng thái bền vững; SyncSchema migration/trigger; CloudSnapshot lấy event/session trong transaction; CloudCover dùng shared/data/PhotoDecoder; CloudPublisher gửi Firestore transaction.
+- UI: features/cloud/ui/CloudActivity.java + res/layout/cloud_screen.xml + values/cloud_strings.xml. Tab từ danh sách event/session mở trạng thái đồng bộ và nút gửi tất cả; không có form tài khoản.
+- Logic: CloudViewModel giữ trạng thái và yêu cầu gửi; CloudSync đăng ký thay đổi Room và lịch WorkManager; CloudSyncWorker chụp/gửi/ghi nhận revision, xử lý lỗi và thử lại.
+- Data: SyncState/SyncStateDao lưu trạng thái bền vững; SyncSchema migration/trigger; CloudSnapshot lấy event/session trong transaction; CloudCover dùng shared/data/PhotoDecoder; CloudPublisher gửi danh mục + biên nhận private cùng Firestore transaction.
 - EventDatabase v5 giữ toàn bộ dữ liệu; EventDao giữ publicId khi sửa. Trigger theo dõi cả xóa cascade. ID 5 event cũ khớp Flutter để giữ yêu thích.
-- Không đặt mật khẩu/email cá nhân/vai trò vào mã nguồn. Đăng nhập không tự có quyền; admins/UID.enabled phải được chủ project cấp.
+- Không dùng Firebase Authentication hoặc phân quyền tài khoản. BuildConfig nhận cấu hình ghi Cloud riêng từ sync.properties/biến môi trường, không commit khóa. CloudPublisher ghi biên nhận private và danh mục cùng transaction; rules kiểm tra getAfter().
 - CloudSyncTest/CloudCoverTest/CloudSyncWorkerTest chạy với Android runtime. Test Firestore tạo/xóa dữ liệu chỉ dùng demo-eventa và máy thử riêng.
