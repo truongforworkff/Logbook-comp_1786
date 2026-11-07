@@ -1,34 +1,40 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    function admin() {
-      return request.auth != null
-        && exists(/databases/$(database)/documents/admins/$(request.auth.uid))
-        && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.enabled == true;
-    }
     function validCatalog() {
       let d = request.resource.data;
-      return d.keys().hasAll(['schemaVersion', 'sourceId', 'revision', 'publisherUid', 'events', 'updatedAt'])
-        && d.keys().hasOnly(['schemaVersion', 'sourceId', 'revision', 'publisherUid', 'events', 'updatedAt'])
+      return d.keys().hasAll(['schemaVersion', 'sourceId', 'revision', 'events', 'updatedAt'])
+        && d.keys().hasOnly(['schemaVersion', 'sourceId', 'revision', 'events', 'updatedAt'])
         && d.schemaVersion == 1
         && d.sourceId is string && d.sourceId.size() == 36
         && d.revision is int && d.revision >= 0
-        && d.publisherUid == request.auth.uid
         && d.events is list && d.events.size() <= 100
         && d.updatedAt == request.time;
     }
+    function matchingReceipt() {
+      let receipt = getAfter(/databases/$(database)/documents/sync_writes/current).data;
+      return receipt.updatedAt == request.time
+        && receipt.sourceId == request.resource.data.sourceId
+        && receipt.revision == request.resource.data.revision
+        && receipt.writeKey == get(/databases/$(database)/documents/sync_config/publisher).data.writeKey;
+    }
     match /catalogues/main {
       allow get: if true;
-      allow create: if admin() && validCatalog();
-      allow update: if admin() && validCatalog()
-        && request.resource.data.publisherUid == resource.data.publisherUid
+      allow create: if validCatalog() && matchingReceipt();
+      allow update: if validCatalog() && matchingReceipt()
         && request.resource.data.sourceId == resource.data.sourceId
         && request.resource.data.revision > resource.data.revision;
       allow delete, list: if false;
     }
-    match /admins/{uid} {
-      allow get: if request.auth != null && request.auth.uid == uid;
-      allow list, write: if false;
+    match /sync_writes/current {
+      allow create, update: if request.resource.data.keys().hasAll(['writeKey', 'sourceId', 'revision', 'updatedAt'])
+        && request.resource.data.keys().hasOnly(['writeKey', 'sourceId', 'revision', 'updatedAt'])
+        && request.resource.data.writeKey == get(/databases/$(database)/documents/sync_config/publisher).data.writeKey
+        && request.resource.data.updatedAt == request.time
+        && getAfter(/databases/$(database)/documents/catalogues/main).data.updatedAt == request.time
+        && getAfter(/databases/$(database)/documents/catalogues/main).data.sourceId == request.resource.data.sourceId
+        && getAfter(/databases/$(database)/documents/catalogues/main).data.revision == request.resource.data.revision;
+      allow read, delete: if false;
     }
     match /{document=**} {
       allow read, write: if false;

@@ -8,7 +8,6 @@ import com.comp1786.room.features.events.data.model.Event;
 import com.comp1786.room.features.sessions.data.model.Session;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.*;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -28,27 +27,24 @@ public class CloudSyncTest {
         FirebaseApp app = FirebaseApp.initializeApp(context, new FirebaseOptions.Builder()
                 .setProjectId("demo-eventa").setApplicationId("1:123:android:test")
                 .setApiKey("fake-emulator-api-key").build(), "sync-test-" + UUID.randomUUID());
-        FirebaseAuth auth = FirebaseAuth.getInstance(app);
-        auth.useEmulator("10.0.2.2", 9098);
         FirebaseFirestore cloud = FirebaseFirestore.getInstance(app);
         cloud.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build());
         cloud.useEmulator("10.0.2.2", 8086);
         EventDatabase db = Room.inMemoryDatabaseBuilder(context, EventDatabase.class)
                 .addCallback(SyncSchema.CALLBACK).build();
         try {
-            String uid = await(auth.createUserWithEmailAndPassword(
-                    UUID.randomUUID() + "@example.invalid", "emulator-only-password")).getUser().getUid();
+            String writeKey = String.join("", Collections.nCopies(64, "1"));
             resetEmulator();
             DocumentReference target = cloud.document("catalogues/main");
             CloudSnapshot empty = CloudSnapshot.read(db);
             try {
-                CloudPublisher.publish(cloud, empty, empty.payload(context, uid), uid);
-                fail("Unapproved account cannot publish");
+                CloudPublisher.publish(cloud, empty, empty.payload(context), writeKey);
+                fail("An unconfigured Admin build cannot publish");
             } catch (java.util.concurrent.ExecutionException expected) {
                 assertEquals(FirebaseFirestoreException.Code.PERMISSION_DENIED,
                         ((FirebaseFirestoreException) expected.getCause()).getCode());
             }
-            ownerRequest("PATCH", "/admins/" + uid, "{\"fields\":{\"enabled\":{\"booleanValue\":true}}}");
+            ownerRequest("PATCH", "/sync_config/publisher", "{\"fields\":{\"writeKey\":{\"stringValue\":\"" + writeKey + "\"}}}");
             Event event = new Event(0, "AI workshop", "2026-11-17", "Campus", "Team", "Workshop", "Upcoming");
             event.id = db.events().insert(event);
             String stableId = event.publicId;
@@ -56,7 +52,7 @@ public class CloudSyncTest {
             session.id = db.sessions().insert(session);
             CloudSnapshot first = CloudSnapshot.read(db);
             assertTrue(first.state.pending());
-            CloudPublisher.publish(cloud, first, first.payload(context, uid), uid);
+            CloudPublisher.publish(cloud, first, first.payload(context), writeKey);
             db.sync().acknowledge(first.state.revision, 1);
             assertFalse(db.sync().get().pending());
             assertEquals(1, ((List<?>) await(target.get(Source.SERVER)).get("events")).size());
@@ -64,9 +60,9 @@ public class CloudSyncTest {
             db.events().update(event);
             assertEquals(stableId, db.events().getAll().get(0).publicId);
             CloudSnapshot second = CloudSnapshot.read(db);
-            CloudPublisher.publish(cloud, second, second.payload(context, uid), uid);
+            CloudPublisher.publish(cloud, second, second.payload(context), writeKey);
             try {
-                CloudPublisher.publish(cloud, first, first.payload(context, uid), uid);
+                CloudPublisher.publish(cloud, first, first.payload(context), writeKey);
                 fail("An older local copy must not be silently acknowledged");
             } catch (java.util.concurrent.ExecutionException expected) {
                 assertEquals("LOCAL_BEHIND", expected.getCause().getMessage());
@@ -85,7 +81,7 @@ public class CloudSyncTest {
             CloudSnapshot deleted = CloudSnapshot.read(db);
             assertTrue(deleted.state.pending());
             await(cloud.enableNetwork());
-            CloudPublisher.publish(cloud, deleted, deleted.payload(context, uid), uid);
+            CloudPublisher.publish(cloud, deleted, deleted.payload(context), writeKey);
             db.sync().acknowledge(deleted.state.revision, 3);
             assertTrue(((List<?>) await(target.get(Source.SERVER)).get("events")).isEmpty());
             assertFalse(db.sync().get().pending());
@@ -93,13 +89,13 @@ public class CloudSyncTest {
             foreignState.revision = deleted.state.revision + 1;
             CloudSnapshot foreign = new CloudSnapshot(foreignState, Collections.emptyList(), Collections.emptyList());
             try {
-                CloudPublisher.publish(cloud, foreign, foreign.payload(context, uid), uid);
+                CloudPublisher.publish(cloud, foreign, foreign.payload(context), writeKey);
                 fail("Different local database must not overwrite the catalog");
             } catch (java.util.concurrent.ExecutionException expected) {
                 assertEquals("SOURCE_MISMATCH", expected.getCause().getMessage());
             }
             db.sessions().insert(new Session(0, null, "Unassigned", "12:00", "", "", "Workshop", ""));
-            try { CloudSnapshot.read(db).payload(context, uid); fail("Orphans must not disappear silently"); }
+            try { CloudSnapshot.read(db).payload(context); fail("Orphans must not disappear silently"); }
             catch (IllegalArgumentException expected) { assertTrue(expected.getMessage().contains("session")); }
         } finally {
             db.close();

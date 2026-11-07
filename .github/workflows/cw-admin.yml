@@ -36,7 +36,7 @@ jobs:
           profile: pixel_3a
           disable-animations: true
           script: |
-            npx --yes firebase-tools@14.17.0 emulators:exec --only firestore,auth --project demo-eventa --config cloud/firebase/firebase.test.json "npm --prefix cloud/firebase test && ./cw-admin/gradlew -p cw-admin connectedDebugAndroidTest"
+            npx --yes firebase-tools@14.17.0 emulators:exec --only firestore --project demo-eventa --config cloud/firebase/firebase.test.json "npm --prefix cloud/firebase test && ./cw-admin/gradlew -p cw-admin connectedDebugAndroidTest"
             adb pull /data/local/tmp/eventa-screenshots screenshots
       - name: Upload UI screenshots
         if: always()

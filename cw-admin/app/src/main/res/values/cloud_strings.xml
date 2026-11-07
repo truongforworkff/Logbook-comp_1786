@@ -4,27 +4,14 @@
     <string name="cloud_intro">Lưu trên thiết bị, chia sẻ tới người tham dự.</string>
     <string name="cloud_back">‹  Quay lại</string>
     <string name="cloud_status">Trạng thái đồng bộ</string>
-    <string name="cloud_not_signed_in">Đăng nhập để đồng bộ</string>
     <string name="cloud_waiting">Có thay đổi chờ đồng bộ</string>
     <string name="cloud_offline">Chờ kết nối Internet</string>
     <string name="cloud_running">Đang gửi dữ liệu…</string>
     <string name="cloud_done">Đã đồng bộ với Cloud</string>
     <string name="cloud_never">Chưa có lần đồng bộ thành công</string>
     <string name="cloud_last">Lần gần nhất: %1$s</string>
-    <string name="cloud_login_title">Tài khoản quản trị</string>
-    <string name="cloud_login_note">Dùng tài khoản đã được cấp quyền. Mật khẩu được gửi trực tiếp tới Firebase.</string>
-    <string name="cloud_email">Email</string>
-    <string name="cloud_password">Mật khẩu</string>
-    <string name="cloud_login">Đăng nhập</string>
-    <string name="cloud_logout">Đăng xuất</string>
     <string name="cloud_upload">Đồng bộ tất cả</string>
     <string name="cloud_upload_note">Event và session được cập nhật cùng một lần. Mất mạng vẫn có thể quản lý dữ liệu trên thiết bị.</string>
     <string name="cloud_thumbnail_note">Ảnh bìa được gửi dưới dạng ảnh thu nhỏ. Ảnh gốc giữ trên thiết bị.</string>
     <string name="cloud_loading">Đang đọc trạng thái…</string>
-    <string name="cloud_confirm_password">Nhập lại mật khẩu</string>
-    <string name="cloud_create_link">Chưa có tài khoản? Tạo tài khoản</string>
-    <string name="cloud_login_link">Đã có tài khoản? Đăng nhập</string>
-    <string name="cloud_create">Tạo tài khoản</string>
-    <string name="cloud_password_mismatch">Mật khẩu nhập lại chưa khớp.</string>
-    <string name="cloud_create_note">Tạo tài khoản xong, cần được cấp quyền quản trị để đồng bộ. Người tham dự không cần đăng ký ở đây.</string>
 </resources>

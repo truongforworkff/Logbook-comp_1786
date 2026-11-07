@@ -24,46 +24,15 @@
                 <TextView android:id="@+id/syncError" android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:textColor="@color/rose" android:textSize="13sp" android:layout_marginTop="12dp" android:accessibilityLiveRegion="polite" android:visibility="gone"/>
             </LinearLayout>
-            <LinearLayout android:id="@+id/loginGroup" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:background="@drawable/event_card" android:padding="20dp" android:layout_marginTop="18dp">
-                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/cloud_login_title"
-                    android:textColor="@color/ink" android:textSize="18sp" android:textStyle="bold" android:accessibilityHeading="true"/>
-                <TextView android:id="@+id/loginNote" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/cloud_login_note"
-                    android:textColor="@color/muted" android:textSize="12sp" android:lineSpacingExtra="4dp" android:layout_marginTop="8dp"/>
-                <TextView style="@style/FieldLabel" android:text="@string/cloud_email" android:labelFor="@id/email"/>
-                <EditText android:id="@+id/email" android:layout_width="match_parent" android:layout_height="52dp"
-                    android:background="@drawable/event_card" android:padding="12dp" android:inputType="textEmailAddress"
-                    android:singleLine="true" android:autofillHints="username" android:imeOptions="actionNext" android:textSize="14sp"/>
-                <TextView style="@style/FieldLabel" android:text="@string/cloud_password" android:labelFor="@id/password"/>
-                <EditText android:id="@+id/password" android:layout_width="match_parent" android:layout_height="52dp"
-                    android:background="@drawable/event_card" android:padding="12dp" android:inputType="textPassword"
-                    android:singleLine="true" android:autofillHints="password" android:saveEnabled="false"
-                    android:imeOptions="actionDone" android:textSize="14sp"/>
-                <LinearLayout android:id="@+id/confirmGroup" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:visibility="gone">
-                    <TextView style="@style/FieldLabel" android:text="@string/cloud_confirm_password" android:labelFor="@id/confirmPassword"/>
-                    <EditText android:id="@+id/confirmPassword" android:layout_width="match_parent" android:layout_height="52dp"
-                        android:background="@drawable/event_card" android:padding="12dp" android:inputType="textPassword"
-                        android:singleLine="true" android:saveEnabled="false" android:imeOptions="actionDone" android:textSize="14sp"/>
-                </LinearLayout>
-                <TextView android:id="@+id/loginError" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:textColor="@color/rose" android:textSize="13sp" android:accessibilityLiveRegion="polite" android:visibility="gone"/>
-                <androidx.appcompat.widget.AppCompatButton android:id="@+id/login" android:layout_width="match_parent" android:layout_height="52dp"
-                    android:text="@string/cloud_login" android:textAllCaps="false" android:background="@drawable/primary_button"
-                    android:textColor="#FFFFFF" android:layout_marginTop="16dp"/>
-                <Button android:id="@+id/accountMode" style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="match_parent" android:layout_height="48dp" android:text="@string/cloud_create_link"
-                    android:textColor="@color/rose" android:textAllCaps="false" android:layout_marginTop="8dp"/>
-            </LinearLayout>
-            <LinearLayout android:id="@+id/accountGroup" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:layout_marginTop="18dp" android:visibility="gone">
-                <TextView android:id="@+id/accountEmail" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:textColor="@color/muted" android:textSize="13sp" android:padding="8dp"/>
-                <androidx.appcompat.widget.AppCompatButton android:id="@+id/upload" android:layout_width="match_parent" android:layout_height="54dp"
-                    android:text="@string/cloud_upload" android:textAllCaps="false" android:background="@drawable/primary_button" android:textColor="#FFFFFF"/>
-                <Button android:id="@+id/logout" style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="match_parent" android:layout_height="48dp" android:text="@string/cloud_logout"
-                    android:textColor="@color/rose" android:textAllCaps="false" android:layout_marginTop="8dp"/>
-            </LinearLayout>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/upload"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginTop="18dp"
+                android:text="@string/cloud_upload"
+                android:textAllCaps="false"
+                android:background="@drawable/primary_button"
+                android:textColor="#FFFFFF"/>
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/cloud_upload_note"
                 android:textSize="12sp" android:textColor="@color/muted" android:lineSpacingExtra="4dp" android:layout_marginTop="20dp"/>
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/cloud_thumbnail_note"

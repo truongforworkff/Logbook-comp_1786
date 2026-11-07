@@ -21,7 +21,6 @@ public final class CloudActivity extends AppCompatActivity {
     private AppUi ui;
     private SyncState state;
     private boolean syncing;
-    private boolean creatingAccount;
 
     @Override protected void onCreate(Bundle saved) {
         super.onCreate(saved);
@@ -35,42 +34,16 @@ public final class CloudActivity extends AppCompatActivity {
             return insets;
         });
         model = new ViewModelProvider(this).get(CloudViewModel.class);
-        creatingAccount = saved != null && saved.getBoolean("creatingAccount");
         setupActions();
         observeState();
     }
 
     private void setupActions() {
         binding.back.setOnClickListener(view -> finish());
-        binding.login.setOnClickListener(view -> {
-            String password = binding.password.getText().toString();
-            if (creatingAccount && !password.equals(binding.confirmPassword.getText().toString())) {
-                ui.showNotice(null, getString(R.string.cloud_password_mismatch), true);
-                return;
-            }
-            String email = binding.email.getText().toString().trim();
-            if (creatingAccount) model.createAccount(email, password);
-            else model.signIn(email, password);
-            binding.password.setText("");
-            binding.confirmPassword.setText("");
-        });
-        binding.accountMode.setOnClickListener(view -> {
-            creatingAccount = !creatingAccount;
-            binding.password.setText("");
-            binding.confirmPassword.setText("");
-            render();
-        });
         binding.upload.setOnClickListener(view -> model.uploadAll());
-        binding.logout.setOnClickListener(view -> model.signOut());
     }
 
     private void observeState() {
-        model.user().observe(this, value -> render());
-        model.signingIn().observe(this, value -> render());
-        model.error().observe(this, value -> {
-            binding.loginError.setText(value);
-            binding.loginError.setVisibility(value == null || value.isEmpty() ? View.GONE : View.VISIBLE);
-        });
         model.state().observe(this, value -> { state = value; render(); });
         model.work().observe(this, this::renderWork);
     }
@@ -84,22 +57,10 @@ public final class CloudActivity extends AppCompatActivity {
     }
 
     private void render() {
-        boolean signedIn = model.user().getValue() != null;
-        boolean signingIn = Boolean.TRUE.equals(model.signingIn().getValue());
-        binding.loginGroup.setVisibility(signedIn ? View.GONE : View.VISIBLE);
-        binding.accountGroup.setVisibility(signedIn ? View.VISIBLE : View.GONE);
-        binding.login.setEnabled(!signingIn);
-        binding.accountMode.setEnabled(!signingIn);
-        binding.confirmGroup.setVisibility(creatingAccount ? View.VISIBLE : View.GONE);
-        binding.login.setText(creatingAccount ? R.string.cloud_create : R.string.cloud_login);
-        binding.loginNote.setText(creatingAccount ? R.string.cloud_create_note : R.string.cloud_login_note);
-        binding.accountMode.setText(creatingAccount ? R.string.cloud_login_link : R.string.cloud_create_link);
-        binding.progress.setVisibility(signingIn || syncing ? View.VISIBLE : View.GONE);
-        binding.upload.setEnabled(signedIn && !syncing);
-        if (signedIn) binding.accountEmail.setText(model.user().getValue().getEmail());
+        binding.progress.setVisibility(syncing ? View.VISIBLE : View.GONE);
+        binding.upload.setEnabled(!syncing);
         int label = R.string.cloud_loading;
-        if (!signedIn) label = R.string.cloud_not_signed_in;
-        else if (state != null) {
+        if (state != null) {
             if (state.pending()) label = !CloudSync.hasInternet(this) ? R.string.cloud_offline
                     : syncing ? R.string.cloud_running : R.string.cloud_waiting;
             else label = R.string.cloud_done;
@@ -110,11 +71,6 @@ public final class CloudActivity extends AppCompatActivity {
         String error = state == null ? "" : state.error;
         binding.syncError.setText(error);
         binding.syncError.setVisibility(error.isEmpty() ? View.GONE : View.VISIBLE);
-    }
-
-    @Override protected void onSaveInstanceState(Bundle saved) {
-        saved.putBoolean("creatingAccount", creatingAccount);
-        super.onSaveInstanceState(saved);
     }
 
     @Override protected void onResume() {

@@ -55,7 +55,7 @@ jobs:
           working-directory: cw-user/app
           script: |
             flutter drive --driver=test_driver/integration_test.dart --target=integration_test/app_test.dart -d emulator-5554 --keep-app-running
-            npx --yes firebase-tools@14.17.0 emulators:exec --only firestore,auth --project demo-eventa --config ../../cloud/firebase/firebase.test.json "flutter drive --driver=test_driver/integration_test.dart --target=integration_test/cloud_sync_test.dart -d emulator-5554 --keep-app-running"
+            npx --yes firebase-tools@14.17.0 emulators:exec --only firestore --project demo-eventa --config ../../cloud/firebase/firebase.test.json "flutter drive --driver=test_driver/integration_test.dart --target=integration_test/cloud_sync_test.dart -d emulator-5554 --keep-app-running"
       - uses: actions/upload-artifact@v4
         if: always()
         with:

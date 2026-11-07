@@ -25,7 +25,7 @@ public final class CloudSnapshot {
                 database.sync().get(), database.events().getAll(), database.sessions().getAll()));
     }
 
-    public Map<String, Object> payload(Context context, String uid) {
+    public Map<String, Object> payload(Context context) {
         if (events.size() > 100 || sessions.size() > 500)
             throw new IllegalArgumentException("Danh mục vượt giới hạn 100 sự kiện hoặc 500 session.");
         Set<Long> ids = new HashSet<>();
@@ -41,7 +41,6 @@ public final class CloudSnapshot {
         result.put("schemaVersion", 1L);
         result.put("sourceId", state.sourceId);
         result.put("revision", state.revision);
-        result.put("publisherUid", uid);
         result.put("events", rows);
         // shortcut: one atomic catalog for this coursework; split documents above 512 KiB.
         if (new JSONObject(result).toString().getBytes(StandardCharsets.UTF_8).length > 512 * 1024)
