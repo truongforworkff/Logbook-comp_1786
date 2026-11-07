@@ -89,6 +89,7 @@ class AgendaController extends ChangeNotifier {
         ),
         onDone: () {
           if (_disposed || generation != _generation) return;
+          _subscription = null;
           if (!ready.isCompleted) failed(StateError('No catalog received'));
           if (error.isNotEmpty) _scheduleRetry(generation);
         },
@@ -102,8 +103,9 @@ class AgendaController extends ChangeNotifier {
   void _scheduleRetry(int generation) {
     if (_disposed ||
         generation != _generation ||
-        (_retryTimer?.isActive ?? false))
+        (_retryTimer?.isActive ?? false)) {
       return;
+    }
     _retryTimer = Timer(Duration(seconds: _retrySeconds), () {
       if (!_disposed && generation == _generation) load();
     });
