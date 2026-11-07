@@ -98,8 +98,8 @@ void main() {
       );
       final cloud = FirebaseFirestore.instanceFor(app: app);
       cloud.settings = const Settings(persistenceEnabled: true);
-      await cloud.clearPersistence();
       cloud.useFirestoreEmulator('10.0.2.2', 8086);
+      await cloud.clearPersistence();
       final events = jsonDecode(
         await rootBundle.loadString('assets/data/events.json'),
       ) as List;
