@@ -1,0 +1,14 @@
+<resources>
+    <string name="auth_admin_title">Đăng nhập quản trị</string>
+    <string name="auth_admin_hint">Dùng tài khoản đã được cấp quyền Admin để quản lý và đồng bộ sự kiện.</string>
+    <string name="auth_email">Email</string>
+    <string name="auth_password">Mật khẩu</string>
+    <string name="auth_sign_in">Đăng nhập</string>
+    <string name="auth_sign_out">Đăng xuất</string>
+    <string name="auth_account">Tài khoản quản trị</string>
+    <string name="auth_checking">Đang kiểm tra tài khoản và quyền quản trị…</string>
+    <string name="auth_invalid_email">Nhập email hợp lệ.</string>
+    <string name="auth_invalid_credentials">Chưa đăng nhập được. Kiểm tra email, mật khẩu và kết nối mạng.</string>
+    <string name="auth_connection_error">Chưa kiểm tra được quyền Admin. Kết nối mạng rồi thử lại.</string>
+    <string name="auth_admin_required">Tài khoản này chưa được cấp quyền Admin.</string>
+</resources>

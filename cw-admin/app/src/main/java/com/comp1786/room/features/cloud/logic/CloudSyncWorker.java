@@ -1,7 +1,8 @@
 package com.comp1786.room.features.cloud.logic;
 
 import android.content.Context;
-import com.comp1786.room.BuildConfig;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
@@ -19,6 +20,8 @@ public final class CloudSyncWorker extends Worker {
         EventDatabase database = EventDatabase.get(getApplicationContext());
         long revision = -1;
         try {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user == null) return Result.failure();
             CloudSnapshot snapshot = CloudSnapshot.read(database);
             revision = snapshot.state.revision;
             if (!snapshot.state.pending()) return Result.success();
@@ -26,8 +29,9 @@ public final class CloudSyncWorker extends Worker {
                 database.sync().setError(revision, "Chờ kết nối Internet. Thay đổi vẫn được lưu trên thiết bị.");
                 return Result.retry();
             }
-            CloudPublisher.publish(FirebaseFirestore.getInstance(), snapshot,
-                    snapshot.payload(getApplicationContext()), BuildConfig.CLOUD_WRITE_KEY);
+            java.util.Map<String, Object> payload = snapshot.payload(getApplicationContext());
+            payload.put("updatedBy", user.getUid());
+            CloudPublisher.publish(FirebaseFirestore.getInstance(), snapshot, payload);
             // Acknowledge only the captured revision; newer local edits stay pending.
             database.sync().acknowledge(snapshot.state.revision, System.currentTimeMillis());
             return Result.success();
@@ -55,7 +59,9 @@ public final class CloudSyncWorker extends Worker {
         if (error instanceof FirebaseFirestoreException) {
             FirebaseFirestoreException problem = (FirebaseFirestoreException) error;
             if (problem.getCode() == FirebaseFirestoreException.Code.PERMISSION_DENIED)
-                return "Chưa gửi được dữ liệu. Cấu hình kết nối Cloud của bản Admin cần được cập nhật.";
+                return "Tài khoản chưa có quyền đồng bộ. Đăng nhập lại bằng tài khoản Admin.";
+            if (problem.getCode() == FirebaseFirestoreException.Code.UNAUTHENTICATED)
+                return "Phiên đăng nhập đã hết hạn. Hãy đăng nhập lại.";
             if ("LOCAL_BEHIND".equals(problem.getMessage()))
                 return "Bản dữ liệu trên thiết bị cũ hơn Cloud. Khôi phục bản sao Admin mới nhất trước khi đồng bộ.";
             if ("SOURCE_MISMATCH".equals(problem.getMessage()))

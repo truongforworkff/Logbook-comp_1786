@@ -14,6 +14,9 @@ public final class CloudSync {
     private static final String PERIODIC = "eventa-cloud-recovery";
     private static boolean started;
     private CloudSync() {}
+    private static boolean signedIn() {
+        return com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null;
+    }
 
     public static synchronized void start(Context context) {
         if (started) return;
@@ -32,12 +35,25 @@ public final class CloudSync {
     }
 
     public static void enqueue(Context context) {
+        if (!signedIn()) return;
         OneTimeWorkRequest work = new OneTimeWorkRequest.Builder(CloudSyncWorker.class)
                 .setConstraints(network()).setBackoffCriteria(
                         BackoffPolicy.EXPONENTIAL, 10, TimeUnit.SECONDS).build();
         // Append so an edit arriving just as a worker finishes is never dropped.
         WorkManager.getInstance(context).enqueueUniqueWork(
                 IMMEDIATE, ExistingWorkPolicy.APPEND_OR_REPLACE, work);
+    }
+
+    public static void uploadAfterLogin(Context context) {
+        java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
+            EventDatabase.get(context).sync().requestUpload();
+            enqueue(context);
+        });
+    }
+
+    public static void cancel(Context context) {
+        WorkManager.getInstance(context).cancelUniqueWork(IMMEDIATE);
+        WorkManager.getInstance(context).cancelUniqueWork(PERIODIC);
     }
 
     private static Constraints network() {

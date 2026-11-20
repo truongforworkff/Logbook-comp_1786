@@ -1,0 +1,29 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:fillViewport="true" android:background="@color/canvas">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:gravity="center_vertical" android:padding="28dp">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/brand" android:textColor="@color/rose" android:textSize="20sp"/>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" android:text="@string/auth_admin_title" android:textColor="@color/ink"
+            android:textSize="28sp" android:textStyle="bold" android:accessibilityHeading="true"/>
+        <TextView android:id="@+id/status" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="12dp" android:layout_marginBottom="28dp"
+            android:text="@string/auth_admin_hint" android:textColor="@color/muted" android:textSize="14sp"
+            android:accessibilityLiveRegion="polite"/>
+        <TextView style="@style/FieldLabel" android:text="@string/auth_email" android:labelFor="@id/email"/>
+        <EditText android:id="@+id/email" style="@style/EventField" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:minHeight="48dp" android:inputType="textEmailAddress"
+            android:singleLine="true" android:autofillHints="emailAddress"/>
+        <TextView style="@style/FieldLabel" android:text="@string/auth_password" android:labelFor="@id/password"/>
+        <EditText android:id="@+id/password" style="@style/EventField" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:minHeight="48dp" android:inputType="textPassword"
+            android:singleLine="true" android:autofillHints="password" android:saveEnabled="false"/>
+        <androidx.appcompat.widget.AppCompatButton android:id="@+id/signIn" android:layout_width="match_parent"
+            android:layout_height="54dp" android:layout_marginTop="24dp" android:text="@string/auth_sign_in"
+            android:textAllCaps="false" android:background="@drawable/primary_button" app:backgroundTint="@null"
+            android:textColor="#FFFFFF"/>
+    </LinearLayout>
+</ScrollView>

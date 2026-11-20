@@ -18,6 +18,60 @@ service cloud.firestore {
         && receipt.revision == request.resource.data.revision
         && receipt.writeKey == get(/databases/$(database)/documents/sync_config/publisher).data.writeKey;
     }
+    function signedIn() { return request.auth != null; }
+    function admin() {
+      return signedIn() && get(/databases/$(database)/documents/roles/$(request.auth.uid)).data.role == 'admin';
+    }
+    function own(uid) { return signedIn() && request.auth.uid == uid; }
+    function validEventId(id) { return id is string && id.size() > 0 && id.size() <= 160; }
+    function roleCatalog() {
+      let d = request.resource.data;
+      return d.keys().hasAll(['schemaVersion', 'sourceId', 'revision', 'events', 'updatedAt', 'updatedBy'])
+        && d.keys().hasOnly(['schemaVersion', 'sourceId', 'revision', 'events', 'updatedAt', 'updatedBy'])
+        && d.schemaVersion == 1 && d.sourceId is string && d.sourceId.size() == 36
+        && d.revision is int && d.revision >= 0 && d.events is list && d.events.size() <= 100
+        && d.updatedAt == request.time && d.updatedBy == request.auth.uid;
+    }
+    match /roles/{uid} {
+      allow get: if own(uid);
+      allow list, write: if false;
+    }
+    match /role_catalogues/main {
+      allow get: if signedIn();
+      allow create: if admin() && roleCatalog();
+      allow update: if admin() && roleCatalog()
+        && request.resource.data.sourceId == resource.data.sourceId
+        && request.resource.data.revision > resource.data.revision;
+      allow delete, list: if false;
+    }
+    match /users/{uid} {
+      allow get: if own(uid);
+      allow create, update: if own(uid)
+        && request.resource.data.keys().hasAll(['displayName', 'email', 'updatedAt'])
+        && request.resource.data.keys().hasOnly(['displayName', 'email', 'updatedAt'])
+        && request.resource.data.displayName is string && request.resource.data.displayName.size() <= 80
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.updatedAt == request.time;
+      allow delete, list: if false;
+      match /favourites/{id} {
+        allow read, delete: if own(uid);
+        allow create, update: if own(uid) && id.size() <= 1024
+          && request.resource.data.keys().hasAll(['eventId', 'updatedAt'])
+          && request.resource.data.keys().hasOnly(['eventId', 'updatedAt'])
+          && validEventId(request.resource.data.eventId) && request.resource.data.updatedAt == request.time;
+      }
+      match /schedule/{id} {
+        allow read, delete: if own(uid);
+        allow create, update: if own(uid) && id.size() <= 1024
+          && request.resource.data.keys().hasAll(['eventId', 'sessionId', 'updatedAt'])
+          && request.resource.data.keys().hasOnly(['eventId', 'sessionId', 'updatedAt'])
+          && validEventId(request.resource.data.eventId)
+          && request.resource.data.sessionId is string
+          && request.resource.data.sessionId.size() > 0 && request.resource.data.sessionId.size() <= 256
+          && request.resource.data.updatedAt == request.time;
+      }
+    }
+    // The baseline CW branch retains its original catalog and private publisher receipt.
     match /catalogues/main {
       allow get: if true;
       allow create: if validCatalog() && matchingReceipt();

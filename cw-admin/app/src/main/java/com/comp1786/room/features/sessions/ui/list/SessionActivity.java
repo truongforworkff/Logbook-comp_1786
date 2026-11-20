@@ -16,7 +16,7 @@ import com.comp1786.room.shared.ui.AppUi;
 import java.util.Collections;
 import java.util.List;
 
-public class SessionActivity extends AppCompatActivity {
+public class SessionActivity extends com.comp1786.room.features.auth.ui.AdminActivity {
     private SessionListScreenBinding binding;
     private AppUi ui;
     private SessionViewModel model;
@@ -37,6 +37,7 @@ public class SessionActivity extends AppCompatActivity {
 
     @Override protected void onCreate(Bundle state) {
         super.onCreate(state);
+        if (!requireAdmin()) return;
         binding = SessionListScreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         ui = new AppUi(this);

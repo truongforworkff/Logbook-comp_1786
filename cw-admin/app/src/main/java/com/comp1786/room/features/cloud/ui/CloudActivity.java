@@ -15,7 +15,7 @@ import com.comp1786.room.features.cloud.logic.CloudViewModel;
 import com.comp1786.room.shared.ui.AppUi;
 import java.util.List;
 
-public final class CloudActivity extends AppCompatActivity {
+public final class CloudActivity extends com.comp1786.room.features.auth.ui.AdminActivity {
     private CloudScreenBinding binding;
     private CloudViewModel model;
     private AppUi ui;
@@ -24,6 +24,7 @@ public final class CloudActivity extends AppCompatActivity {
 
     @Override protected void onCreate(Bundle saved) {
         super.onCreate(saved);
+        if (!requireAdmin()) return;
         binding = CloudScreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         ui = new AppUi(this);

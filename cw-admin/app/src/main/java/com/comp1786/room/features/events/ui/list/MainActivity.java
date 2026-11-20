@@ -23,7 +23,7 @@ import com.comp1786.room.shared.ui.AppUi;
 import java.util.Collections;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends com.comp1786.room.features.auth.ui.AdminActivity {
     private EventListScreenBinding binding;
     private EventViewModel model;
     private EventEditor editor;
@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override protected void onCreate(Bundle state) {
         super.onCreate(state);
+        if (!requireAdmin()) return;
         binding = EventListScreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         ui = new AppUi(this);
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 com.comp1786.room.features.cloud.ui.CloudActivity.class)));
         binding.sessionsTab.setOnClickListener(view ->
                 startActivity(new Intent(this, SessionActivity.class)));
+        binding.account.setOnClickListener(view -> com.comp1786.room.features.auth.ui.AdminLoginActivity.showAccount(this));
         binding.add.setOnClickListener(view -> editor.show(null, null));
     }
 
@@ -144,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         state.putString("filterDate", dateFilter);
         state.putString("filterOrganiser", organiserFilter);
         state.putString("filterCategory", categoryFilter);
-        editor.saveState(state);
+        if (editor != null) editor.saveState(state);
         super.onSaveInstanceState(state);
     }
 

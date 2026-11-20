@@ -6,7 +6,8 @@
         <activity android:name="com.comp1786.room.features.sessions.ui.details.SessionDetailsActivity" android:exported="false"/>
         <activity android:name="com.comp1786.room.features.sessions.ui.editor.SessionEditorActivity" android:exported="false" android:windowSoftInputMode="adjustResize"/>
         <activity android:name="com.comp1786.room.features.sessions.ui.list.SessionActivity" android:exported="false" android:windowSoftInputMode="adjustResize"/>
-        <activity android:name="com.comp1786.room.features.events.ui.list.MainActivity" android:exported="true" android:windowSoftInputMode="adjustResize">
+        <activity android:name="com.comp1786.room.features.events.ui.list.MainActivity" android:exported="false"/>
+        <activity android:name="com.comp1786.room.features.auth.ui.AdminLoginActivity" android:exported="true" android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

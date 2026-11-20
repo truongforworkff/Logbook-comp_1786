@@ -1,23 +1,12 @@
-import java.util.Properties
-
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
-}
-val syncProperties = Properties().apply {
-    rootProject.file("sync.properties").takeIf { it.isFile }?.inputStream()?.use { load(it) }
-}
-val syncWriteKey = System.getenv("EVENTA_SYNC_WRITE_KEY") ?: syncProperties.getProperty("writeKey", "")
-require(syncWriteKey.isEmpty() || syncWriteKey.matches(Regex("[0-9a-f]{64}"))) {
-    "EVENTA_SYNC_WRITE_KEY must contain 64 lowercase hexadecimal characters."
 }
 android {
     namespace = "com.comp1786.room"
     compileSdk = 36
     defaultConfig {
         applicationId = "com.comp1786.eventa.admin"
-        // shortcut: the internal Admin APK carries its write key; use a server for wider distribution.
-        buildConfigField("String", "CLOUD_WRITE_KEY", "\"$syncWriteKey\"")
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -39,6 +28,7 @@ dependencies {
     // Firebase 34.x supports this Java project's AGP 8.13 and Kotlin metadata reader.
     implementation(platform("com.google.firebase:firebase-bom:34.19.0"))
     implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-auth")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("androidx.core:core:1.17.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel:2.9.4")

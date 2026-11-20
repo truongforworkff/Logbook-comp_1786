@@ -16,7 +16,7 @@ import com.comp1786.room.features.sessions.logic.SessionViewModel;
 import com.comp1786.room.features.sessions.ui.editor.SessionEditorActivity;
 import com.comp1786.room.shared.ui.AppUi;
 
-public class SessionDetailsActivity extends AppCompatActivity {
+public class SessionDetailsActivity extends com.comp1786.room.features.auth.ui.AdminActivity {
     private SessionDetailsScreenBinding binding;
     private AppUi ui;
     private long eventId;
@@ -30,6 +30,7 @@ public class SessionDetailsActivity extends AppCompatActivity {
 
     @Override protected void onCreate(Bundle state) {
         super.onCreate(state);
+        if (!requireAdmin()) return;
         binding = SessionDetailsScreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         ui = new AppUi(this);

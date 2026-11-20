@@ -14,7 +14,7 @@ import com.comp1786.room.features.sessions.logic.SessionValidation;
 import com.comp1786.room.features.sessions.logic.SessionViewModel;
 import com.comp1786.room.shared.ui.AppUi;
 
-public class SessionEditorActivity extends AppCompatActivity {
+public class SessionEditorActivity extends com.comp1786.room.features.auth.ui.AdminActivity {
     public static final String EVENT_ID = "eventId";
     public static final String SESSION_ID = "sessionId";
     private SessionEditorScreenBinding binding;
@@ -26,6 +26,7 @@ public class SessionEditorActivity extends AppCompatActivity {
 
     @Override protected void onCreate(Bundle state) {
         super.onCreate(state);
+        if (!requireAdmin()) return;
         binding = SessionEditorScreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         ui = new AppUi(this);
@@ -184,6 +185,7 @@ public class SessionEditorActivity extends AppCompatActivity {
     }
 
     @Override protected void onSaveInstanceState(Bundle state) {
+        if (binding == null) { super.onSaveInstanceState(state); return; }
         Session draft = readForm();
         state.putBoolean("loaded", loaded);
         state.putString("name", draft.name);
