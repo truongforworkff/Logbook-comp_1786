@@ -20,6 +20,12 @@ Admin được duyệt công bố dữ liệu lên Firestore; Explore cập nh�
 - Danh sách yêu thích event và lịch session dùng hai key riêng. Lựa chọn lịch không gửi lên Firebase.
 - Code tính năng nằm trong app/lib/features/schedule theo data, logic, ui. AgendaController nối lưu trữ với dữ liệu Cloud và các màn hiện có.
 
+Kiểm chứng Lịch của tôi: 17 logic/widget test đạt; integration trên Android kiểm tra thêm từ chi tiết session, lưu bằng SharedPreferences thật, mở lại controller vẫn giữ lịch và bỏ session. Chạy trên emulator thử riêng:
+
+~~~text
+flutter drive --driver=test_driver/integration_test.dart --target=integration_test/personal_schedule_test.dart -d emulator-5556 --keep-app-running --host-vmservice-port=55123
+~~~
+
 ## Chạy và kiểm tra
 
 Mở thư mục app/ bằng Android Studio có Flutter plugin hoặc VS Code có Flutter extension.
