@@ -118,10 +118,11 @@ void validateText(
 }
 
 class CatalogRepository {
-  CatalogRepository({this.firestore});
+  CatalogRepository({this.firestore, this.path = 'role_catalogues/main'});
+  final String path;
   final FirebaseFirestore? firestore;
   Stream<CatalogData> watch() => (firestore ?? FirebaseFirestore.instance)
-      .doc('catalogues/main')
+      .doc(path)
       .snapshots(includeMetadataChanges: true)
       .transform(
         StreamTransformer<

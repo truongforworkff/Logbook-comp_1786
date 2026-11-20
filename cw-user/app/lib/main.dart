@@ -3,9 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 
-import 'app.dart';
 import 'shared/data/firebase_options.dart';
-import 'features/agenda/logic/agenda_controller.dart';
+import 'features/auth/ui/auth_gate.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,5 +24,5 @@ Future<void> main() async {
       persistenceEnabled: true,
     );
   }
-  runApp(EventaApp(controller: AgendaController()));
+  runApp(const AuthGate());
 }

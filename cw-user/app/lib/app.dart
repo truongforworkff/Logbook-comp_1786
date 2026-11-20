@@ -6,8 +6,9 @@ import 'features/agenda/ui/explore_shell.dart';
 import 'shared/ui/app_theme.dart';
 
 class EventaApp extends StatelessWidget {
-  const EventaApp({super.key, required this.controller});
-  final AgendaController controller;
+  const EventaApp({super.key, this.controller, this.home});
+  final AgendaController? controller;
+  final Widget? home;
   @override
   Widget build(BuildContext context) => MaterialApp(
     title: 'Eventa Explore',
@@ -16,6 +17,6 @@ class EventaApp extends StatelessWidget {
     locale: const Locale('vi'),
     supportedLocales: const [Locale('vi'), Locale('en')],
     localizationsDelegates: GlobalMaterialLocalizations.delegates,
-    home: ExploreShell(controller: controller),
+    home: home ?? ExploreShell(controller: controller!),
   );
 }

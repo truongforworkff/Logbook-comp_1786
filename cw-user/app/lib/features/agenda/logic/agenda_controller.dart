@@ -7,6 +7,7 @@ import '../data/catalog_repository.dart';
 import '../data/event_info.dart';
 import '../../favourites/data/favourite_store.dart';
 import '../../schedule/data/schedule_store.dart';
+import '../../account/data/personal_data_repository.dart';
 import '../../schedule/logic/personal_schedule.dart';
 
 enum AgendaTab { explore, saved, schedule }
@@ -16,10 +17,13 @@ class AgendaController extends ChangeNotifier {
     CatalogRepository? catalog,
     FavouriteStore? favourites,
     ScheduleStore? schedule,
+    this.personal,
   }) : _catalog = catalog ?? CatalogRepository(),
        _favourites = favourites ?? FavouriteStore(),
        _schedule = schedule ?? ScheduleStore();
   final CatalogRepository _catalog;
+  final PersonalDataRepository? personal;
+  bool _personalBound = false;
   final FavouriteStore _favourites;
   final ScheduleStore _schedule;
   Set<SessionSelection> _planned = {};
@@ -75,8 +79,17 @@ class AgendaController extends ChangeNotifier {
     }
 
     try {
-      _saved = await _favourites.load();
-      if (!_scheduleLoaded) {
+      if (personal != null) {
+        if (!_personalBound) {
+          personal!.addListener(_receivePersonal);
+          _personalBound = true;
+        }
+        await personal!.start();
+        _receivePersonal();
+      } else {
+        _saved = await _favourites.load();
+      }
+      if (personal == null && !_scheduleLoaded) {
         _planned = await _schedule.load();
         _scheduleLoaded = true;
       }
@@ -118,6 +131,14 @@ class AgendaController extends ChangeNotifier {
     await ready.future;
   }
 
+  void _receivePersonal() {
+    if (_disposed || personal == null) return;
+    _saved = {...personal!.favourites};
+    _planned = {...personal!.schedule};
+    _scheduleLoaded = personal!.ready;
+    notifyListeners();
+  }
+
   void _scheduleRetry(int generation) {
     if (_disposed ||
         generation != _generation ||
@@ -140,14 +161,18 @@ class AgendaController extends ChangeNotifier {
   }
 
   Future<String?> toggleFavourite(String id) async {
-    if (saving || !events.any((event) => event.id == id)) return null;
+    if (saving || (personal != null && !personal!.ready) || !events.any((event) => event.id == id)) return null;
     saving = true;
     notifyListeners();
     try {
       final next = {..._saved};
       final added = next.add(id);
       if (!added) next.remove(id);
-      await _favourites.save(next);
+      if (personal == null) {
+        await _favourites.save(next);
+      } else {
+        await personal!.setFavourite(id, added);
+      }
       _saved = next;
       return added ? 'Đã lưu vào Yêu thích' : 'Đã bỏ khỏi Yêu thích';
     } finally {
@@ -181,7 +206,11 @@ class AgendaController extends ChangeNotifier {
       final next = {..._planned};
       final added = next.add(selection);
       if (!added) next.remove(selection);
-      await _schedule.save(next);
+      if (personal == null) {
+        await _schedule.save(next);
+      } else {
+        await personal!.setSession(selection, added);
+      }
       _planned = next;
       return added ? 'Đã thêm vào Lịch của tôi' : 'Đã bỏ khỏi Lịch của tôi';
     } finally {
@@ -193,6 +222,7 @@ class AgendaController extends ChangeNotifier {
   @override
   void dispose() {
     _disposed = true;
+    if (_personalBound) personal!.removeListener(_receivePersonal);
     _generation++;
     _initialTimer?.cancel();
     _retryTimer?.cancel();

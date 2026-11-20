@@ -7,7 +7,8 @@ import 'browse_page.dart';
 import '../../schedule/ui/my_schedule_page.dart';
 
 class ExploreShell extends StatefulWidget {
-  const ExploreShell({super.key, required this.controller});
+  const ExploreShell({super.key, required this.controller, this.onAccount});
+  final VoidCallback? onAccount;
   final AgendaController controller;
   @override
   State<ExploreShell> createState() => _ExploreShellState();
@@ -44,8 +45,20 @@ class _ExploreShellState extends State<ExploreShell> {
               children: [
                 BrandHeader(
                   fromCache: controller.fromCache,
+                  onAccount: widget.onAccount,
                   onRefresh: controller.loading ? null : controller.load,
                 ),
+                if (controller.personal != null)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
+                    child: Align(alignment: Alignment.centerLeft, child: Text(
+                      controller.personal!.error.isNotEmpty ? controller.personal!.error
+                        : controller.personal!.pending ? 'Lịch & yêu thích: đang chờ gửi lên Cloud'
+                        : controller.personal!.fromCache ? 'Lịch & yêu thích: đang xem bản đã lưu'
+                        : 'Lịch & yêu thích: đã đồng bộ',
+                      style: const TextStyle(fontSize: 12, color: AppColors.muted),
+                    )),
+                  ),
                 if (controller.error.isNotEmpty && controller.events.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.symmetric(

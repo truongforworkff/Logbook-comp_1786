@@ -17,7 +17,8 @@ class PageFrame extends StatelessWidget {
 }
 
 class BrandHeader extends StatelessWidget {
-  const BrandHeader({super.key, this.fromCache = false, this.onRefresh});
+  const BrandHeader({super.key, this.fromCache = false, this.onRefresh, this.onAccount});
+  final VoidCallback? onAccount;
   final bool fromCache;
   final VoidCallback? onRefresh;
   @override
@@ -67,6 +68,9 @@ class BrandHeader extends StatelessWidget {
             ],
           ),
         ),
+        if (onAccount != null)
+          IconButton(key: const Key('open-account'), onPressed: onAccount,
+            tooltip: 'Tài khoản', icon: const Icon(Icons.person_outline, color: AppColors.blue, size: 21)),
         IconButton(
           key: const Key('refresh-cloud'),
           onPressed: onRefresh,
