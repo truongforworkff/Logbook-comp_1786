@@ -136,10 +136,16 @@ void main() {
       await tester.pumpAndSettle();
       expect(store.selected.length, 2);
       controller.selectTab(AgendaTab.schedule);
-      await tester.pumpWidget(MaterialApp(home: Scaffold(body: ListenableBuilder(
-        listenable: controller,
-        builder: (_, _) => MySchedulePage(controller: controller),
-      ))));
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: ListenableBuilder(
+              listenable: controller,
+              builder: (_, _) => MySchedulePage(controller: controller),
+            ),
+          ),
+        ),
+      );
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('conflict-one-a')), findsOneWidget);
       await tester.scrollUntilVisible(
@@ -195,10 +201,16 @@ void main() {
         timedEvent('one', '2026-12-01', [timedSession('a', '09:00', '')]),
       ];
       controller.selectTab(AgendaTab.schedule);
-      await tester.pumpWidget(MaterialApp(home: Scaffold(body: ListenableBuilder(
-        listenable: controller,
-        builder: (_, _) => MySchedulePage(controller: controller),
-      ))));
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: ListenableBuilder(
+              listenable: controller,
+              builder: (_, _) => MySchedulePage(controller: controller),
+            ),
+          ),
+        ),
+      );
       await tester.pumpAndSettle();
       expect(
         find.text('Chưa có giờ kết thúc; chưa kiểm tra được trùng lịch.'),
