@@ -45,7 +45,7 @@ Bài kiểm tra giữ lại và khôi phục danh sách yêu thích ban đầu. 
 ## Kết quả kiểm tra
 
 - Flutter analyze: không có lỗi hoặc cảnh báo.
-- 13 bài kiểm tra logic/widget đạt (gồm tự kết nối lại và lifecycle); kiểm thử Firestore SDK trên Android 16 (API 36) đạt, gồm cập nhật/xóa/cache và giữ yêu thích.
+- 17 bài kiểm tra logic/widget đạt (gồm tự kết nối lại và lifecycle); kiểm thử Firestore SDK trên Android 16 (API 36) đạt, gồm cập nhật/xóa/cache và giữ yêu thích.
 - Build APK debug và web release đạt. APK cập nhật đúng chữ ký; yêu thích từ bản MAUI vẫn được đọc và giữ lại.
 - Chưa build/chạy iOS, macOS, Windows hoặc Linux trên máy này.
 
