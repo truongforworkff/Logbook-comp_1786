@@ -20,7 +20,7 @@ Admin được duyệt công bố dữ liệu lên Firestore; Explore cập nh�
 - Danh sách yêu thích event và lịch session dùng hai key riêng. Lựa chọn lịch không gửi lên Firebase.
 - Code tính năng nằm trong app/lib/features/schedule theo data, logic, ui. AgendaController nối lưu trữ với dữ liệu Cloud và các màn hiện có.
 
-Kiểm chứng Lịch của tôi: 17 logic/widget test đạt; integration trên Android kiểm tra thêm từ chi tiết session, lưu bằng SharedPreferences thật, mở lại controller vẫn giữ lịch và bỏ session. Chạy trên emulator thử riêng:
+Kiểm chứng Lịch của tôi: 22 logic/widget test đạt; integration trên Android kiểm tra thêm từ chi tiết session, lưu bằng SharedPreferences thật, mở lại controller vẫn giữ lịch và bỏ session. Chạy trên emulator thử riêng:
 
 ~~~text
 flutter drive --driver=test_driver/integration_test.dart --target=integration_test/personal_schedule_test.dart -d emulator-5556 --keep-app-running --host-vmservice-port=55123
@@ -43,7 +43,7 @@ flutter build web
 Kiểm tra luồng thực tế trên emulator demo:
 
 ~~~text
-flutter drive --driver=test_driver/integration_test.dart --target=integration_test/app_test.dart -d emulator-5554 --keep-app-running
+flutter drive --driver=test_driver/integration_test.dart --target=integration_test/app_test.dart -d emulator-5556 --keep-app-running
 ~~~
 
 Bài kiểm tra giữ lại và khôi phục danh sách yêu thích ban đầu. Luôn thêm --keep-app-running khi kiểm thử trên máy có dữ liệu: Flutter drive mặc định gỡ app sau khi chạy. Sau khi chạy integration test, dùng flutter run để cài lại entry point app thông thường.
@@ -51,8 +51,8 @@ Bài kiểm tra giữ lại và khôi phục danh sách yêu thích ban đầu. 
 ## Kết quả kiểm tra
 
 - Flutter analyze: không có lỗi hoặc cảnh báo.
-- 17 bài kiểm tra logic/widget đạt (gồm tự kết nối lại và lifecycle); kiểm thử Firestore SDK trên Android 16 (API 36) đạt, gồm cập nhật/xóa/cache và giữ yêu thích.
-- Build APK debug và web release đạt. APK cập nhật đúng chữ ký; yêu thích từ bản MAUI vẫn được đọc và giữ lại.
+- 22 bài kiểm tra logic/widget đạt (gồm tự kết nối lại và lifecycle); kiểm thử Firestore SDK trên Android 16 (API 36) đạt, gồm cập nhật/xóa/cache và giữ yêu thích.
+- Build APK debug của bản trùng lịch đạt. Web release đã đạt ở bản trước, chưa kiểm tra lại thay đổi này. APK cập nhật đúng chữ ký; yêu thích từ bản MAUI vẫn được đọc và giữ lại.
 - Chưa build/chạy iOS, macOS, Windows hoặc Linux trên máy này.
 
 ## Nền tảng
@@ -95,3 +95,5 @@ Tham khảo [Flutter](https://docs.flutter.dev/) và [shared_preferences](https:
 - Session cũ chưa có giờ kết thúc được giữ nguyên và ghi rõ chưa kiểm tra được trùng lịch. Không suy đoán thời lượng.
 - Logic: features/schedule/logic/personal_schedule.dart; xác nhận: ui/schedule_button.dart; nhãn: ui/my_schedule_page.dart.
 - Test logic/widget: flutter test test/schedule_conflict_test.dart. Test Android: flutter drive --driver=test_driver/integration_test.dart --target=integration_test/schedule_conflict_test.dart -d emulator-5556 --keep-app-running --host-vmservice-port=55123 (chỉ máy thử riêng).
+
+Kiểm chứng bổ sung ngày 20/11/2026: luồng Android xác nhận/hủy thêm session trùng, lưu hai lựa chọn qua SharedPreferences thật, mở lại và bỏ session đều đạt trên EventaCloudTest. Giờ kết thúc gửi/đọc lại qua Firestore emulator demo-eventa đạt; dữ liệu Firebase thật không được dùng cho các kiểm thử này.

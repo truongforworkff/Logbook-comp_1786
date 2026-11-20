@@ -87,7 +87,7 @@ Thêm session: chọn event → SessionEditorActivity.readForm → SessionValida
 
 - EventValidationTest, SessionValidationTest: kiểm tra đầu vào.
 - EventDatabaseTest: lưu thông tin event và chặn trùng.
-- SessionDatabaseTest: nâng cấp v1/v2/v3, bảo toàn dữ liệu, CRUD, khóa ngoại và cascade.
+- SessionDatabaseTest: nâng cấp v1–v5, bảo toàn dữ liệu, CRUD, khóa ngoại và cascade.
 - DesignScreenshotTest: các màn event, timeline trực tiếp, mở chi tiết session và thêm nhanh.
 - SessionScreenTest: tab Session, chọn event, form đúng event, danh sách không lẫn event khác, màn đọc và CRUD.
 - Bộ instrumentation có tạo/xóa dữ liệu mẫu: chỉ chạy toàn bộ trên emulator thử nghiệm riêng, không chạy trên máy có dữ liệu người dùng.
@@ -132,7 +132,7 @@ Chọn ngày: shared/ui/DateField.java dùng chung cho ô ngày form event và b
 - UI: features/cloud/ui/CloudActivity.java + res/layout/cloud_screen.xml + values/cloud_strings.xml. Tab từ danh sách event/session mở trạng thái đồng bộ và nút gửi tất cả; không có form tài khoản.
 - Logic: CloudViewModel giữ trạng thái và yêu cầu gửi; CloudSync đăng ký thay đổi Room và lịch WorkManager; CloudSyncWorker chụp/gửi/ghi nhận revision, xử lý lỗi và thử lại.
 - Data: SyncState/SyncStateDao lưu trạng thái bền vững; SyncSchema migration/trigger; CloudSnapshot lấy event/session trong transaction; CloudCover dùng shared/data/PhotoDecoder; CloudPublisher gửi danh mục + biên nhận private cùng Firestore transaction.
-- EventDatabase v5 giữ toàn bộ dữ liệu; EventDao giữ publicId khi sửa. Trigger theo dõi cả xóa cascade. ID 5 event cũ khớp Flutter để giữ yêu thích.
+- EventDatabase v6 giữ toàn bộ dữ liệu; EventDao giữ publicId khi sửa. Trigger theo dõi cả xóa cascade. ID 5 event cũ khớp Flutter để giữ yêu thích.
 - Không dùng Firebase Authentication hoặc phân quyền tài khoản. BuildConfig nhận cấu hình ghi Cloud riêng từ sync.properties/biến môi trường, không commit khóa. CloudPublisher ghi biên nhận private và danh mục cùng transaction; rules kiểm tra getAfter().
 - CloudSyncTest/CloudCoverTest/CloudSyncWorkerTest chạy với Android runtime. Test Firestore tạo/xóa dữ liệu chỉ dùng demo-eventa và máy thử riêng.
 
@@ -145,3 +145,5 @@ Chọn ngày: shared/ui/DateField.java dùng chung cho ô ngày form event và b
 - CloudSnapshot gửi endTime; thay đổi session vẫn được trigger ghi nhận và tự đồng bộ. Trường rỗng cho dữ liệu cũ vẫn hợp lệ.
 - SessionDatabaseTest kiểm tra nâng cấp từ v1–v5, giữ thông tin đồng bộ và lưu/sửa giờ kết thúc; SessionScreenTest kiểm tra khoảng giờ và CRUD; CloudIntervalTest kiểm tra payload và revision.
 - Cảnh báo trùng lịch thuộc app User, chỉ so sánh các session người tham dự đã chọn, không cấm Admin tổ chức nhiều phiên song song.
+
+Kiểm chứng 20/11/2026: build APK, 15 unit test và lint đạt (0 lỗi, còn cảnh báo có sẵn); migration v1–v5, CRUD/chọn giờ và payload đạt trên Android API 36. CloudSyncTest xác nhận endTime đọc lại qua Firestore emulator demo-eventa; không ghi dữ liệu kiểm thử lên project thật.
