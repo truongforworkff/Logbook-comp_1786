@@ -217,7 +217,7 @@ class EventDetailsPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              session.time,
+                              session.timeRange,
                               style: const TextStyle(
                                 fontSize: 11,
                                 color: AppColors.blue,

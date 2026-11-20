@@ -50,6 +50,22 @@ void main() {
       expect(catalog.fromCache, isTrue);
     },
   );
+  test('end time is optional for legacy catalogs and parsed when provided', () {
+    final data = document();
+    final row = data['events'][0]['sessions'][0] as Map<String, dynamic>;
+    row['time'] = '09:00';
+    row['endTime'] = '10:30';
+    final session = CatalogData.fromDocument(data, fromCache: false).events.first.sessions.first;
+    expect(session.endTime, '10:30');
+    expect(session.timeRange, '09:00 – 10:30');
+    row.remove('endTime');
+    expect(CatalogData.fromDocument(data, fromCache: false).events.first.sessions.first.hasTimeRange, isFalse);
+    for (final invalid in ['08:30', '09:00', '24:00', 10]) {
+      row['endTime'] = invalid;
+      expect(() => CatalogData.fromDocument(data, fromCache: false), throwsFormatException);
+    }
+  });
+
   test('malformed cloud payload is rejected at the boundary', () {
     for (final change in [
       (Map<String, dynamic> d) => d['schemaVersion'] = 2,

@@ -73,11 +73,11 @@ Khi đổi event trong tab Session, bỏ observer của danh sách cũ trước 
 
 ## Database và luồng ghi
 
-App admin hiện lưu cục bộ bằng Room/SQLite, chưa có server/API.
+App admin lưu bằng Room/SQLite và đồng bộ danh mục qua Firebase Firestore.
 
 Thêm session: chọn event → SessionEditorActivity.readForm → SessionValidation → SessionViewModel.save → SessionDao.insert → SQLite → LiveData cập nhật danh sách và lịch trong event.
 
-- events.db hiện ở version 4.
+- events.db hiện ở version 6.
 - Migration 1 → 2 tạo bảng sessions; 2 → 3 bổ sung eventId và khóa ngoại; 3 → 4 thêm categoryCode (mặc định Other) và imageUri (mặc định rỗng). Giữ ID, dữ liệu và session cũ.
 - Session mới phải có eventId hợp lệ. Giá trị null chỉ dành cho session cũ đang chờ người dùng gắn event.
 - Một event có nhiều session. Khóa ngoại ON DELETE CASCADE tự xóa session của event bị xóa, không ảnh hưởng event khác.
@@ -135,3 +135,13 @@ Chọn ngày: shared/ui/DateField.java dùng chung cho ô ngày form event và b
 - EventDatabase v5 giữ toàn bộ dữ liệu; EventDao giữ publicId khi sửa. Trigger theo dõi cả xóa cascade. ID 5 event cũ khớp Flutter để giữ yêu thích.
 - Không dùng Firebase Authentication hoặc phân quyền tài khoản. BuildConfig nhận cấu hình ghi Cloud riêng từ sync.properties/biến môi trường, không commit khóa. CloudPublisher ghi biên nhận private và danh mục cùng transaction; rules kiểm tra getAfter().
 - CloudSyncTest/CloudCoverTest/CloudSyncWorkerTest chạy với Android runtime. Test Firestore tạo/xóa dữ liệu chỉ dùng demo-eventa và máy thử riêng.
+
+## Giờ kết thúc session và cảnh báo trùng lịch ở User
+
+- Session.endTime lưu HH:mm; time vẫn là giờ bắt đầu, giữ tương thích catalog cũ. timeRange() dùng chung ở thẻ, timeline và chi tiết.
+- session_editor_screen.xml ↔ SessionEditorActivity: hai ô giờ dùng shared/ui/TimeField.java, mở bộ chọn 24 giờ trong shared_popup.xml bo góc; giữ bản nháp khi xoay màn hình.
+- SessionValidation.validRange: bắt buộc kết thúc sau bắt đầu, trong cùng ngày; áp dụng trước khi lưu.
+- Migration 5 → 6 thêm endTime TEXT NOT NULL DEFAULT ''. Giữ ID session/event, publicId và trạng thái đồng bộ; không tự đoán thời lượng của session cũ. Khi sửa session cũ phải bổ sung giờ kết thúc.
+- CloudSnapshot gửi endTime; thay đổi session vẫn được trigger ghi nhận và tự đồng bộ. Trường rỗng cho dữ liệu cũ vẫn hợp lệ.
+- SessionDatabaseTest kiểm tra nâng cấp từ v1–v5, giữ thông tin đồng bộ và lưu/sửa giờ kết thúc; SessionScreenTest kiểm tra khoảng giờ và CRUD; CloudIntervalTest kiểm tra payload và revision.
+- Cảnh báo trùng lịch thuộc app User, chỉ so sánh các session người tham dự đã chọn, không cấm Admin tổ chức nhiều phiên song song.

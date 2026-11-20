@@ -77,7 +77,7 @@ public class SessionDetailsActivity extends AppCompatActivity {
     private void renderSession(Session session) {
         binding.title.setText(session.name);
         binding.type.setText(session.type);
-        binding.time.setText(session.time);
+        binding.time.setText(session.timeRange());
         binding.speaker.setText(valueOrPlaceholder(session.speaker));
         binding.room.setText(valueOrPlaceholder(session.room));
         binding.description.setText(session.description.isEmpty()

@@ -84,3 +84,14 @@ Tham khảo [Flutter](https://docs.flutter.dev/) và [shared_preferences](https:
 ## Firebase Spark
 
 Đã đăng ký Android/web với project eventa-coursework-fpt và khởi tạo Firebase trong lib/main.dart. Cấu hình: lib/shared/data/firebase_options.dart. CatalogRepository lắng nghe Firestore và metadata cache. Xem [thiết lập và kiểm tra kết nối](../cloud/firebase/README.md).
+
+## Cảnh báo trùng lịch
+
+- Admin nhập giờ bắt đầu và kết thúc HH:mm trong cùng ngày; giờ kết thúc phải sau giờ bắt đầu.
+- Cloud gửi thêm endTime, giữ schemaVersion 1 vì đây là trường bổ sung. User vẫn đọc catalog cũ thiếu trường này.
+- User kiểm tra các session cùng ngày trong Lịch của tôi, kể cả thuộc hai event khác nhau. Hai khoảng nối tiếp đúng giờ không tính trùng.
+- Khi thêm session trùng: popup bo góc liệt kê lịch đã chọn, Quay lại không ghi dữ liệu; Vẫn thêm lưu lựa chọn. Bỏ session không yêu cầu xác nhận.
+- Các thẻ đang trùng có nhãn cảnh báo; tự cập nhật theo lịch Admin mới nhất. Lịch cá nhân vẫn chỉ lưu cục bộ.
+- Session cũ chưa có giờ kết thúc được giữ nguyên và ghi rõ chưa kiểm tra được trùng lịch. Không suy đoán thời lượng.
+- Logic: features/schedule/logic/personal_schedule.dart; xác nhận: ui/schedule_button.dart; nhãn: ui/my_schedule_page.dart.
+- Test logic/widget: flutter test test/schedule_conflict_test.dart. Test Android: flutter drive --driver=test_driver/integration_test.dart --target=integration_test/schedule_conflict_test.dart -d emulator-5556 --keep-app-running --host-vmservice-port=55123 (chỉ máy thử riêng).

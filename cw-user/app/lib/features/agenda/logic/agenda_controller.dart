@@ -156,15 +156,21 @@ class AgendaController extends ChangeNotifier {
     }
   }
 
-  Future<String?> toggleSession(String eventId, String sessionId) async {
+  Future<String?> toggleSession(String eventId, String sessionId, {bool allowConflicts = false}) async {
     if (savingSchedule || !_scheduleLoaded) return null;
     final selection = (eventId: eventId, sessionId: sessionId);
-    final exists = events.any(
-      (event) =>
-          event.id == eventId &&
-          event.sessions.any((session) => session.id == sessionId),
-    );
-    if (!exists) return null;
+    PlannedSession? candidate;
+    for (final event in events) {
+      if (event.id != eventId) continue;
+      for (final session in event.sessions) {
+        if (session.id == sessionId) candidate = PlannedSession(event, session);
+      }
+    }
+    if (candidate == null) return null;
+    if (!_planned.contains(selection) && !allowConflicts) {
+      final conflicts = scheduleConflicts(candidate, schedule);
+      if (conflicts.isNotEmpty) throw ScheduleConflict(conflicts);
+    }
     savingSchedule = true;
     notifyListeners();
     try {

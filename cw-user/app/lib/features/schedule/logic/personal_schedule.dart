@@ -58,3 +58,24 @@ List<PlannedSession> personalSchedule(
   });
   return entries;
 }
+
+class ScheduleConflict implements Exception {
+  const ScheduleConflict(this.entries);
+  final List<PlannedSession> entries;
+}
+
+List<PlannedSession> scheduleConflicts(
+  PlannedSession candidate,
+  List<PlannedSession> planned,
+) {
+  if (!candidate.session.hasTimeRange) return [];
+  final date = candidate.event.date;
+  return planned.where((entry) {
+    if (entry.event.id == candidate.event.id && entry.session.id == candidate.session.id) return false;
+    final other = entry.event.date;
+    return date.year == other.year && date.month == other.month && date.day == other.day &&
+        entry.session.hasTimeRange &&
+        candidate.session.time.compareTo(entry.session.endTime) < 0 &&
+        entry.session.time.compareTo(candidate.session.endTime) < 0;
+  }).toList();
+}

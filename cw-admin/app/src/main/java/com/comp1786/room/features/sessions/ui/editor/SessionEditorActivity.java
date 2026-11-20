@@ -54,6 +54,8 @@ public class SessionEditorActivity extends AppCompatActivity {
                 : getString(R.string.session_id, sessionId));
         binding.typeInput.setAdapter(new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, SessionValidation.TYPES));
+        new com.comp1786.room.shared.ui.TimeField(this, ui, binding.timeInput);
+        new com.comp1786.room.shared.ui.TimeField(this, ui, binding.endTimeInput);
         binding.back.setOnClickListener(view -> finish());
         binding.moreOptions.setOnClickListener(view -> toggleOptional());
         binding.save.setOnClickListener(view -> save());
@@ -101,6 +103,7 @@ public class SessionEditorActivity extends AppCompatActivity {
     private void fillForm(Session session) {
         binding.nameInput.setText(session.name);
         binding.timeInput.setText(session.time);
+        binding.endTimeInput.setText(session.endTime);
         binding.speakerInput.setText(session.speaker);
         binding.roomInput.setText(session.room);
         binding.descriptionInput.setText(session.description);
@@ -109,10 +112,12 @@ public class SessionEditorActivity extends AppCompatActivity {
     }
 
     private Session readForm() {
-        return new Session(sessionId, eventId, binding.nameInput.getText().toString(),
+        Session session = new Session(sessionId, eventId, binding.nameInput.getText().toString(),
                 binding.timeInput.getText().toString(), binding.speakerInput.getText().toString(),
                 binding.roomInput.getText().toString(), binding.typeInput.getSelectedItem().toString(),
                 binding.descriptionInput.getText().toString());
+        session.endTime = binding.endTimeInput.getText().toString().trim();
+        return session;
     }
 
     private void save() {
@@ -121,8 +126,10 @@ public class SessionEditorActivity extends AppCompatActivity {
                 SessionValidation.validName(session.name), R.string.required);
         boolean timeValid = ui.inlineValidation(binding.timeInput,
                 SessionValidation.validTime(session.time), R.string.session_invalid_time);
-        if (!nameValid || !timeValid) {
-            (nameValid ? binding.timeInput : binding.nameInput).requestFocus();
+        boolean endValid = ui.inlineValidation(binding.endTimeInput,
+                SessionValidation.validRange(session.time, session.endTime), R.string.session_invalid_end_time);
+        if (!nameValid || !timeValid || !endValid) {
+            (nameValid ? (timeValid ? binding.endTimeInput : binding.timeInput) : binding.nameInput).requestFocus();
             return;
         }
         setActionsEnabled(false);
@@ -170,6 +177,7 @@ public class SessionEditorActivity extends AppCompatActivity {
         fillForm(new Session(sessionId, eventId, state.getString("name", ""), state.getString("time", ""),
                 state.getString("speaker", ""), state.getString("room", ""),
                 state.getString("type", "Workshop"), state.getString("description", "")));
+        binding.endTimeInput.setText(state.getString("endTime", ""));
         showOptional(state.getBoolean("optional"));
         loaded = true;
         setActionsEnabled(!model.isBusy());
@@ -180,6 +188,7 @@ public class SessionEditorActivity extends AppCompatActivity {
         state.putBoolean("loaded", loaded);
         state.putString("name", draft.name);
         state.putString("time", draft.time);
+        state.putString("endTime", draft.endTime);
         state.putString("speaker", draft.speaker);
         state.putString("room", draft.room);
         state.putString("type", draft.type);

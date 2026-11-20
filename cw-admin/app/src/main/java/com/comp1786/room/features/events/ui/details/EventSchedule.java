@@ -70,7 +70,7 @@ public final class EventSchedule {
     }
 
     private void bindRow(EventScheduleItemBinding row, Session session) {
-        row.time.setText(session.time);
+        row.time.setText(session.timeRange());
         row.name.setText(session.name);
         String detail = session.room.isEmpty() ? session.speaker : session.room;
         row.meta.setText(detail.isEmpty() ? session.type

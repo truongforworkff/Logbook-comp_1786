@@ -80,6 +80,20 @@
                 android:saveEnabled="true"/>
             <TextView
                 style="@style/FieldLabel"
+                android:text="@string/session_end_time"
+                android:labelFor="@id/endTimeInput"/>
+            <EditText
+                style="@style/EventField"
+                android:id="@+id/endTimeInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:inputType="time"
+                android:maxLength="5"
+                android:hint="@string/choose_time_hint"
+                android:saveEnabled="true"/>
+            <TextView
+                style="@style/FieldLabel"
                 android:text="@string/session_type"
                 android:labelFor="@id/typeInput"/>
             <Spinner

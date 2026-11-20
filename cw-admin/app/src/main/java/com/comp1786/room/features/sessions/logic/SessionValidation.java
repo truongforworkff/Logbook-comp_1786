@@ -17,8 +17,12 @@ public final class SessionValidation {
         return value.matches("([01][0-9]|2[0-3]):[0-5][0-9]");
     }
 
+    public static boolean validRange(String start, String end) {
+        return validTime(start) && validTime(end) && end.compareTo(start) > 0;
+    }
+
     public static boolean valid(Session session) {
-        return session.id >= 0 && session.eventId != null && session.eventId > 0 && validName(session.name) && validTime(session.time)
+        return session.id >= 0 && session.eventId != null && session.eventId > 0 && validName(session.name) && validRange(session.time, session.endTime)
                 && TYPES.contains(session.type) && session.speaker.length() <= 120
                 && session.room.length() <= 120 && session.description.length() <= 2000;
     }

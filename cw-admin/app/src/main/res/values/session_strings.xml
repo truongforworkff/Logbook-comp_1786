@@ -34,7 +34,7 @@
     <string name="session_event_missing">Sự kiện không còn tồn tại. Vui lòng quay lại danh sách.</string>
     <string name="session_loading_count">Đang tải session…</string>
     <string name="delete_with_sessions">Sự kiện và toàn bộ session thuộc sự kiện sẽ bị xóa khỏi thiết bị.</string>
-    <string name="session_time_label">Giờ bắt đầu</string>
+    <string name="session_time_label">Thời gian</string>
     <string name="session_speaker_label">Diễn giả</string>
     <string name="session_room_label">Phòng</string>
     <string name="about_session">Nội dung session</string>
@@ -55,4 +55,10 @@
     <string name="session_search_count">%1$d / %2$d session</string>
     <string name="choose_date_hint">Chạm để chọn ngày</string>
     <string name="clear_date">Xóa ngày đã chọn</string>
+    <string name="session_end_time">Giờ kết thúc *</string>
+    <string name="session_invalid_end_time">Chọn giờ kết thúc sau giờ bắt đầu, trong cùng ngày.</string>
+    <string name="choose_time_hint">Chạm để chọn giờ</string>
+    <string name="pick_time">Chọn giờ</string>
+    <string name="pick_time_hint">Giờ theo định dạng 24 giờ, trong ngày của sự kiện.</string>
+    <string name="use_time">Dùng giờ này</string>
 </resources>

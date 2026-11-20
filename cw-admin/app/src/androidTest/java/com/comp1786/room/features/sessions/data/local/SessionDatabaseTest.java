@@ -10,6 +10,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class SessionDatabaseTest {
+    @Test public void upgradeFromVersion5KeepsSyncIdentityAndUnknownDuration() { verifyUpgrade(5); }
     @Test public void upgradeFromVersion4KeepsPhotosAndCreatesSyncState() { verifyUpgrade(4); }
     @Test public void upgradeFromVersion1() { verifyUpgrade(1); }
     @Test public void upgradeFromVersion2KeepsUnassignedSessions() { verifyUpgrade(2); }
@@ -37,6 +38,13 @@ public class SessionDatabaseTest {
             old.execSQL("ALTER TABLE events ADD COLUMN imageUri TEXT NOT NULL DEFAULT ''");
             old.execSQL("UPDATE events SET categoryCode='AI', imageUri='file:///cover.jpg'");
         }
+        if (version == 5) {
+            old.execSQL("ALTER TABLE events ADD COLUMN publicId TEXT NOT NULL DEFAULT ''");
+            old.execSQL("UPDATE events SET publicId='keep-public-id'");
+            old.execSQL("CREATE UNIQUE INDEX index_events_publicId ON events(publicId)");
+            old.execSQL("CREATE TABLE sync_state (id INTEGER NOT NULL PRIMARY KEY, sourceId TEXT NOT NULL, revision INTEGER NOT NULL DEFAULT 0, uploadedRevision INTEGER NOT NULL DEFAULT -1, syncedAt INTEGER NOT NULL DEFAULT 0, error TEXT NOT NULL DEFAULT '')");
+            old.execSQL("INSERT INTO sync_state VALUES(1, 'keep-source', 7, 6, 123, '')");
+        }
         old.setVersion(version);
         old.close();
         EventDatabase db = open(context, name);
@@ -47,9 +55,16 @@ public class SessionDatabaseTest {
             String publicId = db.events().getAll().get(0).publicId;
             assertFalse(publicId.isEmpty());
             assertNotNull(db.sync().get());
+            if (version == 5) {
+                assertEquals("keep-public-id", publicId);
+                assertEquals("keep-source", db.sync().get().sourceId);
+                assertEquals(7, db.sync().get().revision);
+                assertEquals(6, db.sync().get().uploadedRevision);
+            }
             if (version >= 2) {
                 Session legacy = db.sessions().getAll().get(0);
                 assertEquals(42, legacy.id);
+                assertEquals("", legacy.endTime);
                 if (version == 2) assertNull(legacy.eventId);
                 else assertEquals(Long.valueOf(1), legacy.eventId);
                 assertEquals("Keep all fields", legacy.description);
@@ -58,6 +73,7 @@ public class SessionDatabaseTest {
                 db.sessions().delete(legacy);
             }
             Session first = new Session(0, 1L,"Welcome","09:30","Speaker","Room 1","Keynote","Opening");
+            first.endTime = "10:15";
             first.id = db.sessions().insert(first);
             long second = db.sessions().insert(new Session(0, 1L,"Networking","10:30","","","Networking",""));
             assertTrue(first.id > 0);
@@ -68,13 +84,16 @@ public class SessionDatabaseTest {
             assertTrue(db.sync().get().pending());
             assertEquals(2, db.sessions().getAll().size());
             Session loaded = db.sessions().getAll().get(0);
+            assertEquals("10:15", loaded.endTime);
             assertEquals("Speaker", loaded.speaker);
             assertEquals("Room 1", loaded.room);
             assertEquals("Opening", loaded.description);
             loaded.name = "Updated";
             loaded.time = "11:00";
+            loaded.endTime = "12:00";
             assertEquals(1, db.sessions().update(loaded));
             assertEquals("Updated", db.sessions().getAll().get(1).name);
+            assertEquals("12:00", db.sessions().getAll().get(1).endTime);
             assertEquals(1, db.sessions().delete(loaded));
             assertEquals(1, db.sessions().getAll().size());
             assertEquals(1, db.events().getAll().size());
@@ -94,7 +113,7 @@ public class SessionDatabaseTest {
 
     private EventDatabase open(Context context, String name) {
         return Room.databaseBuilder(context, EventDatabase.class, name)
-                .addMigrations(EventDatabase.MIGRATION_1_2, EventDatabase.MIGRATION_2_3, EventDatabase.MIGRATION_3_4, EventDatabase.MIGRATION_4_5)
+                .addMigrations(EventDatabase.MIGRATION_1_2, EventDatabase.MIGRATION_2_3, EventDatabase.MIGRATION_3_4, EventDatabase.MIGRATION_4_5, EventDatabase.MIGRATION_5_6)
                 .addCallback(com.comp1786.room.features.cloud.data.SyncSchema.CALLBACK).build();
     }
 }

@@ -102,7 +102,7 @@ class SessionDetailsPage extends StatelessWidget {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              session.time,
+                              session.timeRange,
                               style: const TextStyle(
                                 color: AppColors.blue,
                                 fontWeight: FontWeight.w700,

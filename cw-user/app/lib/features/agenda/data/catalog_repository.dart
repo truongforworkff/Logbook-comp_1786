@@ -71,11 +71,16 @@ class CatalogData {
         final value = Map<String, dynamic>.from(session);
         validateText(value, ['id', 'name', 'time']);
         validateText(value, [
+          'endTime',
           'speaker',
           'room',
           'type',
           'description',
         ], optional: true);
+        final endTime = value['endTime'] as String? ?? '';
+        if (endTime.isNotEmpty && !SessionInfo.fromJson(value).hasTimeRange) {
+          throw const FormatException('Invalid session interval');
+        }
         if (!RegExp(r'^(?:[01]\d|2[0-3]):[0-5]\d$')
                 .hasMatch(value['time'] as String) ||
             !ids.add(value['id'] as String)) {

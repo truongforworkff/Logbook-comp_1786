@@ -17,10 +17,16 @@ public class Session {
     @Nullable public Long eventId;
     @NonNull public String name;
     @NonNull public String time;
+    @androidx.room.ColumnInfo(defaultValue = "''")
+    @NonNull public String endTime = "";
     @NonNull public String speaker;
     @NonNull public String room;
     @NonNull public String type;
     @NonNull public String description;
+
+    public String timeRange() {
+        return endTime.isEmpty() ? time : time + " – " + endTime;
+    }
 
     public Session(long id, @Nullable Long eventId, @NonNull String name, @NonNull String time, @NonNull String speaker,
                    @NonNull String room, @NonNull String type, @NonNull String description) {

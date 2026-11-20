@@ -87,6 +87,10 @@ public final class CloudSnapshot {
         row.put("id", eventId + "-session-" + session.id);
         row.put("name", session.name);
         row.put("time", session.time);
+        if (!session.endTime.isEmpty()
+                && !com.comp1786.room.features.sessions.logic.SessionValidation.validRange(session.time, session.endTime))
+            throw new IllegalArgumentException("Session có khoảng giờ không hợp lệ: " + session.name);
+        row.put("endTime", session.endTime);
         row.put("speaker", session.speaker);
         row.put("room", session.room);
         row.put("type", session.type);

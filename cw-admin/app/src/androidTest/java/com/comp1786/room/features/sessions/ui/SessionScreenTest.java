@@ -39,6 +39,10 @@ public class SessionScreenTest {
             test.runOnMainSync(() -> activity.findViewById(R.id.save).performClick());
             assertFalse(activity.isFinishing());
             fill(test, activity, R.id.timeInput, "09:30");
+            fill(test, activity, R.id.endTimeInput, "09:00");
+            test.runOnMainSync(() -> activity.findViewById(R.id.save).performClick());
+            assertFalse(activity.isFinishing());
+            fill(test, activity, R.id.endTimeInput, "10:30");
             test.runOnMainSync(() -> activity.findViewById(R.id.moreOptions).performClick());
             fill(test, activity, R.id.speakerInput, "Guest");
             fill(test, activity, R.id.descriptionInput, "Optional details");
@@ -56,7 +60,7 @@ public class SessionScreenTest {
                 test.runOnMainSync(() -> edit.findViewById(R.id.save).performClick());
                 awaitFinished(test, edit);
                 final long savedId = id;
-                assertTrue(dao.getAll().stream().anyMatch(s -> s.id == savedId && s.name.equals("Session UI updated") && s.speaker.equals("Guest")));
+                assertTrue(dao.getAll().stream().anyMatch(s -> s.id == savedId && s.name.equals("Session UI updated") && s.speaker.equals("Guest") && s.endTime.equals("10:30")));
             } finally { test.runOnMainSync(edit::finish); }
 
             SessionEditorActivity remove = launch(test, context, id);
@@ -199,6 +203,7 @@ public class SessionScreenTest {
             }
             assertTrue(loaded[0]);
             test.runOnMainSync(() -> {
+                assertEquals("09:30 – 10:30", ((android.widget.TextView) page.findViewById(R.id.time)).getText().toString());
                 assertEquals("Guest", ((android.widget.TextView) page.findViewById(R.id.speaker)).getText().toString());
                 assertEquals("Optional details", ((android.widget.TextView) page.findViewById(R.id.description)).getText().toString());
                 assertFalse(page.findViewById(R.id.title) instanceof EditText);

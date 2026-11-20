@@ -70,7 +70,7 @@ class MySchedulePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  entry.session.time,
+                  entry.session.timeRange,
                   style: const TextStyle(
                     color: AppColors.blue,
                     fontWeight: FontWeight.w700,
@@ -97,6 +97,33 @@ class MySchedulePage extends StatelessWidget {
             ),
           ),
         ),
+        if (!entry.session.hasTimeRange) ...[
+          const Text(
+            'Chưa có giờ kết thúc; chưa kiểm tra được trùng lịch.',
+            style: TextStyle(fontSize: 12, color: AppColors.muted),
+          ),
+          const SizedBox(height: 12),
+        ] else if (scheduleConflicts(entry, controller.schedule).isNotEmpty) ...[
+          Container(
+            key: Key('conflict-${entry.event.id}-${entry.session.id}'),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF5E7),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Row(
+              children: [
+                Icon(Icons.schedule_outlined, color: Color(0xFF885419), size: 18),
+                SizedBox(width: 8),
+                Expanded(child: Text(
+                  'Trùng giờ với session khác trong lịch',
+                  style: TextStyle(color: Color(0xFF885419), fontSize: 12),
+                )),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+        ],
         ScheduleButton(
           controller: controller,
           eventId: entry.event.id,

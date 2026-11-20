@@ -18,7 +18,7 @@ public final class SessionAdapter extends ListAdapter<Session, SessionAdapter.Ho
                 return a.id == b.id;
             }
             @Override public boolean areContentsTheSame(@NonNull Session a, @NonNull Session b) {
-                return a.name.equals(b.name) && a.time.equals(b.time) && a.type.equals(b.type);
+                return a.name.equals(b.name) && a.time.equals(b.time) && a.endTime.equals(b.endTime) && a.type.equals(b.type);
             }
         });
         this.onSelect = onSelect;
@@ -31,7 +31,7 @@ public final class SessionAdapter extends ListAdapter<Session, SessionAdapter.Ho
     @Override public void onBindViewHolder(@NonNull Holder holder, int position) {
         Session session = getItem(position);
         holder.binding.name.setText(session.name);
-        holder.binding.time.setText(session.time);
+        holder.binding.time.setText(session.timeRange());
         holder.binding.type.setText(session.type);
         // Read the current item so edits to optional fields cannot leave a stale click target.
         holder.binding.getRoot().setOnClickListener(view -> {
