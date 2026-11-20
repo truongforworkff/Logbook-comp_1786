@@ -156,7 +156,11 @@ class AgendaController extends ChangeNotifier {
     }
   }
 
-  Future<String?> toggleSession(String eventId, String sessionId, {bool allowConflicts = false}) async {
+  Future<String?> toggleSession(
+    String eventId,
+    String sessionId, {
+    bool allowConflicts = false,
+  }) async {
     if (savingSchedule || !_scheduleLoaded) return null;
     final selection = (eventId: eventId, sessionId: sessionId);
     PlannedSession? candidate;

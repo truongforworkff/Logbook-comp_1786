@@ -10,7 +10,9 @@ import '../test/support/conflict_catalog.dart';
 
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  testWidgets('Android confirms conflicts and retains them after reopening', (tester) async {
+  testWidgets('Android confirms conflicts and retains them after reopening', (
+    tester,
+  ) async {
     final store = ScheduleStore();
     final original = await store.load();
     addTearDown(() => store.save(original));
@@ -20,13 +22,23 @@ void main() {
     addTearDown(controller.dispose);
     await controller.load();
     final event = catalog.entries.last;
-    await tester.pumpWidget(MaterialApp(home: SessionDetailsPage(
-      event: event, session: event.sessions.first, controller: controller)));
+    await tester.pumpWidget(
+      MaterialApp(
+        home: SessionDetailsPage(
+          event: event,
+          session: event.sessions.first,
+          controller: controller,
+        ),
+      ),
+    );
     await tester.pumpAndSettle();
     await binding.convertFlutterSurfaceToImage();
     await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(find.byKey(const Key('plan-b')), 180,
-      scrollable: find.byType(Scrollable).first);
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('plan-b')),
+      180,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('plan-b')));
     await tester.pumpAndSettle();
@@ -43,7 +55,10 @@ void main() {
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pumpAndSettle();
 
-    final reopened = AgendaController(catalog: ConflictCatalog(), schedule: ScheduleStore());
+    final reopened = AgendaController(
+      catalog: ConflictCatalog(),
+      schedule: ScheduleStore(),
+    );
     addTearDown(reopened.dispose);
     reopened.selectTab(AgendaTab.schedule);
     await tester.pumpWidget(EventaApp(controller: reopened));
@@ -51,8 +66,11 @@ void main() {
     expect(find.text('2 session đã chọn'), findsOneWidget);
     expect(find.byKey(const Key('conflict-one-a')), findsOneWidget);
     await binding.takeScreenshot('09-my-schedule-conflicts');
-    await tester.scrollUntilVisible(find.byKey(const Key('plan-b')), 180,
-      scrollable: find.byType(Scrollable).first);
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('plan-b')),
+      180,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('plan-b')));
     await tester.pumpAndSettle();

@@ -2,15 +2,31 @@ import 'package:eventa_user/features/agenda/data/catalog_repository.dart';
 import 'package:eventa_user/features/agenda/data/event_info.dart';
 
 SessionInfo timedSession(String id, String start, String end) => SessionInfo(
-  id: id, name: 'Session $id', time: start, endTime: end,
-  speaker: '', room: 'A201', type: 'Workshop', description: '',
+  id: id,
+  name: 'Session $id',
+  time: start,
+  endTime: end,
+  speaker: '',
+  room: 'A201',
+  type: 'Workshop',
+  description: '',
 );
 
-EventInfo timedEvent(String id, String date, List<SessionInfo> sessions) => EventInfo(
-  id: id, name: 'Sự kiện $id', date: DateTime.parse(date), location: 'Hà Nội',
-  organiser: 'Eventa', type: 'Workshop', status: 'Upcoming', categoryCode: 'AI',
-  image: '', description: '', source: '', sessions: sessions,
-);
+EventInfo timedEvent(String id, String date, List<SessionInfo> sessions) =>
+    EventInfo(
+      id: id,
+      name: 'Sự kiện $id',
+      date: DateTime.parse(date),
+      location: 'Hà Nội',
+      organiser: 'Eventa',
+      type: 'Workshop',
+      status: 'Upcoming',
+      categoryCode: 'AI',
+      image: '',
+      description: '',
+      source: '',
+      sessions: sessions,
+    );
 
 class ConflictCatalog extends CatalogRepository {
   final entries = [

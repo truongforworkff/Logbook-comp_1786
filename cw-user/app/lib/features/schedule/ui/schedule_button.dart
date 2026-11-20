@@ -25,13 +25,18 @@ class _ScheduleButtonState extends State<ScheduleButton> {
     try {
       String? message;
       try {
-        message = await widget.controller.toggleSession(widget.eventId, widget.sessionId);
+        message = await widget.controller.toggleSession(
+          widget.eventId,
+          widget.sessionId,
+        );
       } on ScheduleConflict catch (conflict) {
         if (!mounted) return;
         final confirmed = await _confirm(conflict.entries);
         if (!mounted || confirmed != true) return;
         message = await widget.controller.toggleSession(
-          widget.eventId, widget.sessionId, allowConflicts: true,
+          widget.eventId,
+          widget.sessionId,
+          allowConflicts: true,
         );
       }
       if (mounted && message != null) {
@@ -64,7 +69,10 @@ class _ScheduleButtonState extends State<ScheduleButton> {
           const Text('Bạn đã chọn các session diễn ra cùng thời gian:'),
           for (final entry in entries) ...[
             const SizedBox(height: 16),
-            Text(entry.session.name, style: const TextStyle(fontWeight: FontWeight.w700)),
+            Text(
+              entry.session.name,
+              style: const TextStyle(fontWeight: FontWeight.w700),
+            ),
             Text('${entry.session.timeRange} · ${entry.event.name}'),
           ],
           const SizedBox(height: 16),
@@ -88,12 +96,17 @@ class _ScheduleButtonState extends State<ScheduleButton> {
 
   @override
   Widget build(BuildContext context) {
-    final selected = widget.controller.hasPlannedSession(widget.eventId, widget.sessionId);
+    final selected = widget.controller.hasPlannedSession(
+      widget.eventId,
+      widget.sessionId,
+    );
     return Semantics(
       toggled: selected,
       child: OutlinedButton.icon(
         key: Key('plan-${widget.sessionId}'),
-        onPressed: _working || widget.controller.savingSchedule ? null : _toggle,
+        onPressed: _working || widget.controller.savingSchedule
+            ? null
+            : _toggle,
         icon: Icon(
           selected ? Icons.event_available_outlined : Icons.event_note_outlined,
           size: 19,

@@ -103,7 +103,10 @@ class MySchedulePage extends StatelessWidget {
             style: TextStyle(fontSize: 12, color: AppColors.muted),
           ),
           const SizedBox(height: 12),
-        ] else if (scheduleConflicts(entry, controller.schedule).isNotEmpty) ...[
+        ] else if (scheduleConflicts(
+          entry,
+          controller.schedule,
+        ).isNotEmpty) ...[
           Container(
             key: Key('conflict-${entry.event.id}-${entry.session.id}'),
             padding: const EdgeInsets.all(12),
@@ -113,12 +116,18 @@ class MySchedulePage extends StatelessWidget {
             ),
             child: const Row(
               children: [
-                Icon(Icons.schedule_outlined, color: Color(0xFF885419), size: 18),
+                Icon(
+                  Icons.schedule_outlined,
+                  color: Color(0xFF885419),
+                  size: 18,
+                ),
                 SizedBox(width: 8),
-                Expanded(child: Text(
-                  'Trùng giờ với session khác trong lịch',
-                  style: TextStyle(color: Color(0xFF885419), fontSize: 12),
-                )),
+                Expanded(
+                  child: Text(
+                    'Trùng giờ với session khác trong lịch',
+                    style: TextStyle(color: Color(0xFF885419), fontSize: 12),
+                  ),
+                ),
               ],
             ),
           ),

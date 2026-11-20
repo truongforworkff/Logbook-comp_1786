@@ -67,7 +67,9 @@ class SessionInfo {
 
   bool get hasTimeRange {
     final clock = RegExp(r'^(?:[01]\d|2[0-3]):[0-5]\d$');
-    return clock.hasMatch(time) && clock.hasMatch(endTime) && endTime.compareTo(time) > 0;
+    return clock.hasMatch(time) &&
+        clock.hasMatch(endTime) &&
+        endTime.compareTo(time) > 0;
   }
 
   String get timeRange => hasTimeRange ? '$time – $endTime' : time;
