@@ -6,7 +6,7 @@ class AuthRepository {
   AuthRepository({FirebaseAuth? auth}) : auth = auth ?? FirebaseAuth.instance;
   final FirebaseAuth auth;
   Future<void>? _googleReady;
-  Stream<User?> watch() => auth.authStateChanges();
+  Stream<User?> watch() => auth.userChanges();
 
   Future<void> signIn(String email, String password) async {
     await auth.signInWithEmailAndPassword(email: email.trim(), password: password);

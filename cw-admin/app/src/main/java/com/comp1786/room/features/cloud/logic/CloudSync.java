@@ -45,10 +45,12 @@ public final class CloudSync {
     }
 
     public static void uploadAfterLogin(Context context) {
-        java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
+        java.util.concurrent.ExecutorService worker = java.util.concurrent.Executors.newSingleThreadExecutor();
+        worker.execute(() -> {
             EventDatabase.get(context).sync().requestUpload();
             enqueue(context);
         });
+        worker.shutdown();
     }
 
     public static void cancel(Context context) {

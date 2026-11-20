@@ -6,7 +6,7 @@ import '../../schedule/logic/personal_schedule.dart';
 import '../logic/personal_selection.dart';
 
 String preferenceId(String eventId, [String? sessionId]) =>
-    base64UrlEncode(utf8.encode(jsonEncode([eventId, if (sessionId != null) sessionId]))).replaceAll('=', '');
+    base64UrlEncode(utf8.encode(jsonEncode([eventId, ?sessionId]))).replaceAll('=', '');
 
 class PersonalDataRepository extends ChangeNotifier {
   PersonalDataRepository({required this.uid, FirebaseFirestore? firestore})

@@ -93,3 +93,45 @@ test('rotating the private build configuration blocks older Admin builds', async
   await assertFails(publish(db, data(2)));
   await assertSucceeds(publish(db, data(2), '2'.repeat(64)));
 });
+
+test('roles cannot be self-assigned and private preferences are isolated by UID', async () => {
+  const a = env.authenticatedContext('attendee-a', {email: 'a@test.eventa'}).firestore();
+  const b = env.authenticatedContext('attendee-b', {email: 'b@test.eventa'}).firestore();
+  const anonymous = env.unauthenticatedContext().firestore();
+  await assertSucceeds(setDoc(doc(a, 'users/attendee-a'), {displayName: 'A', email: 'a@test.eventa', updatedAt: serverTimestamp()}));
+  await assertFails(setDoc(doc(a, 'roles/attendee-a'), {role: 'admin'}));
+  await assertFails(setDoc(doc(a, 'users/attendee-a'), {displayName: 'A', email: 'a@test.eventa', role: 'admin', updatedAt: serverTimestamp()}));
+  const fav = 'users/attendee-a/favourites/first';
+  const schedule = 'users/attendee-a/schedule/first';
+  await assertSucceeds(setDoc(doc(a, fav), {eventId: 'e', updatedAt: serverTimestamp()}));
+  await assertSucceeds(setDoc(doc(a, schedule), {eventId: 'e', sessionId: 's', updatedAt: serverTimestamp()}));
+  for (const path of [fav, schedule, 'users/attendee-a']) {
+    await assertFails(getDoc(doc(b, path)));
+    await assertFails(getDoc(doc(anonymous, path)));
+    await assertFails(deleteDoc(doc(b, path)));
+  }
+  await assertFails(setDoc(doc(b, fav), {eventId: 'other', updatedAt: serverTimestamp()}));
+  await assertFails(setDoc(doc(a, 'users/attendee-a/schedule/invalid'), {eventId: '', sessionId: 's', updatedAt: serverTimestamp()}));
+  await assertFails(getDocs(collection(b, 'users/attendee-a/favourites')));
+  await assertSucceeds(deleteDoc(doc(a, fav)));
+});
+
+test('only a provisioned Admin can publish the role catalog; revocation blocks writes', async () => {
+  const admin = env.authenticatedContext('admin').firestore();
+  const user = env.authenticatedContext('user').firestore();
+  const anonymous = env.unauthenticatedContext().firestore();
+  const catalog = {...data(), updatedBy: 'admin'};
+  await assertFails(setDoc(doc(user, 'role_catalogues/main'), {...catalog, updatedBy: 'user'}));
+  await env.withSecurityRulesDisabled(async context => {
+    await setDoc(doc(context.firestore(), 'roles/admin'), {role: 'admin'});
+  });
+  await assertSucceeds(setDoc(doc(admin, 'role_catalogues/main'), catalog));
+  await assertSucceeds(getDoc(doc(user, 'role_catalogues/main')));
+  await assertFails(getDoc(doc(anonymous, 'role_catalogues/main')));
+  await assertFails(setDoc(doc(admin, 'role_catalogues/main'), {...catalog, revision: 2, updatedBy: 'user'}));
+  await env.withSecurityRulesDisabled(async context => {
+    await deleteDoc(doc(context.firestore(), 'roles/admin'));
+  });
+  await assertFails(setDoc(doc(admin, 'role_catalogues/main'), {...catalog, revision: 2}));
+  await assertFails(getDoc(doc(admin, 'users/attendee-a')));
+});
