@@ -40,6 +40,7 @@ public class SessionScreenTest {
             assertFalse(activity.isFinishing());
             fill(test, activity, R.id.timeInput, "09:30");
             test.runOnMainSync(() -> activity.findViewById(R.id.endTimeInput).performClick());
+            awaitPopup(test, "primary");
             screenshot(test, "22-session-time-picker.png");
             clickPopup(test, "primary");
             test.runOnMainSync(() -> assertEquals("09:00",
@@ -260,17 +261,26 @@ public class SessionScreenTest {
     }
 
     private void clickPopup(Instrumentation test, String id) throws Exception {
+        assertTrue(awaitPopup(test, id).performAction(
+                android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK));
+        test.waitForIdleSync();
+    }
+
+    private android.view.accessibility.AccessibilityNodeInfo awaitPopup(Instrumentation test, String id) throws Exception {
         android.accessibilityservice.AccessibilityServiceInfo info = test.getUiAutomation().getServiceInfo();
         info.flags |= android.accessibilityservice.AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS;
         test.getUiAutomation().setServiceInfo(info);
-        test.getUiAutomation().waitForIdle(300, 5000);
-        android.view.accessibility.AccessibilityNodeInfo root = test.getUiAutomation().getRootInActiveWindow();
-        assertNotNull(root);
-        java.util.List<android.view.accessibility.AccessibilityNodeInfo> nodes =
-                root.findAccessibilityNodeInfosByViewId("com.comp1786.eventa.admin:id/" + id);
-        assertFalse(nodes.isEmpty());
-        assertTrue(nodes.get(0).performAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK));
-        test.waitForIdleSync();
+        long deadline = android.os.SystemClock.uptimeMillis() + 5000;
+        while (android.os.SystemClock.uptimeMillis() < deadline) {
+            android.view.accessibility.AccessibilityNodeInfo root = test.getUiAutomation().getRootInActiveWindow();
+            if (root != null) {
+                java.util.List<android.view.accessibility.AccessibilityNodeInfo> nodes =
+                        root.findAccessibilityNodeInfosByViewId("com.comp1786.eventa.admin:id/" + id);
+                if (!nodes.isEmpty()) return nodes.get(0);
+            }
+            Thread.sleep(100);
+        }
+        throw new AssertionError("Popup button did not appear: " + id);
     }
 
     private void screenshot(Instrumentation test, String name) throws Exception {

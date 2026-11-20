@@ -72,8 +72,9 @@ List<PlannedSession> scheduleConflicts(
   final date = candidate.event.date;
   return planned.where((entry) {
     if (entry.event.id == candidate.event.id &&
-        entry.session.id == candidate.session.id)
+        entry.session.id == candidate.session.id) {
       return false;
+    }
     final other = entry.event.date;
     return date.year == other.year &&
         date.month == other.month &&

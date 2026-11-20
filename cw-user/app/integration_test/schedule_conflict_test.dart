@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:eventa_user/app.dart';
+import 'package:eventa_user/shared/ui/app_theme.dart';
 import 'package:eventa_user/features/agenda/logic/agenda_controller.dart';
 import 'package:eventa_user/features/agenda/ui/session_details_page.dart';
 import 'package:eventa_user/features/schedule/data/schedule_store.dart';
@@ -24,6 +25,7 @@ void main() {
     final event = catalog.entries.last;
     await tester.pumpWidget(
       MaterialApp(
+        theme: appTheme(),
         home: SessionDetailsPage(
           event: event,
           session: event.sessions.first,
