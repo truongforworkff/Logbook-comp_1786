@@ -7,9 +7,10 @@ SharedPreferencesAsync createLocalPreferences() => SharedPreferencesAsync(
   options: !kIsWeb && defaultTargetPlatform == TargetPlatform.android
       ? const SharedPreferencesAsyncAndroidOptions(
           backend: SharedPreferencesAndroidBackendLibrary.SharedPreferences,
-          originalSharedPreferencesOptions: AndroidSharedPreferencesStoreOptions(
-            fileName: 'com.comp1786.eventa.user_preferences',
-          ),
+          originalSharedPreferencesOptions:
+              AndroidSharedPreferencesStoreOptions(
+                fileName: 'com.comp1786.eventa.user_preferences',
+              ),
         )
       : const SharedPreferencesOptions(),
 );

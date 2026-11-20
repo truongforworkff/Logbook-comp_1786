@@ -20,10 +20,18 @@ class ScheduleCatalog extends CatalogRepository {
 
 EventInfo withSessions(EventInfo event, List<SessionInfo> sessions) =>
     EventInfo(
-      id: event.id, name: event.name, date: event.date,
-      location: event.location, organiser: event.organiser, type: event.type,
-      status: event.status, categoryCode: event.categoryCode, image: event.image,
-      description: event.description, source: event.source, sessions: sessions,
+      id: event.id,
+      name: event.name,
+      date: event.date,
+      location: event.location,
+      organiser: event.organiser,
+      type: event.type,
+      status: event.status,
+      categoryCode: event.categoryCode,
+      image: event.image,
+      description: event.description,
+      source: event.source,
+      sessions: sessions,
     );
 
 void main() {
@@ -59,7 +67,9 @@ void main() {
     final store = MemorySchedule();
     final favourites = MemoryFavourites({event.id});
     AgendaController controller() => AgendaController(
-      catalog: FixtureCatalog(), favourites: favourites, schedule: store,
+      catalog: FixtureCatalog(),
+      favourites: favourites,
+      schedule: store,
     );
     final first = controller();
     await first.load();
@@ -70,7 +80,10 @@ void main() {
     await reopened.load();
     expect(reopened.hasPlannedSession(event.id, session.id), isTrue);
     store.failWrites = true;
-    await expectLater(reopened.toggleSession(event.id, session.id), throwsStateError);
+    await expectLater(
+      reopened.toggleSession(event.id, session.id),
+      throwsStateError,
+    );
     expect(reopened.hasPlannedSession(event.id, session.id), isTrue);
     expect(reopened.savingSchedule, isFalse);
     store.failWrites = false;
@@ -86,18 +99,28 @@ void main() {
     final catalog = ScheduleCatalog();
     final store = MemorySchedule({selection});
     final controller = AgendaController(
-      catalog: catalog, favourites: MemoryFavourites(), schedule: store,
+      catalog: catalog,
+      favourites: MemoryFavourites(),
+      schedule: store,
     );
     final ready = controller.load();
     await Future<void>.delayed(Duration.zero);
     catalog.updates.add(CatalogData([event]));
     await ready;
     final updated = SessionInfo(
-      id: session.id, name: 'Tên mới', time: '07:15',
-      speaker: session.speaker, room: 'B201', type: session.type,
+      id: session.id,
+      name: 'Tên mới',
+      time: '07:15',
+      speaker: session.speaker,
+      room: 'B201',
+      type: session.type,
       description: session.description,
     );
-    catalog.updates.add(CatalogData([withSessions(event, [updated])]));
+    catalog.updates.add(
+      CatalogData([
+        withSessions(event, [updated]),
+      ]),
+    );
     await Future<void>.delayed(Duration.zero);
     expect(controller.schedule.single.session.name, 'Tên mới');
     expect(controller.schedule.single.session.time, '07:15');
@@ -112,53 +135,60 @@ void main() {
     await catalog.updates.close();
   });
 
-  testWidgets('attendee adds a session through its detail, opens My Schedule and removes it', (tester) async {
-    tester.view.physicalSize = const Size(1080, 2400);
-    tester.view.devicePixelRatio = 2.75;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
-    final controller = AgendaController(
-      catalog: FixtureCatalog(), favourites: MemoryFavourites(),
-      schedule: MemorySchedule(),
-    );
-    await tester.pumpWidget(EventaApp(controller: controller));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('tab-schedule')));
-    await tester.pumpAndSettle();
-    expect(find.text('Chưa có session trong lịch'), findsOneWidget);
-    await tester.tap(find.byKey(const Key('schedule-explore')));
-    await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(
-      find.byKey(Key('event-${event.id}')), 200,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.tap(find.byKey(Key('event-${event.id}')));
-    await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(
-      find.byKey(Key('session-${session.id}')), 200,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.tap(find.byKey(Key('session-${session.id}')));
-    await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(
-      find.byKey(Key('plan-${session.id}')), 200,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.tap(find.byKey(Key('plan-${session.id}')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('tab-schedule')));
-    await tester.pumpAndSettle();
-    expect(find.text('1 session đã chọn'), findsOneWidget);
-    expect(find.byKey(Key('planned-${session.id}')), findsOneWidget);
-    await tester.tap(find.byKey(Key('planned-${session.id}')));
-    await tester.pumpAndSettle();
-    expect(find.byKey(const Key('session-title')), findsOneWidget);
-    await tester.binding.handlePopRoute();
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(Key('plan-${session.id}')));
-    await tester.pumpAndSettle();
-    expect(find.text('Chưa có session trong lịch'), findsOneWidget);
-    expect(tester.takeException(), isNull);
-    controller.dispose();
-  });
+  testWidgets(
+    'attendee adds a session through its detail, opens My Schedule and removes it',
+    (tester) async {
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 2.75;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final controller = AgendaController(
+        catalog: FixtureCatalog(),
+        favourites: MemoryFavourites(),
+        schedule: MemorySchedule(),
+      );
+      await tester.pumpWidget(EventaApp(controller: controller));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('tab-schedule')));
+      await tester.pumpAndSettle();
+      expect(find.text('Chưa có session trong lịch'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('schedule-explore')));
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.byKey(Key('event-${event.id}')),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.byKey(Key('event-${event.id}')));
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.byKey(Key('session-${session.id}')),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.byKey(Key('session-${session.id}')));
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.byKey(Key('plan-${session.id}')),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.byKey(Key('plan-${session.id}')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('tab-schedule')));
+      await tester.pumpAndSettle();
+      expect(find.text('1 session đã chọn'), findsOneWidget);
+      expect(find.byKey(Key('planned-${session.id}')), findsOneWidget);
+      await tester.tap(find.byKey(Key('planned-${session.id}')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('session-title')), findsOneWidget);
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(Key('plan-${session.id}')));
+      await tester.pumpAndSettle();
+      expect(find.text('Chưa có session trong lịch'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      controller.dispose();
+    },
+  );
 }

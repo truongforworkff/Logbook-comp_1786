@@ -80,7 +80,7 @@ void main() {
       final first = AgendaController(
         catalog: FixtureCatalog(),
         schedule: MemorySchedule(),
-      favourites: store,
+        favourites: store,
       );
       await first.load();
       expect(first.saved, {'ignite-2026'});
@@ -88,7 +88,7 @@ void main() {
       final reopened = AgendaController(
         catalog: FixtureCatalog(),
         schedule: MemorySchedule(),
-      favourites: store,
+        favourites: store,
       );
       await reopened.load();
       expect(reopened.saved, {'ignite-2026', 'gtc-2026'});

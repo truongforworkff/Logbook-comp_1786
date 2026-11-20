@@ -75,8 +75,11 @@ void main() {
   test('live updates, cache metadata and temporary deletion preserve stored favourite IDs', () async {
     final catalog = LiveCatalog();
     final fav = MemoryFavourites({'ignite-2026'});
-    final controller = AgendaController(catalog: catalog, schedule: MemorySchedule(),
-      favourites: fav);
+    final controller = AgendaController(
+      catalog: catalog,
+      schedule: MemorySchedule(),
+      favourites: fav,
+    );
     final loading = controller.load();
     await Future<void>.delayed(Duration.zero);
     final events = readCatalog();
@@ -107,7 +110,7 @@ void main() {
       final controller = AgendaController(
         catalog: catalog,
         schedule: MemorySchedule(),
-      favourites: MemoryFavourites({'ignite-2026'}),
+        favourites: MemoryFavourites({'ignite-2026'}),
       );
       final ready = controller.load();
       await tester.pump();
@@ -144,7 +147,7 @@ void main() {
       final controller = AgendaController(
         catalog: catalog,
         schedule: MemorySchedule(),
-      favourites: MemoryFavourites({}),
+        favourites: MemoryFavourites({}),
       );
       final ready = controller.load();
       await tester.pump();

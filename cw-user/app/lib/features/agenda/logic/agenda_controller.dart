@@ -160,7 +160,8 @@ class AgendaController extends ChangeNotifier {
     if (savingSchedule || !_scheduleLoaded) return null;
     final selection = (eventId: eventId, sessionId: sessionId);
     final exists = events.any(
-      (event) => event.id == eventId &&
+      (event) =>
+          event.id == eventId &&
           event.sessions.any((session) => session.id == sessionId),
     );
     if (!exists) return null;

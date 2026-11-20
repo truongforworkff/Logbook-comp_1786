@@ -23,7 +23,10 @@ Set<SessionSelection> decodeSchedule(String? raw) {
             row['sessionId'] is String &&
             (row['sessionId'] as String).isNotEmpty &&
             (row['sessionId'] as String).length <= 16384)
-          (eventId: row['eventId'] as String, sessionId: row['sessionId'] as String),
+          (
+            eventId: row['eventId'] as String,
+            sessionId: row['sessionId'] as String,
+          ),
     };
   } on FormatException {
     return {};

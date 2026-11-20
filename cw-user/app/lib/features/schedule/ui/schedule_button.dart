@@ -41,7 +41,9 @@ class ScheduleButton extends StatelessWidget {
           selected ? Icons.event_available_outlined : Icons.event_note_outlined,
           size: 19,
         ),
-        label: Text(selected ? 'Bỏ khỏi lịch của tôi' : 'Thêm vào lịch của tôi'),
+        label: Text(
+          selected ? 'Bỏ khỏi lịch của tôi' : 'Thêm vào lịch của tôi',
+        ),
       ),
     );
   }

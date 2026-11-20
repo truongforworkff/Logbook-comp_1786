@@ -135,7 +135,9 @@ class BottomTabs extends StatelessWidget {
     final active = controller.tab == tab;
     final count = tab == AgendaTab.saved
         ? controller.saved.length
-        : tab == AgendaTab.schedule ? controller.schedule.length : 0;
+        : tab == AgendaTab.schedule
+        ? controller.schedule.length
+        : 0;
     final color = active ? AppColors.blue : const Color(0xFFA0A8B5);
     return Expanded(
       child: Semantics(

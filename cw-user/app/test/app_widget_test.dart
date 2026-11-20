@@ -15,7 +15,7 @@ Future<AgendaController> start(WidgetTester tester) async {
   final controller = AgendaController(
     catalog: FixtureCatalog(),
     schedule: MemorySchedule(),
-      favourites: MemoryFavourites(),
+    favourites: MemoryFavourites(),
   );
   await tester.pumpWidget(EventaApp(controller: controller));
   await tester.pumpAndSettle();
