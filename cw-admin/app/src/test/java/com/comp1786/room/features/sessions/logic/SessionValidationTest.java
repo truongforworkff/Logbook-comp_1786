@@ -28,7 +28,11 @@ public class SessionValidationTest {
                 session.endTime = "10:30";
                 assertTrue(SessionValidation.valid(session));
             }
-        assertFalse(SessionValidation.valid(new Session(0, 1L,"Welcome","09:30","","","invalid","")));
-        assertFalse(SessionValidation.valid(new Session(0, 1L,"Welcome","09:30","x".repeat(121),"","Workshop","")));
+        Session session = new Session(0, 1L, "Welcome", "09:30", "", "", "invalid", "");
+        session.endTime = "10:30";
+        assertFalse(SessionValidation.valid(session));
+        session.type = "Workshop";
+        session.speaker = "x".repeat(121);
+        assertFalse(SessionValidation.valid(session));
     }
 }

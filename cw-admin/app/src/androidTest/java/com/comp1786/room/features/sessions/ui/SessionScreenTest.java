@@ -39,7 +39,11 @@ public class SessionScreenTest {
             test.runOnMainSync(() -> activity.findViewById(R.id.save).performClick());
             assertFalse(activity.isFinishing());
             fill(test, activity, R.id.timeInput, "09:30");
-            fill(test, activity, R.id.endTimeInput, "09:00");
+            test.runOnMainSync(() -> activity.findViewById(R.id.endTimeInput).performClick());
+            screenshot(test, "22-session-time-picker.png");
+            clickPopup(test, "primary");
+            test.runOnMainSync(() -> assertEquals("09:00",
+                    ((EditText) activity.findViewById(R.id.endTimeInput)).getText().toString()));
             test.runOnMainSync(() -> activity.findViewById(R.id.save).performClick());
             assertFalse(activity.isFinishing());
             fill(test, activity, R.id.endTimeInput, "10:30");

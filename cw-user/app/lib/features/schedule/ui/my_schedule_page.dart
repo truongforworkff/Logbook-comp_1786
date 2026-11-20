@@ -41,14 +41,14 @@ class MySchedulePage extends StatelessWidget {
               ),
             ),
           ],
-          _entry(context, entries[index]),
+          _entry(context, entries[index], entries),
           const SizedBox(height: 12),
         ],
       ],
     );
   }
 
-  Widget _entry(BuildContext context, PlannedSession entry) => SurfaceBox(
+  Widget _entry(BuildContext context, PlannedSession entry, List<PlannedSession> planned) => SurfaceBox(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -105,7 +105,7 @@ class MySchedulePage extends StatelessWidget {
           const SizedBox(height: 12),
         ] else if (scheduleConflicts(
           entry,
-          controller.schedule,
+          planned,
         ).isNotEmpty) ...[
           Container(
             key: Key('conflict-${entry.event.id}-${entry.session.id}'),
