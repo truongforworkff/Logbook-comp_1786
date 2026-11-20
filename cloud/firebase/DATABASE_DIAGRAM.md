@@ -109,9 +109,16 @@ Email được người dùng chọn: truongtdgch210108@fpt.edu.vn. Chủ projec
 
 Bật Google provider và Email/Password trong Authentication, đăng ký SHA-1/SHA-256 của chứng thư ký APK User trong Firebase. Web OAuth client ID là cấu hình công khai, không phải client secret. Máy clone ký bằng chứng thư khác phải đăng ký SHA của máy đó. Không đưa keystore, token CLI hoặc client secret vào Git.
 
-## Kiểm chứng cần chạy
+## Trạng thái cấu hình và kiểm thử
 
-- Firebase Rules: User A không đọc/ghi User B; User không tự cấp Admin hoặc công bố; Admin công bố được; thu hồi role chặn ghi.
-- Hai Firebase app client đăng nhập cùng UID: thêm/bỏ yêu thích và lịch thấy trên cả hai.
-- Đổi UID: không thấy dữ liệu tài khoản trước; offline xếp hàng, nối mạng đẩy lên; đăng xuất bảo vệ hàng đợi.
-- UI đăng ký/đăng nhập/Google và lỗi đầu vào; build Admin Java, User Flutter.
+Ngày 20/11/2026, project `eventa-coursework-fpt` đã bật Email/Password và Google. Tài khoản `truongtdgch210108@fpt.edu.vn` đã được cấp role Admin theo UID trong Firebase Authentication. Danh mục `role_catalogues/main` được khởi tạo với 5 sự kiện. Chứng thư debug trên máy phát triển đã được đăng ký SHA-1 và SHA-256.
+
+| Kiểm tra | Kết quả |
+| --- | --- |
+| Firestore Rules | 8 bài đạt, gồm quyền riêng tư giữa hai UID, từ chối tự cấp Admin, quyền công bố và thu hồi quyền |
+| App Admin | Build APK, lint và 15 unit test đạt. Bộ kiểm thử trên Android emulator đã đạt trên GitHub Actions |
+| App User | Build APK Android, build web release, Flutter analyze và 24 logic/widget test đạt |
+| Đồng bộ tài khoản trên Android | Hai Firebase client độc lập đăng nhập cùng tài khoản qua emulator, thêm yêu thích và session ở hai phía, xóa session offline rồi nối mạng. Đăng nhập tài khoản khác có lịch và yêu thích riêng |
+| Đăng nhập Google | Đã đối chiếu cấu hình OAuth và chứng thư Android. Bước chọn và xác nhận một tài khoản Google thật cần kiểm tra tương tác |
+
+Xem [test đồng bộ tài khoản Flutter](../../cw-user/app/integration_test/account_sync_test.dart), [test quyền Firestore](test/firestore.test.mjs) và [workflow Admin đã chạy](https://github.com/truongforworkff/Logbook-comp_1786/actions/runs/44759218803).
