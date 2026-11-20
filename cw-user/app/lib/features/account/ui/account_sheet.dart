@@ -31,10 +31,11 @@ class _AccountSheetState extends State<AccountSheet> {
     try {
       await action();
     } catch (_) {
-      if (mounted)
+      if (mounted) {
         setState(
           () => _message = 'Chưa hoàn tất đồng bộ. Kết nối mạng rồi thử lại.',
         );
+      }
     } finally {
       if (mounted) setState(() => _busy = false);
     }

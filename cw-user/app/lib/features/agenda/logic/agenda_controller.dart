@@ -163,8 +163,9 @@ class AgendaController extends ChangeNotifier {
   Future<String?> toggleFavourite(String id) async {
     if (saving ||
         (personal != null && !personal!.ready) ||
-        !events.any((event) => event.id == id))
+        !events.any((event) => event.id == id)) {
       return null;
+    }
     saving = true;
     notifyListeners();
     try {

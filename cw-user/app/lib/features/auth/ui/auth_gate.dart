@@ -80,8 +80,9 @@ class _SignedInUserState extends State<_SignedInUser> {
           'updatedAt': FieldValue.serverTimestamp(),
         })
         .catchError((Object error) {
-          if (mounted)
+          if (mounted) {
             setState(() => _profileError = 'Chưa lưu được hồ sơ tài khoản.');
+          }
         });
   }
 

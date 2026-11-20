@@ -32,8 +32,9 @@ class AuthRepository {
     await (_googleReady ??= google.initialize());
     final account = await google.authenticate();
     final token = account.authentication.idToken;
-    if (token == null)
+    if (token == null) {
       throw StateError('Google chưa trả về thông tin đăng nhập.');
+    }
     await auth.signInWithCredential(
       GoogleAuthProvider.credential(idToken: token),
     );
