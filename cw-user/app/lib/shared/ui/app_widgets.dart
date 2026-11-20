@@ -113,6 +113,12 @@ class BottomTabs extends StatelessWidget {
                 Icons.favorite_border,
                 'Yêu thích',
               ),
+              _tab(
+                context,
+                AgendaTab.schedule,
+                Icons.calendar_month_outlined,
+                'Lịch của tôi',
+              ),
             ],
           ),
         ),
@@ -127,6 +133,9 @@ class BottomTabs extends StatelessWidget {
     String label,
   ) {
     final active = controller.tab == tab;
+    final count = tab == AgendaTab.saved
+        ? controller.saved.length
+        : tab == AgendaTab.schedule ? controller.schedule.length : 0;
     final color = active ? AppColors.blue : const Color(0xFFA0A8B5);
     return Expanded(
       child: Semantics(
@@ -138,9 +147,8 @@ class BottomTabs extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Badge(
-                isLabelVisible:
-                    tab == AgendaTab.saved && controller.saved.isNotEmpty,
-                label: Text('${controller.saved.length}'),
+                isLabelVisible: count > 0,
+                label: Text('$count'),
                 backgroundColor: AppColors.blue,
                 child: Icon(icon, size: 24, color: color),
               ),

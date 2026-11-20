@@ -4,6 +4,7 @@ import '../logic/agenda_controller.dart';
 import '../../../shared/ui/app_theme.dart';
 import '../../../shared/ui/app_widgets.dart';
 import 'browse_page.dart';
+import '../../schedule/ui/my_schedule_page.dart';
 
 class ExploreShell extends StatefulWidget {
   const ExploreShell({super.key, required this.controller});
@@ -68,6 +69,8 @@ class _ExploreShellState extends State<ExploreShell> {
                         )
                       : controller.error.isNotEmpty && controller.events.isEmpty
                       ? _error(controller)
+                      : controller.tab == AgendaTab.schedule
+                      ? MySchedulePage(controller: controller)
                       : BrowsePage(
                           key: ValueKey(controller.tab),
                           controller: controller,

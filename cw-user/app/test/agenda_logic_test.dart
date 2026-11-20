@@ -6,6 +6,7 @@ import 'package:eventa_user/features/agenda/logic/event_search.dart';
 import 'package:eventa_user/features/favourites/logic/favourite_codec.dart';
 
 import 'support/memory_favourites.dart';
+import 'support/memory_schedule.dart';
 import 'support/fixture_catalog.dart';
 
 void main() {
@@ -78,14 +79,16 @@ void main() {
       final store = MemoryFavourites({'ignite-2026'});
       final first = AgendaController(
         catalog: FixtureCatalog(),
-        favourites: store,
+        schedule: MemorySchedule(),
+      favourites: store,
       );
       await first.load();
       expect(first.saved, {'ignite-2026'});
       await first.toggleFavourite('gtc-2026');
       final reopened = AgendaController(
         catalog: FixtureCatalog(),
-        favourites: store,
+        schedule: MemorySchedule(),
+      favourites: store,
       );
       await reopened.load();
       expect(reopened.saved, {'ignite-2026', 'gtc-2026'});

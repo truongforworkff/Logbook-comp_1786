@@ -6,15 +6,29 @@ import 'package:flutter/foundation.dart';
 import '../data/catalog_repository.dart';
 import '../data/event_info.dart';
 import '../../favourites/data/favourite_store.dart';
+import '../../schedule/data/schedule_store.dart';
+import '../../schedule/logic/personal_schedule.dart';
 
-enum AgendaTab { explore, saved }
+enum AgendaTab { explore, saved, schedule }
 
 class AgendaController extends ChangeNotifier {
-  AgendaController({CatalogRepository? catalog, FavouriteStore? favourites})
-    : _catalog = catalog ?? CatalogRepository(),
-      _favourites = favourites ?? FavouriteStore();
+  AgendaController({
+    CatalogRepository? catalog,
+    FavouriteStore? favourites,
+    ScheduleStore? schedule,
+  }) : _catalog = catalog ?? CatalogRepository(),
+       _favourites = favourites ?? FavouriteStore(),
+       _schedule = schedule ?? ScheduleStore();
   final CatalogRepository _catalog;
   final FavouriteStore _favourites;
+  final ScheduleStore _schedule;
+  Set<SessionSelection> _planned = {};
+  bool _scheduleLoaded = false;
+  bool savingSchedule = false;
+  List<PlannedSession> get schedule => personalSchedule(events, _planned);
+
+  bool hasPlannedSession(String eventId, String sessionId) =>
+      _planned.contains((eventId: eventId, sessionId: sessionId));
   List<EventInfo> events = [];
   Set<String> _saved = {};
   Set<String> get saved =>
@@ -62,6 +76,10 @@ class AgendaController extends ChangeNotifier {
 
     try {
       _saved = await _favourites.load();
+      if (!_scheduleLoaded) {
+        _planned = await _schedule.load();
+        _scheduleLoaded = true;
+      }
       if (_disposed || generation != _generation) {
         finish();
         return;
@@ -134,6 +152,29 @@ class AgendaController extends ChangeNotifier {
       return added ? 'Đã lưu vào Yêu thích' : 'Đã bỏ khỏi Yêu thích';
     } finally {
       saving = false;
+      if (!_disposed) notifyListeners();
+    }
+  }
+
+  Future<String?> toggleSession(String eventId, String sessionId) async {
+    if (savingSchedule || !_scheduleLoaded) return null;
+    final selection = (eventId: eventId, sessionId: sessionId);
+    final exists = events.any(
+      (event) => event.id == eventId &&
+          event.sessions.any((session) => session.id == sessionId),
+    );
+    if (!exists) return null;
+    savingSchedule = true;
+    notifyListeners();
+    try {
+      final next = {..._planned};
+      final added = next.add(selection);
+      if (!added) next.remove(selection);
+      await _schedule.save(next);
+      _planned = next;
+      return added ? 'Đã thêm vào Lịch của tôi' : 'Đã bỏ khỏi Lịch của tôi';
+    } finally {
+      savingSchedule = false;
       if (!_disposed) notifyListeners();
     }
   }

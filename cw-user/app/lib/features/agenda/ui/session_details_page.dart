@@ -4,6 +4,7 @@ import '../data/event_info.dart';
 import 'unavailable_page.dart';
 import '../logic/agenda_controller.dart';
 import '../../favourites/ui/favourite_button.dart';
+import '../../schedule/ui/schedule_button.dart';
 import '../../../shared/ui/app_theme.dart';
 import '../../../shared/ui/app_widgets.dart';
 import '../../../shared/ui/event_labels.dart';
@@ -155,6 +156,12 @@ class SessionDetailsPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 26),
+                  ScheduleButton(
+                    controller: controller,
+                    eventId: event.id,
+                    sessionId: session.id,
+                  ),
+                  const SizedBox(height: 12),
                   OutlinedButton.icon(
                     onPressed: () => Navigator.pop(context),
                     icon: const Icon(Icons.arrow_back, size: 18),

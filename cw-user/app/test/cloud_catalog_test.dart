@@ -8,6 +8,7 @@ import 'package:eventa_user/features/agenda/data/catalog_repository.dart';
 import 'package:eventa_user/features/agenda/logic/agenda_controller.dart';
 
 import 'support/memory_favourites.dart';
+import 'support/memory_schedule.dart';
 import 'support/fixture_catalog.dart';
 
 class LiveCatalog extends CatalogRepository {
@@ -74,7 +75,8 @@ void main() {
   test('live updates, cache metadata and temporary deletion preserve stored favourite IDs', () async {
     final catalog = LiveCatalog();
     final fav = MemoryFavourites({'ignite-2026'});
-    final controller = AgendaController(catalog: catalog, favourites: fav);
+    final controller = AgendaController(catalog: catalog, schedule: MemorySchedule(),
+      favourites: fav);
     final loading = controller.load();
     await Future<void>.delayed(Duration.zero);
     final events = readCatalog();
@@ -104,7 +106,8 @@ void main() {
       final catalog = RestartingCatalog();
       final controller = AgendaController(
         catalog: catalog,
-        favourites: MemoryFavourites({'ignite-2026'}),
+        schedule: MemorySchedule(),
+      favourites: MemoryFavourites({'ignite-2026'}),
       );
       final ready = controller.load();
       await tester.pump();
@@ -140,7 +143,8 @@ void main() {
       final catalog = RestartingCatalog();
       final controller = AgendaController(
         catalog: catalog,
-        favourites: MemoryFavourites({}),
+        schedule: MemorySchedule(),
+      favourites: MemoryFavourites({}),
       );
       final ready = controller.load();
       await tester.pump();

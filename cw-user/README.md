@@ -12,6 +12,14 @@ Project đang dùng **Flutter 3.47.4 / Dart 3.13**, giao diện Flutter widgets 
 
 Admin được duyệt công bố dữ liệu lên Firestore; Explore cập nhật trực tiếp cả danh sách và trang chi tiết. Tự nhận dữ liệu khi có mạng, tự nối lại listener bị ngắt, phục hồi khi danh mục được công bố/sửa và khi trở lại app. Có thông báo lỗi và cache offline; production không đọc JSON đóng gói.
 
+## Lịch của tôi
+
+- Người tham dự mở chi tiết session và thêm/bỏ session vào lịch cá nhân.
+- Tab Lịch của tôi hiển thị các session đã chọn theo ngày rồi giờ, mở được chi tiết và bỏ trực tiếp.
+- Chỉ lưu cặp ID event/session trên thiết bị dưới key eventa.schedule.v1. Khi Admin đổi thông tin, lịch dùng dữ liệu Cloud mới nhất. Session bị xóa sẽ không còn hiển thị; ID lựa chọn được giữ khi Cloud tạm lỗi hoặc danh mục tạm rỗng.
+- Danh sách yêu thích event và lịch session dùng hai key riêng. Lựa chọn lịch không gửi lên Firebase.
+- Code tính năng nằm trong app/lib/features/schedule theo data, logic, ui. AgendaController nối lưu trữ với dữ liệu Cloud và các màn hiện có.
+
 ## Chạy và kiểm tra
 
 Mở thư mục app/ bằng Android Studio có Flutter plugin hoặc VS Code có Flutter extension.
