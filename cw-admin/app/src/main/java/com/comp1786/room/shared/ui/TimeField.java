@@ -1,6 +1,5 @@
 package com.comp1786.room.shared.ui;
 
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TimePicker;
 import androidx.appcompat.app.AlertDialog;
@@ -22,7 +21,6 @@ public final class TimeField {
         String value = field.getText().toString();
         TimePicker clock = new TimePicker(activity);
         clock.setIs24HourView(true);
-        clock.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         clock.setHour(SessionValidation.validTime(value) ? Integer.parseInt(value.substring(0, 2)) : 9);
         clock.setMinute(SessionValidation.validTime(value) ? Integer.parseInt(value.substring(3)) : 0);
         SharedPopupBinding panel = SharedPopupBinding.inflate(activity.getLayoutInflater());
