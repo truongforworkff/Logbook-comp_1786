@@ -66,33 +66,7 @@ class SessionInfo {
   final String id, name, time, speaker, room, type, description, endTime;
 
   bool get hasTimeRange {
-    final clock = RegExp(r'^(?:[01]\d|2[0-3]):[0-5]\d
-
-  factory SessionInfo.fromJson(Map<String, dynamic> json) => SessionInfo(
-    id: json['id'] as String,
-    name: json['name'] as String,
-    time: json['time'] as String,
-    endTime: json['endTime'] as String? ?? '',
-    speaker: json['speaker'] as String? ?? '',
-    room: json['room'] as String? ?? '',
-    type: json['type'] as String? ?? '',
-    description: json['description'] as String? ?? '',
-  );
-}
-
-Uint8List? decodeCover(String image) {
-  if (!image.startsWith('data:image/jpeg;base64,')) return null;
-  if (image.length > 45000) throw const FormatException('Thumbnail too large');
-  final bytes = base64Decode(image.substring(23));
-  if (bytes.length < 3 ||
-      bytes.length > 32768 ||
-      bytes[0] != 255 ||
-      bytes[1] != 216) {
-    throw const FormatException('Invalid thumbnail');
-  }
-  return bytes;
-}
-);
+    final clock = RegExp(r'^(?:[01]\d|2[0-3]):[0-5]\d$');
     return clock.hasMatch(time) && clock.hasMatch(endTime) && endTime.compareTo(time) > 0;
   }
 
@@ -102,6 +76,7 @@ Uint8List? decodeCover(String image) {
     id: json['id'] as String,
     name: json['name'] as String,
     time: json['time'] as String,
+    endTime: json['endTime'] as String? ?? '',
     speaker: json['speaker'] as String? ?? '',
     room: json['room'] as String? ?? '',
     type: json['type'] as String? ?? '',
