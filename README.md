@@ -1,10 +1,16 @@
-# COMP1786 — Eventa
+# COMP1786 — Eventa có tài khoản
 
-Nhánh **CW** chứa hai ứng dụng coursework:
+Nhánh `CW-auth` gồm hai ứng dụng dùng chung Firebase project `eventa-coursework-fpt`.
 
-- [cw-admin](cw-admin/README.md): Admin Android Java/XML, giao diện sáng/hồng; A–D và Cloud E, chủ đề/ảnh tùy chọn.
-- [cw-user](cw-user/README.md): Explore Dart/Flutter, giao diện xanh/trắng; G/H đọc Firestore trực tiếp, lọc/tìm và yêu thích cục bộ.
-- [cloud/firebase](cloud/firebase/README.md): Firebase Spark, cấu hình đồng bộ, giới hạn và kiểm thử.
-- [logbook](logbook/README.md): bài thực hành Java/XML Views.
+| Ứng dụng | Mở trong Android Studio | Tài khoản |
+| --- | --- | --- |
+| [Eventa Admin](cw-admin/README.md) | `cw-admin` | Email và mật khẩu của tài khoản được cấp quyền Admin |
+| [Eventa Explore](cw-user/README.md) | `cw-user/app` | Đăng ký bằng email hoặc đăng nhập bằng Google |
 
-Mở cw-admin bằng Android Studio cho Admin; mở cw-user/app cho Flutter. Xem README từng thư mục để build và kiểm tra. Admin không có chức năng tài khoản; cấu hình kết nối của bản Admin giữ riêng, không commit vào Git.
+Người tham dự đăng nhập cùng tài khoản trên thiết bị khác sẽ thấy lại sự kiện yêu thích và các session trong **Lịch của tôi**. Xem [sơ đồ database và bảng quyền](cloud/firebase/DATABASE_DIAGRAM.md) để tìm từng loại dữ liệu trong Firestore.
+
+```sh
+git clone --branch CW-auth --single-branch https://github.com/truongforworkff/Logbook-comp_1786.git
+```
+
+Bản coursework ban đầu ở nhánh [CW](https://github.com/truongforworkff/Logbook-comp_1786/tree/CW). Các bài thực hành ở [logbook](logbook/README.md).

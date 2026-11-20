@@ -26,12 +26,16 @@ public final class CloudSync {
                 new InvalidationTracker.Observer("events", "sessions") {
                     @Override public void onInvalidated(@NonNull Set<String> tables) { enqueue(app); }
                 });
+        if (signedIn()) scheduleRecovery(app);
+        enqueue(app);
+    }
+
+    private static void scheduleRecovery(Context app) {
         PeriodicWorkRequest recovery = new PeriodicWorkRequest.Builder(
                 CloudSyncWorker.class, 15, TimeUnit.MINUTES)
                 .setConstraints(network()).build();
         WorkManager.getInstance(app).enqueueUniquePeriodicWork(
                 PERIODIC, ExistingPeriodicWorkPolicy.KEEP, recovery);
-        enqueue(app);
     }
 
     public static void enqueue(Context context) {
@@ -45,10 +49,12 @@ public final class CloudSync {
     }
 
     public static void uploadAfterLogin(Context context) {
+        Context app = context.getApplicationContext();
+        scheduleRecovery(app);
         java.util.concurrent.ExecutorService worker = java.util.concurrent.Executors.newSingleThreadExecutor();
         worker.execute(() -> {
-            EventDatabase.get(context).sync().requestUpload();
-            enqueue(context);
+            EventDatabase.get(app).sync().requestUpload();
+            enqueue(app);
         });
         worker.shutdown();
     }

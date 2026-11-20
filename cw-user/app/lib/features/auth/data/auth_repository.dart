@@ -9,11 +9,17 @@ class AuthRepository {
   Stream<User?> watch() => auth.userChanges();
 
   Future<void> signIn(String email, String password) async {
-    await auth.signInWithEmailAndPassword(email: email.trim(), password: password);
+    await auth.signInWithEmailAndPassword(
+      email: email.trim(),
+      password: password,
+    );
   }
 
   Future<void> register(String name, String email, String password) async {
-    final result = await auth.createUserWithEmailAndPassword(email: email.trim(), password: password);
+    final result = await auth.createUserWithEmailAndPassword(
+      email: email.trim(),
+      password: password,
+    );
     await result.user!.updateDisplayName(name.trim());
   }
 
@@ -23,13 +29,14 @@ class AuthRepository {
       return;
     }
     final google = GoogleSignIn.instance;
-    await (_googleReady ??= google.initialize(
-      serverClientId: '1011104656179-b4kiil45g0sc6h7ooi9hp8nfudvgc9ct.apps.googleusercontent.com',
-    ));
+    await (_googleReady ??= google.initialize());
     final account = await google.authenticate();
     final token = account.authentication.idToken;
-    if (token == null) throw StateError('Google chưa trả về thông tin đăng nhập.');
-    await auth.signInWithCredential(GoogleAuthProvider.credential(idToken: token));
+    if (token == null)
+      throw StateError('Google chưa trả về thông tin đăng nhập.');
+    await auth.signInWithCredential(
+      GoogleAuthProvider.credential(idToken: token),
+    );
   }
 
   Future<void> signOut() async {
@@ -46,10 +53,13 @@ String authMessage(Object error) {
   }
   if (error is FirebaseAuthException) {
     return switch (error.code) {
-      'email-already-in-use' => 'Email đã có tài khoản. Hãy chuyển sang đăng nhập.',
+      'email-already-in-use' =>
+        'Email đã có tài khoản. Hãy chuyển sang đăng nhập.',
       'weak-password' => 'Mật khẩu chưa đủ mạnh.',
       'invalid-email' => 'Email chưa hợp lệ.',
-      'invalid-credential' || 'wrong-password' || 'user-not-found' => 'Email hoặc mật khẩu chưa đúng.',
+      'invalid-credential' ||
+      'wrong-password' ||
+      'user-not-found' => 'Email hoặc mật khẩu chưa đúng.',
       'user-disabled' => 'Tài khoản đã bị vô hiệu hóa.',
       'network-request-failed' => 'Chưa có kết nối mạng. Hãy thử lại.',
       'too-many-requests' => 'Có quá nhiều lần thử. Hãy chờ rồi thử lại.',

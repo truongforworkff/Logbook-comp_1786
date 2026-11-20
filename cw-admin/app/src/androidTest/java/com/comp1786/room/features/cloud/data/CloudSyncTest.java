@@ -124,7 +124,7 @@ public class CloudSyncTest {
         ownerRequest("DELETE", "", null);
     }
 
-    private void ownerRequest(String method, String path, String body) throws Exception {
+    public static void ownerRequest(String method, String path, String body) throws Exception {
         String root = path.isEmpty()
                 ? "http://10.0.2.2:8086/emulator/v1/projects/demo-eventa/databases/(default)/documents"
                 : "http://10.0.2.2:8086/v1/projects/demo-eventa/databases/(default)/documents" + path;

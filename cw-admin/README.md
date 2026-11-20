@@ -9,7 +9,7 @@ Xem [bản đồ thư mục và luồng từng chức năng](CODE_MAP.md). UI n�
 ## Clone và chạy
 
 ```sh
-git clone --branch CW --single-branch https://github.com/truongforworkff/Logbook-comp_1786.git
+git clone --branch CW-auth --single-branch https://github.com/truongforworkff/Logbook-comp_1786.git
 ```
 
 Mở thư mục **cw-admin** bằng Android Studio, không mở logbook. Dùng JDK 17, SDK platform 36 và emulator/điện thoại Android 7.0 (API 24) trở lên. Android Studio tự tạo local.properties theo SDK trên máy bạn. Chọn module app và Run.
@@ -45,7 +45,7 @@ Project dùng applicationId com.comp1786.eventa.admin và database riêng trong 
 
 ## Phạm vi
 
-App quản trị hiện triển khai A–D: event, session, liên kết và tìm kiếm. Có bổ sung chủ đề/ảnh bìa tùy chọn. Cloud E đồng bộ toàn bộ/thay đổi và thử lại khi có mạng; không có tài khoản hoặc đăng nhập; app người tham dự G/H nằm riêng trong cw-user và đọc Cloud. Có mã test không đồng nghĩa mọi kiểm tra đã chạy: xem kết quả GitHub Actions và chạy instrumentation trên thiết bị trước khi khai hoàn thành coursework.
+App quản trị hiện triển khai A–D: event, session, liên kết và tìm kiếm. Có bổ sung chủ đề/ảnh bìa tùy chọn. Cloud E đồng bộ toàn bộ/thay đổi và thử lại khi có mạng; chỉ tài khoản được cấp quyền Admin mới vào ứng dụng và gửi dữ liệu; app người tham dự G/H nằm riêng trong cw-user và đọc Cloud. Có mã test không đồng nghĩa mọi kiểm tra đã chạy: xem kết quả GitHub Actions và chạy instrumentation trên thiết bị trước khi khai hoàn thành coursework.
 
 ## Nguồn và cách dùng
 
@@ -65,7 +65,7 @@ Database v4 nâng cấp giữ nguyên event/session. Dữ liệu cũ mặc đị
 
 ## Firebase Spark
 
-Đã cấu hình project eventa-coursework-fpt, SDK Firestore và Google Services plugin. SQLite vẫn là nguồn dữ liệu. Tab Đồng bộ chỉ có trạng thái và gửi toàn bộ. Bản Admin dùng cấu hình kết nối riêng trong sync.properties hoặc EVENTA_SYNC_WRITE_KEY; cấu hình không đưa lên Git. Không dùng Firebase Authentication, đăng nhập ngầm hoặc vai trò tài khoản. WorkManager ghi nhận/sửa/xóa và gửi lại khi có mạng. Migration v5 giữ dữ liệu và ID yêu thích cũ. Xem [thiết lập và kiểm tra kết nối](../cloud/firebase/README.md).
+Đã cấu hình project eventa-coursework-fpt, SDK Firestore và Google Services plugin. SQLite vẫn là nguồn dữ liệu. Tab Đồng bộ chỉ có trạng thái và gửi toàn bộ. Bản Admin đăng nhập Email/Password. Firebase kiểm tra quyền ở roles/{uid} và cho công bố vào role_catalogues/main. Bấm biểu tượng tài khoản trên màn sự kiện để đăng xuất. WorkManager ghi nhận/sửa/xóa và gửi lại khi có mạng. Migration v5 giữ dữ liệu và ID yêu thích cũ. Xem [thiết lập và kiểm tra kết nối](../cloud/firebase/README.md).
 
 ### Đồng bộ tự động
 

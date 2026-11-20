@@ -31,7 +31,20 @@
           "package_name": "com.comp1786.eventa.user"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1011104656179-ca7mqd4vsanoq0dsuigi4gk4r29tmtt4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.comp1786.eventa.user",
+            "certificate_hash": "aee2844065a8335ad466b6dc6fe37fdd64a9b018"
+          }
+        },
+        {
+          "client_id": "1011104656179-b4kiil45g0sc6h7ooi9hp8nfudvgc9ct.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCRDAKvbGdrwsV1k4v6ify8afk-zxI3g48"

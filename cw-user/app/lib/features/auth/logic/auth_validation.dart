@@ -1,7 +1,9 @@
 String? emailError(String? value) {
   final email = value?.trim() ?? '';
-  return RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(email) && email.length <= 254
-      ? null : 'Nhập email hợp lệ.';
+  return RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(email) &&
+          email.length <= 254
+      ? null
+      : 'Nhập email hợp lệ.';
 }
 
 String? passwordError(String? value, {bool registering = false}) {

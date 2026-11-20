@@ -131,9 +131,9 @@ Chọn ngày: shared/ui/DateField.java dùng chung cho ô ngày form event và b
 
 - UI: features/cloud/ui/CloudActivity.java + res/layout/cloud_screen.xml + values/cloud_strings.xml. Tab từ danh sách event/session mở trạng thái đồng bộ và nút gửi tất cả; không có form tài khoản.
 - Logic: CloudViewModel giữ trạng thái và yêu cầu gửi; CloudSync đăng ký thay đổi Room và lịch WorkManager; CloudSyncWorker chụp/gửi/ghi nhận revision, xử lý lỗi và thử lại.
-- Data: SyncState/SyncStateDao lưu trạng thái bền vững; SyncSchema migration/trigger; CloudSnapshot lấy event/session trong transaction; CloudCover dùng shared/data/PhotoDecoder; CloudPublisher gửi danh mục + biên nhận private cùng Firestore transaction.
+- Data: SyncState/SyncStateDao lưu trạng thái bền vững; SyncSchema migration/trigger; CloudSnapshot lấy event/session trong transaction; CloudCover dùng shared/data/PhotoDecoder; CloudPublisher ghi role_catalogues/main trong Firestore transaction, kiểm tra nguồn và revision.
 - EventDatabase v6 giữ toàn bộ dữ liệu; EventDao giữ publicId khi sửa. Trigger theo dõi cả xóa cascade. ID 5 event cũ khớp Flutter để giữ yêu thích.
-- Không dùng Firebase Authentication hoặc phân quyền tài khoản. BuildConfig nhận cấu hình ghi Cloud riêng từ sync.properties/biến môi trường, không commit khóa. CloudPublisher ghi biên nhận private và danh mục cùng transaction; rules kiểm tra getAfter().
+- `features/auth/ui/AdminLoginActivity.java` ↔ `res/layout/admin_login_screen.xml` xử lý email/mật khẩu. `AdminActivity.java` theo dõi phiên và quyền; `features/auth/data/AdminAuth.java` tra `roles/{uid}`. Firestore Rules kiểm tra lại quyền khi công bố.
 - CloudSyncTest/CloudCoverTest/CloudSyncWorkerTest chạy với Android runtime. Test Firestore tạo/xóa dữ liệu chỉ dùng demo-eventa và máy thử riêng.
 
 ## Giờ kết thúc session và cảnh báo trùng lịch ở User

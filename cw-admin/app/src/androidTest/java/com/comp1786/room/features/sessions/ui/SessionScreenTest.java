@@ -14,6 +14,14 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class SessionScreenTest {
+    @org.junit.Before public void signInAdmin() throws Exception {
+        com.comp1786.room.features.auth.AdminSessionTest.signInAdmin();
+    }
+
+    @org.junit.After public void signOutAdmin() {
+        com.comp1786.room.features.auth.data.AdminAuth.signOut();
+    }
+
     private long eventId;
     @Test public void invalidInputThenCreateEditAndDelete() throws Exception {
         Instrumentation test = InstrumentationRegistry.getInstrumentation();

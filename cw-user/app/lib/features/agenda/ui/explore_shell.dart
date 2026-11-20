@@ -50,14 +50,26 @@ class _ExploreShellState extends State<ExploreShell> {
                 ),
                 if (controller.personal != null)
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
-                    child: Align(alignment: Alignment.centerLeft, child: Text(
-                      controller.personal!.error.isNotEmpty ? controller.personal!.error
-                        : controller.personal!.pending ? 'Lịch & yêu thích: đang chờ gửi lên Cloud'
-                        : controller.personal!.fromCache ? 'Lịch & yêu thích: đang xem bản đã lưu'
-                        : 'Lịch & yêu thích: đã đồng bộ',
-                      style: const TextStyle(fontSize: 12, color: AppColors.muted),
-                    )),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 4,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        controller.personal!.error.isNotEmpty
+                            ? controller.personal!.error
+                            : controller.personal!.pending
+                            ? 'Lịch & yêu thích: đang chờ gửi lên Cloud'
+                            : controller.personal!.fromCache
+                            ? 'Lịch & yêu thích: đang xem bản đã lưu'
+                            : 'Lịch & yêu thích: đã đồng bộ',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.muted,
+                        ),
+                      ),
+                    ),
                   ),
                 if (controller.error.isNotEmpty && controller.events.isNotEmpty)
                   Padding(

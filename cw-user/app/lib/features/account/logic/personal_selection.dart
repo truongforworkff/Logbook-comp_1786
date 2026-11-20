@@ -10,6 +10,10 @@ Set<String> cloudFavourites(Iterable<Map<String, dynamic>> rows) => {
 
 Set<SessionSelection> cloudSchedule(Iterable<Map<String, dynamic>> rows) => {
   for (final row in rows)
-    if (validPreferenceId(row['eventId']) && validPreferenceId(row['sessionId'], maxLength: 256))
-      (eventId: row['eventId'] as String, sessionId: row['sessionId'] as String),
+    if (validPreferenceId(row['eventId']) &&
+        validPreferenceId(row['sessionId'], maxLength: 256))
+      (
+        eventId: row['eventId'] as String,
+        sessionId: row['sessionId'] as String,
+      ),
 };

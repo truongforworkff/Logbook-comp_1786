@@ -18,11 +18,23 @@ Future<void> main() async {
     ),
   );
   final options = DefaultFirebaseOptions.currentPlatform;
-  if (options != null) {
-    await Firebase.initializeApp(options: options);
-    FirebaseFirestore.instance.settings = const Settings(
-      persistenceEnabled: true,
+  if (options == null) {
+    runApp(
+      const MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Text(
+              'Vui lòng mở Eventa trên Android hoặc trình duyệt web.',
+            ),
+          ),
+        ),
+      ),
     );
+    return;
   }
+  await Firebase.initializeApp(options: options);
+  FirebaseFirestore.instance.settings = const Settings(
+    persistenceEnabled: true,
+  );
   runApp(const AuthGate());
 }

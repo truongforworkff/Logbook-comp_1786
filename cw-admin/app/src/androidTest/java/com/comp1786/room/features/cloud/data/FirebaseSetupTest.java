@@ -12,11 +12,14 @@ import static org.junit.Assert.*;
 
 public class FirebaseSetupTest {
     @Test public void connectsWithoutGrantingUnapprovedAccess() throws Exception {
-        assertEquals("eventa-coursework-fpt", FirebaseApp.getInstance().getOptions().getProjectId());
+        assertEquals("demo-eventa", FirebaseApp.getInstance().getOptions().getProjectId());
+        assertEquals("eventa-coursework-fpt", com.google.firebase.FirebaseOptions.fromResource(
+                androidx.test.platform.app.InstrumentationRegistry.getInstrumentation()
+                        .getTargetContext()).getProjectId());
         try {
             Tasks.await(FirebaseFirestore.getInstance().collection("setup_checks")
                     .document("probe").get(Source.SERVER), 25, TimeUnit.SECONDS);
-            fail("Unapproved reads must be rejected by the live server");
+            fail("Unapproved reads must be rejected by the emulator");
         } catch (ExecutionException error) {
             assertTrue(error.getCause() instanceof FirebaseFirestoreException);
             FirebaseFirestoreException denied = (FirebaseFirestoreException) error.getCause();

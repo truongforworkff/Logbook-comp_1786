@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
 import '../../../app.dart';
 import '../../agenda/logic/agenda_controller.dart';
 import '../../agenda/ui/explore_shell.dart';
@@ -26,9 +27,14 @@ class _AuthGateState extends State<AuthGate> {
       return EventaApp(
         key: ValueKey(user?.uid),
         home: snapshot.connectionState == ConnectionState.waiting
-          ? const Scaffold(body: Center(child: CircularProgressIndicator()))
-          : user == null ? AuthPage(repository: repository)
-          : _SignedInUser(key: ValueKey(user.uid), user: user, auth: repository),
+            ? const Scaffold(body: Center(child: CircularProgressIndicator()))
+            : user == null
+            ? AuthPage(repository: repository)
+            : _SignedInUser(
+                key: ValueKey(user.uid),
+                user: user,
+                auth: repository,
+              ),
       );
     },
   );
@@ -45,16 +51,40 @@ class _SignedInUser extends StatefulWidget {
 class _SignedInUserState extends State<_SignedInUser> {
   late final personal = PersonalDataRepository(uid: widget.user.uid);
   late final controller = AgendaController(personal: personal);
+  String? _profileName, _profileEmail;
   @override
   void initState() {
     super.initState();
-    // Profile fields are display data; roles are managed separately by the project owner.
-    personal.firestore.collection('users').doc(widget.user.uid).set({
-      'displayName': widget.user.displayName ?? '',
-      'email': widget.user.email ?? '',
-      'updatedAt': FieldValue.serverTimestamp(),
-    }).catchError((Object error) { if (mounted) setState(() => _profileError = 'Chưa lưu được hồ sơ tài khoản.'); });
+    _saveProfile();
   }
+
+  @override
+  void didUpdateWidget(_SignedInUser oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_profileName != widget.user.displayName ||
+        _profileEmail != widget.user.email) {
+      _saveProfile();
+    }
+  }
+
+  void _saveProfile() {
+    _profileName = widget.user.displayName;
+    _profileEmail = widget.user.email;
+    _profileError = '';
+    personal.firestore
+        .collection('users')
+        .doc(widget.user.uid)
+        .set({
+          'displayName': widget.user.displayName ?? '',
+          'email': widget.user.email ?? '',
+          'updatedAt': FieldValue.serverTimestamp(),
+        })
+        .catchError((Object error) {
+          if (mounted)
+            setState(() => _profileError = 'Chưa lưu được hồ sơ tài khoản.');
+        });
+  }
+
   String _profileError = '';
   @override
   void dispose() {
@@ -62,12 +92,27 @@ class _SignedInUserState extends State<_SignedInUser> {
     personal.dispose();
     super.dispose();
   }
+
   @override
-  Widget build(BuildContext context) => Column(children: [
-    if (_profileError.isNotEmpty) Material(child: SafeArea(bottom: false, child: Text(_profileError))),
-    Expanded(child: ExploreShell(controller: controller, onAccount: () => showModalBottomSheet<void>(
-      context: context, isScrollControlled: true, useSafeArea: true,
-      builder: (_) => AccountSheet(user: widget.user, auth: widget.auth, personal: personal),
-    ))),
-  ]);
+  Widget build(BuildContext context) => Column(
+    children: [
+      if (_profileError.isNotEmpty)
+        Material(child: SafeArea(bottom: false, child: Text(_profileError))),
+      Expanded(
+        child: ExploreShell(
+          controller: controller,
+          onAccount: () => showModalBottomSheet<void>(
+            context: context,
+            isScrollControlled: true,
+            useSafeArea: true,
+            builder: (_) => AccountSheet(
+              user: widget.user,
+              auth: widget.auth,
+              personal: personal,
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
 }

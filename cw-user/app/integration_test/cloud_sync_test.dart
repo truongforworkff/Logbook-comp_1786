@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,7 +34,7 @@ Future<void> publish(List<dynamic> events, {int schemaVersion = 1}) async {
   try {
     final request = await client.patchUrl(
       Uri.parse(
-        'http://10.0.2.2:8086/v1/projects/demo-eventa/databases/(default)/documents/catalogues/main',
+        'http://10.0.2.2:8086/v1/projects/demo-eventa/databases/(default)/documents/role_catalogues/main',
       ),
     );
     request.headers.set('Authorization', 'Bearer owner');
@@ -62,7 +63,7 @@ Future<void> removePublishedCatalog() async {
   try {
     final request = await client.deleteUrl(
       Uri.parse(
-        'http://10.0.2.2:8086/v1/projects/demo-eventa/databases/(default)/documents/catalogues/main',
+        'http://10.0.2.2:8086/v1/projects/demo-eventa/databases/(default)/documents/role_catalogues/main',
       ),
     );
     request.headers.set('Authorization', 'Bearer owner');
@@ -95,6 +96,12 @@ void main() {
           messagingSenderId: '123',
           projectId: 'demo-eventa',
         ),
+      );
+      final auth = FirebaseAuth.instanceFor(app: app);
+      await auth.useAuthEmulator('10.0.2.2', 9098);
+      await auth.createUserWithEmailAndPassword(
+        email: 'catalog-${DateTime.now().microsecondsSinceEpoch}@test.eventa',
+        password: 'EmulatorOnly123!',
       );
       final cloud = FirebaseFirestore.instanceFor(app: app);
       cloud.settings = const Settings(persistenceEnabled: true);

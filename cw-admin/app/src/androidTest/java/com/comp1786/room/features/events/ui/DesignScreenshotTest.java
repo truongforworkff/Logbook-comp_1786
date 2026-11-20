@@ -15,6 +15,14 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 @RunWith(AndroidJUnit4.class)
 public class DesignScreenshotTest {
+    @org.junit.Before public void signInAdmin() throws Exception {
+        com.comp1786.room.features.auth.AdminSessionTest.signInAdmin();
+    }
+
+    @org.junit.After public void signOutAdmin() {
+        com.comp1786.room.features.auth.data.AdminAuth.signOut();
+    }
+
     @Test public void homeAndCreateScreensRenderWithRealDatabase() throws Exception {
         Instrumentation instrumentation=InstrumentationRegistry.getInstrumentation();
         Context context=instrumentation.getTargetContext();

@@ -14,6 +14,14 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class CloudQueueTest {
+    @org.junit.Before public void signInAdmin() throws Exception {
+        com.comp1786.room.features.auth.AdminSessionTest.signInAdmin();
+    }
+
+    @org.junit.After public void signOutAdmin() {
+        com.comp1786.room.features.auth.data.AdminAuth.signOut();
+    }
+
     @Test public void editsQueueNetworkConstrainedSyncWithoutPressingUpload() throws Exception {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         EventDatabase database = EventDatabase.get(context);

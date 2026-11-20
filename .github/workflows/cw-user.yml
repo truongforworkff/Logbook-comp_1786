@@ -1,7 +1,7 @@
 name: CW User Flutter
 on:
   push:
-    branches: [CW]
+    branches: [CW-auth]
     paths: ['cw-user/app/**', '.github/workflows/cw-user.yml']
   workflow_dispatch:
 concurrency:
@@ -55,7 +55,7 @@ jobs:
           working-directory: cw-user/app
           script: |
             flutter drive --driver=test_driver/integration_test.dart --target=integration_test/app_test.dart -d emulator-5554 --keep-app-running
-            npx --yes firebase-tools@14.17.0 emulators:exec --only firestore --project demo-eventa --config ../../cloud/firebase/firebase.test.json "flutter drive --driver=test_driver/integration_test.dart --target=integration_test/cloud_sync_test.dart -d emulator-5554 --keep-app-running"
+            npx --yes firebase-tools@14.17.0 emulators:exec --only auth,firestore --project demo-eventa --config ../../cloud/firebase/firebase.test.json "flutter drive --driver=test_driver/integration_test.dart --target=integration_test/cloud_sync_test.dart -d emulator-5554 --keep-app-running && flutter test integration_test/account_sync_test.dart -d emulator-5554"
       - uses: actions/upload-artifact@v4
         if: always()
         with:

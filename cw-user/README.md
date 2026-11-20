@@ -1,99 +1,35 @@
-# Eventa Explore — G/H bằng Dart và Flutter
+# Eventa Explore — G/H và tài khoản người tham dự
 
-Project đang dùng **Flutter 3.47.4 / Dart 3.13**, giao diện Flutter widgets theo bản HTML trong design/. Phần MAUI đã được thay; mã cũ còn trong lịch sử Git. App quản trị Java trong cw-admin giữ nguyên.
+Mở `cw-user/app` trong Android Studio. Chọn một thiết bị Android hoặc Chrome rồi chạy `lib/main.dart`. Project dùng Flutter 3.47.4 và Dart 3.13. Android và web đã có cấu hình Firebase.
 
-## Chức năng
+## Người tham dự
 
-- Danh sách event/session đọc trực tiếp từ Firestore, ảnh bìa tùy chọn và chủ đề.
-- Tìm tên không phân biệt dấu/hoa thường; lọc ngày, tháng và chủ đề.
-- Chi tiết event có timeline session, chi tiết session chỉ đọc.
-- Thêm/bỏ yêu thích từ danh sách hoặc chi tiết; trang Yêu thích riêng, lưu trên thiết bị.
-- Navigator xử lý Back, sheet chủ đề và lịch chọn ngày theo giao diện sáng/xanh đã chốt.
+1. Tạo tài khoản bằng tên, email và mật khẩu hoặc chọn **Tiếp tục với Google**.
+2. Mở một event để xem timeline. Chạm trái tim để lưu sự kiện yêu thích hoặc mở một session và chọn thêm vào **Lịch của tôi**.
+3. Khi session trùng thời gian, app hiển thị những session bị trùng và cho phép quay lại hoặc vẫn thêm.
+4. Đăng nhập bằng cùng tài khoản trên thiết bị khác để xem lại hai danh sách. Ở màn tài khoản có thể nhập các lựa chọn cũ còn trên thiết bị sau khi xác nhận email đích.
 
-Admin được duyệt công bố dữ liệu lên Firestore; Explore cập nhật trực tiếp cả danh sách và trang chi tiết. Tự nhận dữ liệu khi có mạng, tự nối lại listener bị ngắt, phục hồi khi danh mục được công bố/sửa và khi trở lại app. Có thông báo lỗi và cache offline; production không đọc JSON đóng gói.
-
-## Lịch của tôi
-
-- Người tham dự mở chi tiết session và thêm/bỏ session vào lịch cá nhân.
-- Tab Lịch của tôi hiển thị các session đã chọn theo ngày rồi giờ, mở được chi tiết và bỏ trực tiếp.
-- Chỉ lưu cặp ID event/session trên thiết bị dưới key eventa.schedule.v1. Khi Admin đổi thông tin, lịch dùng dữ liệu Cloud mới nhất. Session bị xóa sẽ không còn hiển thị; ID lựa chọn được giữ khi Cloud tạm lỗi hoặc danh mục tạm rỗng.
-- Danh sách yêu thích event và lịch session dùng hai key riêng. Lựa chọn lịch không gửi lên Firebase.
-- Code tính năng nằm trong app/lib/features/schedule theo data, logic, ui. AgendaController nối lưu trữ với dữ liệu Cloud và các màn hiện có.
-
-Kiểm chứng Lịch của tôi: 22 logic/widget test đạt; integration trên Android kiểm tra thêm từ chi tiết session, lưu bằng SharedPreferences thật, mở lại controller vẫn giữ lịch và bỏ session. Chạy trên emulator thử riêng:
-
-~~~text
-flutter drive --driver=test_driver/integration_test.dart --target=integration_test/personal_schedule_test.dart -d emulator-5556 --keep-app-running --host-vmservice-port=55123
-~~~
-
-## Chạy và kiểm tra
-
-Mở thư mục app/ bằng Android Studio có Flutter plugin hoặc VS Code có Flutter extension.
-
-~~~text
-cd cw-user/app
-flutter pub get
-flutter analyze
-flutter test
-flutter run -d emulator-5554
-flutter build apk --debug --target-platform android-arm64,android-x64
-flutter build web
-~~~
-
-Kiểm tra luồng thực tế trên emulator demo:
-
-~~~text
-flutter drive --driver=test_driver/integration_test.dart --target=integration_test/app_test.dart -d emulator-5556 --keep-app-running
-~~~
-
-Bài kiểm tra giữ lại và khôi phục danh sách yêu thích ban đầu. Luôn thêm --keep-app-running khi kiểm thử trên máy có dữ liệu: Flutter drive mặc định gỡ app sau khi chạy. Sau khi chạy integration test, dùng flutter run để cài lại entry point app thông thường.
-
-## Kết quả kiểm tra
-
-- Flutter analyze: không có lỗi hoặc cảnh báo.
-- 22 bài kiểm tra logic/widget đạt (gồm tự kết nối lại và lifecycle); kiểm thử Firestore SDK trên Android 16 (API 36) đạt, gồm cập nhật/xóa/cache và giữ yêu thích.
-- Build APK debug của bản trùng lịch đạt. Web release đã đạt ở bản trước, chưa kiểm tra lại thay đổi này. APK cập nhật đúng chữ ký; yêu thích từ bản MAUI vẫn được đọc và giữ lại.
-- Chưa build/chạy iOS, macOS, Windows hoặc Linux trên máy này.
-
-## Nền tảng
-
-Có cấu hình Android, iOS, web, Windows, macOS và Linux. Android/web được kiểm tra trong quy trình build; iOS/macOS cần Mac và Xcode, Windows cần Visual Studio với C++, Linux cần các thư viện desktop Flutter. Firebase hiện chỉ cấu hình Android/web; các nền tảng còn lại cần cấu hình Firebase phù hợp trước khi dùng Cloud. Có cấu hình không đồng nghĩa đã chạy thử trên mọi nền tảng.
+Danh mục và lựa chọn đã tải được lưu trong cache. Khi mất mạng, thay đổi được xếp hàng và gửi lại lúc có kết nối. Màn tài khoản chờ các thay đổi đang ghi trước khi đăng xuất. Session bị gỡ khỏi danh mục sẽ biến mất khỏi lịch hiển thị.
 
 ## Đọc code
 
-- app/lib/main.dart, app.dart: khởi động và cấu hình ứng dụng.
-- lib/features/agenda/ui: màn danh sách, thẻ event, sheet chủ đề, chi tiết event/session và khung chính.
-- lib/features/agenda/logic: AgendaController đọc/lưu trạng thái; EventSearch tìm/lọc.
-- lib/features/agenda/data: EventInfo/SessionInfo và CatalogRepository kiểm tra/lắng nghe document catalogues/main.
-- lib/features/favourites/ui: nút yêu thích và thông báo kết quả.
-- lib/features/favourites/data: FavouriteStore đọc/ghi SharedPreferencesAsync.
-- lib/features/favourites/logic: JSON yêu thích, giữ ID đã lưu khi danh mục đang lỗi hoặc tạm bị gỡ.
-- lib/shared/ui: theme, nhãn và thành phần dùng chung.
-- assets/data/events.json và assets/images: dữ liệu cố định cho kiểm thử G/H; không thay thế nguồn Cloud production.
-- test/: logic và widget tests; integration_test/: luồng thực tế; test_driver/: lưu ảnh kiểm thử.
-- android/ios/web/windows/macos/linux: khung nền tảng do Flutter tạo.
+| Phần | Giao diện | Xử lý và dữ liệu |
+| --- | --- | --- |
+| Đăng nhập và đăng ký | `lib/features/auth/ui` | `auth/data/auth_repository.dart`, `auth/logic/auth_validation.dart` |
+| Tài khoản và nhập lịch đã lưu | `lib/features/account/ui` | `account/data/personal_data_repository.dart`, `account/logic/personal_selection.dart` |
+| Danh sách và chi tiết | `lib/features/agenda/ui` | `agenda/logic/agenda_controller.dart`, `agenda/data/catalog_repository.dart` |
+| Lịch và yêu thích | `lib/features/schedule/ui`, `lib/features/favourites/ui` | `schedule/logic/personal_schedule.dart`, repository tài khoản |
 
-## Giữ dữ liệu từ bản MAUI
+Cấu hình project ở `lib/shared/data/firebase_options.dart`. Khi ký bằng keystore khác, đăng ký SHA-1/SHA-256 Android với Firebase cho đăng nhập Google. [Sơ đồ database và quyền truy cập](../cloud/firebase/DATABASE_DIAGRAM.md)
 
-Android giữ applicationId com.comp1786.eventa.user, dùng lại file preferences và key eventa.favourites.v1. Khi cập nhật bản debug đã cài, cần dùng cùng chữ ký. Gradle hỗ trợ biến EVENTA_DEBUG_KEYSTORE trỏ tới debug keystore cũ; không đưa keystore vào Git và không gỡ app để cập nhật. Máy mới chưa cài app dùng debug key Flutter mặc định.
+## Build và kiểm tra
 
-Phiên Demo và ảnh bìa chỉ là minh họa; nguồn event nằm trong JSON. Giờ session lấy từ admin, không tự thêm giờ kết thúc.
+```sh
+flutter pub get
+flutter analyze
+flutter test
+flutter build apk --debug
+flutter build web --release
+```
 
-Tham khảo [Flutter](https://docs.flutter.dev/) và [shared_preferences](https://pub.dev/packages/shared_preferences).
-
-## Firebase Spark
-
-Đã đăng ký Android/web với project eventa-coursework-fpt và khởi tạo Firebase trong lib/main.dart. Cấu hình: lib/shared/data/firebase_options.dart. CatalogRepository lắng nghe Firestore và metadata cache. Xem [thiết lập và kiểm tra kết nối](../cloud/firebase/README.md).
-
-## Cảnh báo trùng lịch
-
-- Admin nhập giờ bắt đầu và kết thúc HH:mm trong cùng ngày; giờ kết thúc phải sau giờ bắt đầu.
-- Cloud gửi thêm endTime, giữ schemaVersion 1 vì đây là trường bổ sung. User vẫn đọc catalog cũ thiếu trường này.
-- User kiểm tra các session cùng ngày trong Lịch của tôi, kể cả thuộc hai event khác nhau. Hai khoảng nối tiếp đúng giờ không tính trùng.
-- Khi thêm session trùng: popup bo góc liệt kê lịch đã chọn, Quay lại không ghi dữ liệu; Vẫn thêm lưu lựa chọn. Bỏ session không yêu cầu xác nhận.
-- Các thẻ đang trùng có nhãn cảnh báo; tự cập nhật theo lịch Admin mới nhất. Lịch cá nhân vẫn chỉ lưu cục bộ.
-- Session cũ chưa có giờ kết thúc được giữ nguyên và ghi rõ chưa kiểm tra được trùng lịch. Không suy đoán thời lượng.
-- Logic: features/schedule/logic/personal_schedule.dart; xác nhận: ui/schedule_button.dart; nhãn: ui/my_schedule_page.dart.
-- Test logic/widget: flutter test test/schedule_conflict_test.dart. Test Android: flutter drive --driver=test_driver/integration_test.dart --target=integration_test/schedule_conflict_test.dart -d emulator-5556 --keep-app-running --host-vmservice-port=55123 (chỉ máy thử riêng).
-
-Kiểm chứng bổ sung ngày 20/11/2026: luồng Android xác nhận/hủy thêm session trùng, lưu hai lựa chọn qua SharedPreferences thật, mở lại và bỏ session đều đạt trên EventaCloudTest. Giờ kết thúc gửi/đọc lại qua Firestore emulator demo-eventa đạt; dữ liệu Firebase thật không được dùng cho các kiểm thử này.
+Test `integration_test/account_sync_test.dart` kiểm tra hai client cùng tài khoản, thay đổi offline và chuyển người dùng. Khởi động [Firebase emulators](../cloud/firebase/README.md), rồi chạy `flutter test integration_test/account_sync_test.dart -d <id-may-ao-thu>`.
