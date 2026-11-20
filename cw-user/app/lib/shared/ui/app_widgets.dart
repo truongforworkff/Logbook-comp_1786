@@ -97,8 +97,8 @@ class BottomTabs extends StatelessWidget {
     child: SafeArea(
       top: false,
       child: PageFrame(
-        child: SizedBox(
-          height: 72,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 72),
           child: Row(
             children: [
               _tab(
@@ -145,7 +145,11 @@ class BottomTabs extends StatelessWidget {
         child: TextButton(
           key: Key('tab-${tab.name}'),
           onPressed: () => _select(context, tab),
+          style: TextButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 10),
+          ),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Badge(
@@ -157,6 +161,8 @@ class BottomTabs extends StatelessWidget {
               const SizedBox(height: 5),
               Text(
                 label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 11,
                   color: color,

@@ -159,6 +159,8 @@ void main() {
         200,
         scrollable: find.byType(Scrollable).first,
       );
+      await tester.ensureVisible(find.byKey(Key('event-${event.id}')));
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(Key('event-${event.id}')));
       await tester.pumpAndSettle();
       await tester.scrollUntilVisible(
