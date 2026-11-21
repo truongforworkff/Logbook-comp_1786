@@ -81,9 +81,10 @@ public final class CloudDownload {
             Event old = previousById.get(event.publicId);
             if (old != null) {
                 event.id = old.id;
+                if (event.createdAt == 0) event.createdAt = old.createdAt;
                 preserveOriginalCover(context, old, event);
             }
-            long eventId = db.events().insert(event);
+            long eventId = db.events().insertRow(event);
             for (Object session : rows(fields.get("sessions"), 500)) {
                 Session entry = session(row(session), event.publicId, eventId);
                 if (!sessionIds.add(entry.id) || sessionIds.size() > 500) throw invalidCatalog();
@@ -105,6 +106,13 @@ public final class CloudDownload {
                 required(fields, "organiser"), required(fields, "type"), required(fields, "status"));
         event.publicId = required(fields, "id");
         if (event.publicId.length() > 160) throw invalidCatalog();
+        Object createdAt = fields.get("createdAt");
+        if (createdAt != null) {
+            if (!(createdAt instanceof Long) || (Long) createdAt <= 0 || (Long) createdAt > 253402300799999L) {
+                throw invalidCatalog();
+            }
+            event.createdAt = (Long) createdAt;
+        }
         String category = optional(fields, "categoryCode");
         if (!category.isEmpty()) event.categoryCode = category;
         event.description = optional(fields, "description");

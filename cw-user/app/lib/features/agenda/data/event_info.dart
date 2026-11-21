@@ -15,6 +15,7 @@ class EventInfo {
     required this.description,
     required this.source,
     required this.sessions,
+    this.createdAt,
     this.imageBytes,
     this.contactEmail = '',
     this.contactPhone = '',
@@ -23,6 +24,7 @@ class EventInfo {
   final String id, name, location, organiser, type, status;
   final String categoryCode, image, description, source;
   final DateTime date;
+  final DateTime? createdAt;
   final Uint8List? imageBytes;
   final String contactEmail, contactPhone;
   final List<SessionInfo> sessions;
@@ -31,6 +33,7 @@ class EventInfo {
     id: json['id'] as String,
     name: json['name'] as String,
     date: DateTime.parse(json['date'] as String),
+    createdAt: _parseCreatedAt(json['createdAt']),
     location: json['location'] as String,
     organiser: json['organiser'] as String,
     type: json['type'] as String,
@@ -48,6 +51,14 @@ class EventInfo {
       ),
     ),
   );
+
+  static DateTime? _parseCreatedAt(Object? value) {
+    if (value == null) return null;
+    if (value is! int || value <= 0 || value > 253402300799999) {
+      throw const FormatException('Invalid event creation time');
+    }
+    return DateTime.fromMillisecondsSinceEpoch(value, isUtc: true);
+  }
 
   String get imageAsset => image.startsWith('images/') ? 'assets/$image' : '';
 }

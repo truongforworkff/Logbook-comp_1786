@@ -45,12 +45,12 @@ List<EventInfo> findEvents(
       )
       .toList();
   results.sort((a, b) {
-    final status = (a.status == 'Completed' ? 1 : 0).compareTo(
-      b.status == 'Completed' ? 1 : 0,
+    final created = (b.createdAt?.millisecondsSinceEpoch ?? 0).compareTo(
+      a.createdAt?.millisecondsSinceEpoch ?? 0,
     );
-    if (status != 0) return status;
-    final day = a.date.compareTo(b.date);
-    return day != 0 ? day : a.id.compareTo(b.id);
+    if (created != 0) return created;
+    final byDate = b.date.compareTo(a.date);
+    return byDate != 0 ? byDate : a.id.compareTo(b.id);
   });
   return results;
 }

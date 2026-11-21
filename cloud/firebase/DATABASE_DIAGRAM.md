@@ -53,6 +53,7 @@ erDiagram
         string id PK
         string name
         string date
+        int createdAt "Unix milliseconds nếu biết"
         string categoryCode
         string image
     }

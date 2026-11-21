@@ -73,10 +73,12 @@ public class CloudSyncTest {
             Map<?, ?> publishedEvent = (Map<?, ?>) published.get(0);
             Map<?, ?> publishedSession = (Map<?, ?>) ((List<?>) publishedEvent.get("sessions")).get(0);
             assertEquals("10:00", publishedSession.get("endTime"));
+            assertEquals(event.createdAt, publishedEvent.get("createdAt"));
             assertTrue(CloudDownload.restore(context, restored, cloud));
             Event restoredEvent = restored.events().getAll().get(0);
             Session restoredSession = restored.sessions().getAll().get(0);
             assertEquals(stableId, restoredEvent.publicId);
+            assertEquals(event.createdAt, restoredEvent.createdAt);
             assertEquals(session.id, restoredSession.id);
             assertEquals(Long.valueOf(restoredEvent.id), restoredSession.eventId);
             assertEquals("10:00", restoredSession.endTime);
