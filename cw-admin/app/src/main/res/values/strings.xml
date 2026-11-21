@@ -68,4 +68,8 @@
 <string name="deleted_notice">Đã xóa sự kiện khỏi danh sách.</string>
 <string name="check_fields_notice">Một vài thông tin chưa hợp lệ. Hãy kiểm tra những ô có ghi chú bên dưới.</string>
     <string name="event_created_at">Đã thêm lúc %1$s</string>
+    <string name="event_end_date">Ngày kết thúc</string>
+    <string name="event_end_date_optional">Ngày kết thúc (tùy chọn)</string>
+    <string name="event_end_date_hint">Cùng ngày bắt đầu</string>
+    <string name="invalid_event_end_date">Chọn ngày kết thúc hợp lệ từ ngày bắt đầu trở đi.</string>
 </resources>

@@ -23,6 +23,21 @@ Future<AgendaController> start(WidgetTester tester) async {
 }
 
 void main() {
+  testWidgets('featured excludes completed events, all keeps them', (
+    tester,
+  ) async {
+    final controller = await start(tester);
+    expect(find.text('5 sự kiện'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('browse-featured')));
+    await tester.pumpAndSettle();
+    expect(find.text('Sự kiện nổi bật'), findsOneWidget);
+    expect(find.text('5 sự kiện'), findsNothing);
+    await tester.tap(find.byKey(const Key('browse-all')));
+    await tester.pumpAndSettle();
+    expect(find.text('5 sự kiện'), findsOneWidget);
+    controller.dispose();
+  });
+
   testWidgets('search and category controls show matching events', (
     tester,
   ) async {

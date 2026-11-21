@@ -79,13 +79,19 @@ public final class CloudDownload {
 
     private static Event event(Map<?, ?> fields) {
         String date = required(fields, "date");
+        String endDate = optional(fields, "endDate");
         try {
-            if (!EventValidation.validDate(EventValidation.displayDate(date))) throw invalidCatalog();
+            String day = EventValidation.displayDate(date);
+            String end = endDate.isEmpty() ? "" : EventValidation.displayDate(endDate);
+            if (!EventValidation.validDate(day) || !EventValidation.validEndDate(day, end)) {
+                throw invalidCatalog();
+            }
         } catch (java.time.format.DateTimeParseException invalid) {
             throw invalidCatalog();
         }
         Event event = new Event(0, required(fields, "name"), date, required(fields, "location"),
                 required(fields, "organiser"), required(fields, "type"), required(fields, "status"));
+        event.endDate = endDate;
         event.publicId = required(fields, "id");
         if (event.publicId.length() > 160) throw invalidCatalog();
         Object createdAt = fields.get("createdAt");

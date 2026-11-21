@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../data/event_info.dart';
@@ -25,12 +27,31 @@ class BrowsePage extends StatefulWidget {
 class _BrowsePageState extends State<BrowsePage> {
   final query = TextEditingController();
   DateTime? date;
+  bool featuredOnly = false;
+  Timer? _midnight;
   String month = '', category = '';
 
   @override
   void dispose() {
+    _midnight?.cancel();
     query.dispose();
     super.dispose();
+  }
+
+  void _showFeatured(bool value) {
+    if (featuredOnly == value) return;
+    setState(() => featuredOnly = value);
+    _midnight?.cancel();
+    if (value) _refreshAtMidnight();
+  }
+
+  void _refreshAtMidnight() {
+    final now = DateTime.now();
+    final tomorrow = DateTime(now.year, now.month, now.day + 1);
+    _midnight = Timer(tomorrow.difference(now), () {
+      setState(() {});
+      _refreshAtMidnight();
+    });
   }
 
   bool get filtered =>
@@ -98,8 +119,12 @@ class _BrowsePageState extends State<BrowsePage> {
   Widget build(BuildContext context) {
     final controller = widget.controller;
     final noSaved = widget.savedOnly && controller.saved.isEmpty;
+    final now = DateTime.now();
+    final events = featuredOnly
+        ? controller.events.where((event) => !event.hasEnded(now)).toList()
+        : controller.events;
     final results = findEvents(
-      controller.events,
+      events,
       query: query.text,
       date: date,
       month: month,
@@ -112,6 +137,26 @@ class _BrowsePageState extends State<BrowsePage> {
       padding: const EdgeInsets.fromLTRB(18, 14, 18, 26),
       children: [
         _intro(context),
+        if (!widget.savedOnly) ...[
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            children: [
+              _chip(
+                'Tất cả',
+                !featuredOnly,
+                () => _showFeatured(false),
+                key: const Key('browse-all'),
+              ),
+              _chip(
+                'Nổi bật',
+                featuredOnly,
+                () => _showFeatured(true),
+                key: const Key('browse-featured'),
+              ),
+            ],
+          ),
+        ],
         if (!noSaved) ...[
           const SizedBox(height: 22),
           TextField(
@@ -151,7 +196,7 @@ class _BrowsePageState extends State<BrowsePage> {
             ),
           ),
           const SizedBox(height: 11),
-          _filters(controller.events),
+          _filters(events),
           const SizedBox(height: 10),
           Align(
             alignment: Alignment.centerLeft,
@@ -191,7 +236,9 @@ class _BrowsePageState extends State<BrowsePage> {
                     ? 'Kết quả tìm kiếm'
                     : widget.savedOnly
                     ? 'Đã lưu yêu thích'
-                    : 'Sự kiện nổi bật',
+                    : featuredOnly
+                    ? 'Sự kiện nổi bật'
+                    : 'Tất cả sự kiện',
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -311,13 +358,8 @@ class _BrowsePageState extends State<BrowsePage> {
         );
 
   Widget _filters(List<EventInfo> events) {
-    final months =
-        events
-            .where((event) => event.status != 'Completed')
-            .map((event) => monthKey(event.date))
-            .toSet()
-            .toList()
-          ..sort();
+    final months = events.map((event) => monthKey(event.date)).toSet().toList()
+      ..sort();
     return Wrap(
       spacing: 7,
       runSpacing: 7,
@@ -393,6 +435,8 @@ class _BrowsePageState extends State<BrowsePage> {
         Text(
           noSaved
               ? 'Dành một chỗ cho điều bạn thích'
+              : featuredOnly && !filtered
+              ? 'Hiện chưa có sự kiện nổi bật'
               : 'Chưa tìm thấy sự kiện phù hợp',
           textAlign: TextAlign.center,
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
@@ -401,6 +445,8 @@ class _BrowsePageState extends State<BrowsePage> {
         Text(
           noSaved
               ? 'Chạm vào trái tim ở sự kiện bạn quan tâm. Bạn sẽ tìm lại chúng thật nhanh ở đây.'
+              : featuredOnly && !filtered
+              ? 'Xem danh sách đầy đủ trong mục Tất cả.'
               : 'Thử tên khác hoặc xóa bộ lọc để tiếp tục khám phá.',
           textAlign: TextAlign.center,
           style: const TextStyle(
@@ -413,8 +459,16 @@ class _BrowsePageState extends State<BrowsePage> {
         OutlinedButton(
           onPressed: noSaved
               ? () => widget.controller.selectTab(AgendaTab.explore)
+              : featuredOnly && !filtered
+              ? () => _showFeatured(false)
               : _clearFilters,
-          child: Text(noSaved ? 'Khám phá sự kiện' : 'Xóa bộ lọc'),
+          child: Text(
+            noSaved
+                ? 'Khám phá sự kiện'
+                : featuredOnly && !filtered
+                ? 'Xem tất cả'
+                : 'Xóa bộ lọc',
+          ),
         ),
       ],
     ),

@@ -56,6 +56,7 @@ public final class CloudSnapshot {
         if (event.createdAt > 0) row.put("createdAt", event.createdAt);
         row.put("name", event.name);
         row.put("date", event.date);
+        if (!event.endDate.isEmpty()) row.put("endDate", event.endDate);
         row.put("location", event.location);
         row.put("organiser", event.organiser);
         row.put("type", event.type);

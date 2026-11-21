@@ -48,6 +48,7 @@ public class CloudSyncTest {
             }
             ownerRequest("PATCH", "/sync_config/publisher", "{\"fields\":{\"writeKey\":{\"stringValue\":\"" + writeKey + "\"}}}");
             Event event = new Event(0, "AI workshop", "2026-11-17", "Campus", "Team", "Workshop", "Upcoming");
+            event.endDate = "2026-11-19";
             event.id = db.events().insert(event);
             String stableId = event.publicId;
             Session session = new Session(0, event.id, "Opening", "09:00", "Speaker", "A201", "Keynote", "Welcome");
@@ -64,11 +65,13 @@ public class CloudSyncTest {
             Map<?, ?> publishedSession = (Map<?, ?>) ((List<?>) publishedEvent.get("sessions")).get(0);
             assertEquals("10:00", publishedSession.get("endTime"));
             assertEquals(event.createdAt, publishedEvent.get("createdAt"));
+            assertEquals(event.endDate, publishedEvent.get("endDate"));
             assertTrue(CloudDownload.restore(context, restored, cloud));
             Event restoredEvent = restored.events().getAll().get(0);
             Session restoredSession = restored.sessions().getAll().get(0);
             assertEquals(stableId, restoredEvent.publicId);
             assertEquals(event.createdAt, restoredEvent.createdAt);
+            assertEquals(event.endDate, restoredEvent.endDate);
             assertEquals(session.id, restoredSession.id);
             assertEquals(Long.valueOf(restoredEvent.id), restoredSession.eventId);
             assertEquals("10:00", restoredSession.endTime);

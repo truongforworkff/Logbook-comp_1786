@@ -73,6 +73,30 @@ void main() {
     },
   );
 
+  test(
+    'missing end day lasts through the event day, and a range is inclusive',
+    () {
+      final data = document();
+      final row = data['events'][1] as Map<String, dynamic>;
+      final single = CatalogData.fromDocument(data, fromCache: false).events[1];
+      expect(single.hasEnded(DateTime(2026, 11, 17, 23, 59)), isFalse);
+      expect(single.hasEnded(DateTime(2026, 11, 18)), isTrue);
+
+      row['endDate'] = '2026-11-19';
+      final span = CatalogData.fromDocument(data, fromCache: false).events[1];
+      expect(span.hasEnded(DateTime(2026, 11, 19, 23, 59)), isFalse);
+      expect(span.hasEnded(DateTime(2026, 11, 20)), isTrue);
+      row['status'] = 'Completed';
+      expect(
+        CatalogData.fromDocument(
+          data,
+          fromCache: false,
+        ).events[1].hasEnded(DateTime(2026, 11, 18)),
+        isTrue,
+      );
+    },
+  );
+
   test('end time is optional for legacy catalogs and parsed when provided', () {
     final data = document();
     final row = data['events'][0]['sessions'][0] as Map<String, dynamic>;
@@ -109,6 +133,8 @@ void main() {
       (Map<String, dynamic> d) => d['events'][0]['id'] = '',
       (Map<String, dynamic> d) => d['events'][0]['createdAt'] = '2026-11-20',
       (Map<String, dynamic> d) => d['events'][0]['createdAt'] = -1,
+      (Map<String, dynamic> d) => d['events'][1]['endDate'] = '2026-11-16',
+      (Map<String, dynamic> d) => d['events'][1]['endDate'] = '2026-11-31',
       (Map<String, dynamic> d) =>
           d['events'][0]['image'] = 'file:///private/image',
       (Map<String, dynamic> d) =>

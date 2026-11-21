@@ -9,6 +9,14 @@ public class EventValidationTest {
         assertEquals("2024-02-29", EventValidation.storageDate("29/02/2024"));
         assertEquals("29/02/2024", EventValidation.displayDate("2024-02-29"));
     }
+    @Test public void optionalEndDateMayEqualStartButCannotPrecedeIt() {
+        assertTrue(EventValidation.validEndDate("17/11/2026", ""));
+        assertTrue(EventValidation.validEndDate("17/11/2026", "17/11/2026"));
+        assertTrue(EventValidation.validEndDate("17/11/2026", "18/11/2026"));
+        assertFalse(EventValidation.validEndDate("17/11/2026", "16/11/2026"));
+        assertFalse(EventValidation.validEndDate("17/11/2026", "31/11/2026"));
+    }
+
     @Test public void optionalContactsAcceptEmptyButRejectMalformedInput() {
         assertTrue(EventValidation.validEmail(""));
         assertTrue(EventValidation.validEmail("manager@example.com"));

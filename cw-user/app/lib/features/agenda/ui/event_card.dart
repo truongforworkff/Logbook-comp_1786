@@ -191,7 +191,7 @@ class EventCard extends StatelessWidget {
             ),
             const SizedBox(width: 6),
             Text(
-              '${shortDate(event.date)}${event.status == 'Completed' ? ' · Đã diễn ra' : ''}',
+              '${shortDate(event.date)}${event.hasEnded(DateTime.now()) ? ' · Đã kết thúc' : ''}',
               style: TextStyle(
                 fontSize: 11,
                 color: event.image.isEmpty ? AppColors.muted : Colors.white,
