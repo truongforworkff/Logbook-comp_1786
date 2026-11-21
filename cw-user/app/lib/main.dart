@@ -24,7 +24,7 @@ Future<void> main() async {
         home: Scaffold(
           body: Center(
             child: Text(
-              'Vui lòng mở Eventa trên Android hoặc trình duyệt web.',
+              'Open Eventa on Android or in a web browser.',
             ),
           ),
         ),

@@ -27,14 +27,14 @@ void main() {
     tester,
   ) async {
     final controller = await start(tester);
-    expect(find.text('5 sự kiện'), findsOneWidget);
+    expect(find.text('5 events'), findsOneWidget);
     await tester.tap(find.byKey(const Key('browse-featured')));
     await tester.pumpAndSettle();
-    expect(find.text('Sự kiện nổi bật'), findsOneWidget);
-    expect(find.text('5 sự kiện'), findsNothing);
+    expect(find.text('Featured events'), findsOneWidget);
+    expect(find.text('5 events'), findsNothing);
     await tester.tap(find.byKey(const Key('browse-all')));
     await tester.pumpAndSettle();
-    expect(find.text('5 sự kiện'), findsOneWidget);
+    expect(find.text('5 events'), findsOneWidget);
     controller.dispose();
   });
 
@@ -42,17 +42,17 @@ void main() {
     tester,
   ) async {
     final controller = await start(tester);
-    expect(find.text('5 sự kiện'), findsOneWidget);
+    expect(find.text('5 events'), findsOneWidget);
     await tester.enterText(find.byKey(const Key('event-search')), 'NVIDIA');
     await tester.pumpAndSettle();
-    expect(find.text('2 sự kiện'), findsOneWidget);
+    expect(find.text('2 events'), findsOneWidget);
     await tester.tap(find.byKey(const Key('clear-search')));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('category-filter')));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('category-Technology')));
     await tester.pumpAndSettle();
-    expect(find.text('2 sự kiện'), findsOneWidget);
+    expect(find.text('2 events'), findsOneWidget);
     expect(tester.takeException(), isNull);
     controller.dispose();
   });
@@ -92,7 +92,7 @@ void main() {
       );
       await tester.tap(find.byKey(const Key('tab-saved')));
       await tester.pumpAndSettle();
-      expect(find.text('1 sự kiện'), findsOneWidget);
+      expect(find.text('1 event'), findsOneWidget);
       expect(tester.takeException(), isNull);
       controller.dispose();
     },
@@ -104,8 +104,8 @@ void main() {
     final controller = await start(tester);
     await tester.tap(find.byKey(const Key('tab-saved')));
     await tester.pumpAndSettle();
-    expect(find.text('Dành một chỗ cho điều bạn thích'), findsOneWidget);
-    expect(find.text('Khám phá sự kiện'), findsOneWidget);
+    expect(find.text('No favourites yet'), findsOneWidget);
+    expect(find.text('Explore events'), findsOneWidget);
     expect(tester.takeException(), isNull);
     controller.dispose();
   });

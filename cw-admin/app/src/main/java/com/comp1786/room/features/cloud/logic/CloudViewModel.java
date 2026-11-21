@@ -45,8 +45,8 @@ public final class CloudViewModel extends AndroidViewModel {
             try {
                 boolean found = CloudDownload.restore(getApplication(), EventDatabase.get(getApplication()),
                         FirebaseFirestore.getInstance());
-                message = found ? "Danh mục trên máy đã cập nhật từ Firebase."
-                        : "Firebase chưa có danh mục sự kiện.";
+                message = found ? "Local catalogue updated from Firebase."
+                        : "No event catalogue has been published to Firebase yet.";
             } catch (IllegalArgumentException | IllegalStateException error) {
                 message = error.getMessage();
             } catch (Exception error) {
@@ -54,7 +54,7 @@ public final class CloudViewModel extends AndroidViewModel {
                 Throwable cause = error instanceof ExecutionException ? error.getCause() : error;
                 message = cause instanceof com.google.firebase.firestore.FirebaseFirestoreException
                         && !CloudSyncWorker.retryable(cause) ? CloudSyncWorker.message(cause)
-                        : "Chưa tải được từ Firebase. Kiểm tra mạng rồi thử lại.";
+                        : "Could not download from Firebase. Check your connection and try again.";
             }
             downloadMessage.postValue(message);
             downloading.postValue(false);

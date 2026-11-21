@@ -81,7 +81,7 @@ class _SignedInUserState extends State<_SignedInUser> {
         })
         .catchError((Object error) {
           if (mounted) {
-            setState(() => _profileError = 'Chưa lưu được hồ sơ tài khoản.');
+            setState(() => _profileError = 'Could not save your profile.');
           }
         });
   }

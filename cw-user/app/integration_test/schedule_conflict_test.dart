@@ -65,7 +65,7 @@ void main() {
     reopened.selectTab(AgendaTab.schedule);
     await tester.pumpWidget(EventaApp(controller: reopened));
     await tester.pumpAndSettle();
-    expect(find.text('2 session đã chọn'), findsOneWidget);
+    expect(find.text('2 agenda items selected'), findsOneWidget);
     expect(find.byKey(const Key('conflict-one-a')), findsOneWidget);
     await binding.takeScreenshot('09-my-schedule-conflicts');
     await tester.scrollUntilVisible(

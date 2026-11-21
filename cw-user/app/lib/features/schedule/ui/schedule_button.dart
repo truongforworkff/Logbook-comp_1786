@@ -47,7 +47,7 @@ class _ScheduleButtonState extends State<ScheduleButton> {
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Chưa lưu được lịch. Hãy thử lại.')),
+          const SnackBar(content: Text('Could not save your schedule. Try again.')),
         );
       }
     } finally {
@@ -60,13 +60,13 @@ class _ScheduleButtonState extends State<ScheduleButton> {
     builder: (context) => AlertDialog(
       key: const Key('schedule-conflict-dialog'),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      title: const Text('Session này trùng lịch'),
+      title: const Text('Schedule conflict'),
       scrollable: true,
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text('Bạn đã chọn các session diễn ra cùng thời gian:'),
+          const Text('These agenda items overlap with the one you want to add:'),
           for (final entry in entries) ...[
             const SizedBox(height: 16),
             Text(
@@ -76,19 +76,19 @@ class _ScheduleButtonState extends State<ScheduleButton> {
             Text('${entry.session.timeRange} · ${entry.event.name}'),
           ],
           const SizedBox(height: 16),
-          const Text('Bạn vẫn có thể thêm và quyết định tham dự sau.'),
+          const Text('You can add it anyway and decide which to attend later.'),
         ],
       ),
       actions: [
         TextButton(
           key: const Key('cancel-conflicting-session'),
           onPressed: () => Navigator.pop(context, false),
-          child: const Text('Quay lại'),
+          child: const Text('Back'),
         ),
         FilledButton(
           key: const Key('confirm-conflicting-session'),
           onPressed: () => Navigator.pop(context, true),
-          child: const Text('Vẫn thêm'),
+          child: const Text('Add anyway'),
         ),
       ],
     ),
@@ -112,7 +112,7 @@ class _ScheduleButtonState extends State<ScheduleButton> {
           size: 19,
         ),
         label: Text(
-          selected ? 'Bỏ khỏi lịch của tôi' : 'Thêm vào lịch của tôi',
+          selected ? 'Remove from my schedule' : 'Add to my schedule',
         ),
       ),
     );

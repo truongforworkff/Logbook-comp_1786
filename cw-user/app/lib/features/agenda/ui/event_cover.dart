@@ -21,7 +21,7 @@ class EventCover extends StatelessWidget {
         height: height,
         width: double.infinity,
         fit: BoxFit.cover,
-        semanticLabel: 'Ảnh bìa sự kiện',
+        semanticLabel: 'Event cover image',
         errorBuilder: fallback,
       );
     }
@@ -30,7 +30,7 @@ class EventCover extends StatelessWidget {
       height: height,
       width: double.infinity,
       fit: BoxFit.cover,
-      semanticLabel: 'Ảnh bìa sự kiện',
+      semanticLabel: 'Event cover image',
       errorBuilder: fallback,
     );
   }

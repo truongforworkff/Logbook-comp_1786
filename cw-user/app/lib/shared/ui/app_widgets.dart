@@ -67,7 +67,7 @@ class BrandHeader extends StatelessWidget {
               ),
               const SizedBox(width: 4),
               Text(
-                fromCache ? 'Bản đã lưu' : 'Cloud',
+                fromCache ? 'Cached' : 'Cloud',
                 style: const TextStyle(fontSize: 10, color: AppColors.muted),
               ),
             ],
@@ -77,7 +77,7 @@ class BrandHeader extends StatelessWidget {
           IconButton(
             key: const Key('open-account'),
             onPressed: onAccount,
-            tooltip: 'Tài khoản',
+            tooltip: 'Account',
             icon: const Icon(
               Icons.person_outline,
               color: AppColors.blue,
@@ -87,7 +87,7 @@ class BrandHeader extends StatelessWidget {
         IconButton(
           key: const Key('refresh-cloud'),
           onPressed: onRefresh,
-          tooltip: 'Tải lại từ Cloud',
+          tooltip: 'Refresh from Firebase',
           icon: const Icon(Icons.refresh, color: AppColors.blue, size: 21),
         ),
       ],
@@ -122,19 +122,19 @@ class BottomTabs extends StatelessWidget {
                 context,
                 AgendaTab.explore,
                 Icons.event_note_outlined,
-                'Khám phá',
+                'Explore',
               ),
               _tab(
                 context,
                 AgendaTab.saved,
                 Icons.favorite_border,
-                'Yêu thích',
+                'Favourites',
               ),
               _tab(
                 context,
                 AgendaTab.schedule,
                 Icons.calendar_month_outlined,
-                'Lịch của tôi',
+                'My schedule',
               ),
             ],
           ),

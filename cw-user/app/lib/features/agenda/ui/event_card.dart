@@ -47,7 +47,7 @@ class EventCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Semantics(
-                  label: 'Xem sự kiện: ${event.name}',
+                  label: 'View event: ${event.name}',
                   button: true,
                   onTap: onOpen,
                   child: ExcludeSemantics(
@@ -111,7 +111,7 @@ class EventCard extends StatelessWidget {
                     const SizedBox(width: 5),
                     Expanded(
                       child: Text(
-                        '${event.sessions.length} session',
+                        agendaItemCount(event.sessions.length),
                         style: const TextStyle(
                           fontSize: 11,
                           color: Color(0xFF25B66B),
@@ -128,7 +128,7 @@ class EventCard extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            'Xem lịch trình',
+                            'View agenda',
                             style: TextStyle(fontSize: 11),
                           ),
                           SizedBox(width: 5),
@@ -191,7 +191,7 @@ class EventCard extends StatelessWidget {
             ),
             const SizedBox(width: 6),
             Text(
-              '${shortDate(event.date)}${event.hasEnded(DateTime.now()) ? ' · Đã kết thúc' : ''}',
+              '${shortDate(event.date)}${event.hasEnded(DateTime.now()) ? ' · Ended' : ''}',
               style: TextStyle(
                 fontSize: 11,
                 color: event.image.isEmpty ? AppColors.muted : Colors.white,

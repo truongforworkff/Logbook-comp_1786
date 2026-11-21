@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import com.comp1786.room.databinding.EventListItemBinding;
 import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.util.Locale;
 public class EventAdapter extends ListAdapter<Event, EventAdapter.Holder> {
     public interface OnEventClick { void onClick(Event event); }
     private final OnEventClick onClick;
@@ -44,7 +46,7 @@ public class EventAdapter extends ListAdapter<Event, EventAdapter.Holder> {
         EventPhoto.load(holder.binding.cover, event.imageUri, null);
         holder.binding.name.setText(event.name);
         holder.binding.day.setText(String.valueOf(date.getDayOfMonth()));
-        holder.binding.month.setText(context.getString(R.string.month_short,date.getMonthValue()));
+        holder.binding.month.setText(date.getMonth().getDisplayName(TextStyle.SHORT, Locale.UK));
         holder.binding.details.setText(event.location);
         holder.binding.status.setText(statusLabel(context,event.status));
         holder.itemView.setClickable(true); holder.itemView.setFocusable(true);

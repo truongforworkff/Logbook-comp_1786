@@ -33,7 +33,7 @@ class AuthRepository {
     final account = await google.authenticate();
     final token = account.authentication.idToken;
     if (token == null) {
-      throw StateError('Google chưa trả về thông tin đăng nhập.');
+      throw StateError('Google did not return sign-in details.');
     }
     await auth.signInWithCredential(
       GoogleAuthProvider.credential(idToken: token),
@@ -49,24 +49,24 @@ class AuthRepository {
 String authMessage(Object error) {
   if (error is GoogleSignInException) {
     return error.code == GoogleSignInExceptionCode.canceled
-        ? 'Bạn đã hủy đăng nhập Google.'
-        : 'Chưa đăng nhập Google được. Kiểm tra mạng và cấu hình Google của app.';
+        ? 'Google sign-in cancelled.'
+        : 'Google sign-in failed. Check your connection and the Google sign-in configuration.';
   }
   if (error is FirebaseAuthException) {
     return switch (error.code) {
       'email-already-in-use' =>
-        'Email đã có tài khoản. Hãy chuyển sang đăng nhập.',
-      'weak-password' => 'Mật khẩu chưa đủ mạnh.',
-      'invalid-email' => 'Email chưa hợp lệ.',
+        'This email is already registered. Sign in to continue.',
+      'weak-password' => 'Choose a stronger password.',
+      'invalid-email' => 'Enter a valid email address.',
       'invalid-credential' ||
       'wrong-password' ||
-      'user-not-found' => 'Email hoặc mật khẩu chưa đúng.',
-      'user-disabled' => 'Tài khoản đã bị vô hiệu hóa.',
-      'network-request-failed' => 'Chưa có kết nối mạng. Hãy thử lại.',
-      'too-many-requests' => 'Có quá nhiều lần thử. Hãy chờ rồi thử lại.',
-      'account-exists-with-different-credential' => 'Email này đã dùng cách đăng nhập khác. Hãy đăng nhập bằng mật khẩu đã tạo.',
-      _ => 'Chưa đăng nhập được. Hãy thử lại.',
+      'user-not-found' => 'Incorrect email or password.',
+      'user-disabled' => 'This account has been disabled.',
+      'network-request-failed' => 'You are offline. Reconnect and try again.',
+      'too-many-requests' => 'Too many attempts. Wait a moment and try again.',
+      'account-exists-with-different-credential' => 'This email uses another sign-in method. Sign in with the password you created.',
+      _ => 'Could not sign in. Try again.',
     };
   }
-  return 'Chưa hoàn tất thao tác. Hãy thử lại.';
+  return 'Could not complete the request. Try again.';
 }

@@ -151,7 +151,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('tab-schedule')));
       await tester.pumpAndSettle();
-      expect(find.text('Chưa có session trong lịch'), findsOneWidget);
+      expect(find.text('Your schedule is empty'), findsOneWidget);
       await tester.tap(find.byKey(const Key('schedule-explore')));
       await tester.pumpAndSettle();
       await tester.scrollUntilVisible(
@@ -179,7 +179,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('tab-schedule')));
       await tester.pumpAndSettle();
-      expect(find.text('1 session đã chọn'), findsOneWidget);
+      expect(find.text('1 agenda item selected'), findsOneWidget);
       expect(find.byKey(Key('planned-${session.id}')), findsOneWidget);
       await tester.tap(find.byKey(Key('planned-${session.id}')));
       await tester.pumpAndSettle();
@@ -188,7 +188,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(Key('plan-${session.id}')));
       await tester.pumpAndSettle();
-      expect(find.text('Chưa có session trong lịch'), findsOneWidget);
+      expect(find.text('Your schedule is empty'), findsOneWidget);
       expect(tester.takeException(), isNull);
       controller.dispose();
     },

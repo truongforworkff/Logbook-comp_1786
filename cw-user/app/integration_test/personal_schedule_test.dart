@@ -66,13 +66,13 @@ void main() {
     reopened.selectTab(AgendaTab.schedule);
     await tester.pumpWidget(EventaApp(controller: reopened));
     await tester.pumpAndSettle();
-    expect(find.text('1 session đã chọn'), findsOneWidget);
+    expect(find.text('1 agenda item selected'), findsOneWidget);
     expect(find.text('Demo: AI agents trong doanh nghiệp'), findsOneWidget);
     await binding.takeScreenshot('07-my-schedule');
     await tester.tap(find.byKey(const Key('plan-ignite-2026-1')));
     await tester.pumpAndSettle();
     expect(await store.load(), isEmpty);
-    expect(find.text('Chưa có session trong lịch'), findsOneWidget);
+    expect(find.text('Your schedule is empty'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

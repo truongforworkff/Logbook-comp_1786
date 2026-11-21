@@ -173,7 +173,7 @@ public class CloudSyncTest {
             }
             db.sessions().insert(new Session(0, null, "Unassigned", "12:00", "", "", "Workshop", ""));
             try { CloudSnapshot.read(db).payload(context); fail("Orphans must not disappear silently"); }
-            catch (IllegalArgumentException expected) { assertTrue(expected.getMessage().contains("session")); }
+            catch (IllegalArgumentException expected) { assertTrue(expected.getMessage().contains("agenda item")); }
         } finally {
             restored.close();
             db.close();

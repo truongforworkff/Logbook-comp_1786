@@ -64,16 +64,16 @@ public final class CloudSyncWorker extends Worker {
         if (error instanceof FirebaseFirestoreException) {
             FirebaseFirestoreException problem = (FirebaseFirestoreException) error;
             if (problem.getCode() == FirebaseFirestoreException.Code.PERMISSION_DENIED)
-                return "Tài khoản chưa có quyền đồng bộ. Đăng nhập lại bằng tài khoản Admin.";
+                return "This account cannot sync changes. Sign in with an admin account.";
             if (problem.getCode() == FirebaseFirestoreException.Code.UNAUTHENTICATED)
-                return "Phiên đăng nhập đã hết hạn. Hãy đăng nhập lại.";
+                return "Your sign-in has expired. Sign in again.";
             if ("LOCAL_BEHIND".equals(problem.getMessage()))
-                return "Firebase có phiên bản khác. Chỉnh sửa trên máy vẫn được giữ để xử lý xung đột.";
+                return "Firebase has a different revision. Your local changes have been kept for review.";
             if ("SOURCE_MISMATCH".equals(problem.getMessage()))
-                return "Firebase thuộc một bộ dữ liệu khác. Hãy dùng máy đã tải danh mục từ Cloud hoặc máy đã công bố trước đó.";
+                return "Firebase contains a different dataset. Use the device that downloaded or published that catalogue.";
             if (!retryable(problem))
-                return "Cấu hình Cloud chưa hợp lệ. Cập nhật bản Admin rồi đồng bộ lại.";
+                return "Cloud configuration is invalid. Update the admin app and sync again.";
         }
-        return "Chưa gửi được dữ liệu. App sẽ thử lại khi có Internet.";
+        return "Could not upload changes. The app will retry when you are online.";
     }
 }

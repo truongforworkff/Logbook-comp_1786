@@ -77,7 +77,7 @@ class PersonalDataRepository extends ChangeNotifier {
                 _starting = null;
                 if (!_disposed) {
                   this.ready = false;
-                  error = 'Chưa đồng bộ được dữ liệu cá nhân. Kiểm tra mạng hoặc đăng nhập lại.';
+                  error = 'Could not sync your personal data. Check your connection or sign in again.';
                   notifyListeners();
                 }
                 if (!ready.isCompleted) ready.complete();
@@ -154,7 +154,7 @@ class PersonalDataRepository extends ChangeNotifier {
     unawaited(
       operation.catchError((Object problem) {
         if (!_disposed) {
-          error = 'Một thay đổi chưa lưu được lên Cloud. Kiểm tra lại lịch và thử lại.';
+          error = 'A change could not be synced. Check your schedule and try again.';
           notifyListeners();
         }
       }),

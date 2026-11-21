@@ -1,75 +1,75 @@
 <resources>
     <string name="app_name">Eventa Admin</string>
-    <string name="heading">Sự kiện của bạn</string>
-    <string name="intro">Mọi kế hoạch, gọn trong một nơi.</string>
-    <string name="add">Thêm sự kiện</string>
-    <string name="edit">Chỉnh sửa</string>
-    <string name="save">Lưu sự kiện</string>
-    <string name="cancel">Hủy</string>
-    <string name="delete">Xóa</string>
-    <string name="delete_title">Xóa sự kiện?</string>
-    <string name="delete_message">Xóa “%1$s”? Thao tác này không thể hoàn tác.</string>
-    <string name="empty">Chưa có sự kiện nào.\nTạo sự kiện đầu tiên của bạn.</string>
-    <string name="name">Tên sự kiện *</string>
-    <string name="date">Ngày diễn ra *</string>
+    <string name="heading">Your events</string>
+    <string name="intro">Manage your events and their agendas.</string>
+    <string name="add">Add event</string>
+    <string name="edit">Edit</string>
+    <string name="save">Save event</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="delete_title">Delete event?</string>
+    <string name="delete_message">Delete “%1$s”? This cannot be undone.</string>
+    <string name="empty">No events yet.\nCreate your first event.</string>
+    <string name="name">Event name *</string>
+    <string name="date">Start date *</string>
     <string name="date_hint">DD/MM/YYYY</string>
-    <string name="pick_date">Chọn ngày</string>
-    <string name="location">Địa điểm *</string>
-    <string name="organiser">Người tổ chức *</string>
-    <string name="type">Loại sự kiện</string>
-    <string name="status">Trạng thái</string>
-    <string name="required">Bắt buộc; tối đa 120 ký tự.</string>
-    <string name="invalid_date">Nhập ngày có thật theo DD/MM/YYYY (1900–2100).</string>
-    <string name="storage_error">Không thể lưu dữ liệu. Vui lòng thử lại.</string>
+    <string name="pick_date">Choose a date</string>
+    <string name="location">Venue *</string>
+    <string name="organiser">Organiser *</string>
+    <string name="type">Event type</string>
+    <string name="status">Status</string>
+    <string name="required">Required. Enter up to 120 characters.</string>
+    <string name="invalid_date">Enter a valid date in DD/MM/YYYY format (1900–2100).</string>
+    <string name="storage_error">Could not save your changes. Please try again.</string>
     <string name="details">%1$s · %2$s</string>
     <string name="status_detail">\n%1$s</string>
     <string-array name="types"><item>Conference</item><item>Workshop</item><item>Seminar</item><item>Social</item><item>Other</item></string-array>
     <string-array name="statuses"><item>Upcoming</item><item>Completed</item><item>Cancelled</item></string-array>
 
 <string name="brand">eventa.</string>
-<string name="close">Đóng</string>
-<string name="description">Mô tả (tùy chọn)</string>
-<string name="email">Email liên hệ (tùy chọn)</string>
-<string name="phone">Điện thoại liên hệ (tùy chọn)</string>
-<string name="duplicate_event">Đã có sự kiện trùng tên và ngày. Hãy chỉnh lại.</string>
-<string name="invalid_email">Nhập email hợp lệ hoặc để trống.</string>
-<string name="invalid_phone">Nhập số điện thoại có 7–15 chữ số hoặc để trống.</string>
-<string name="review_title">Xem lại sự kiện</string>
-<string name="back_edit">Quay lại sửa</string>
-<string name="not_provided">Chưa cung cấp</string>
-<string name="review_details">Tên: %1$s\nNgày: %2$s\nĐịa điểm: %3$s\nNgười tổ chức: %4$s\nLoại: %5$s\nTrạng thái: %6$s\n\nMô tả: %7$s\nEmail: %8$s\nĐiện thoại: %9$s</string>
+<string name="close">Close</string>
+<string name="description">Description (optional)</string>
+<string name="email">Contact email (optional)</string>
+<string name="phone">Contact phone (optional)</string>
+<string name="duplicate_event">An event with this name and start date already exists.</string>
+<string name="invalid_email">Enter a valid email address or leave this field blank.</string>
+<string name="invalid_phone">Enter a phone number with 7–15 digits or leave this field blank.</string>
+<string name="review_title">Review event</string>
+<string name="back_edit">Back to editing</string>
+<string name="not_provided">Not provided</string>
+<string name="review_details">Name: %1$s\nDate: %2$s\nVenue: %3$s\nOrganiser: %4$s\nType: %5$s\nStatus: %6$s\n\nDescription: %7$s\nEmail: %8$s\nPhone: %9$s</string>
 
-<string name="admin_initials">QL</string><string name="admin_role">Người quản lý sự kiện</string>
-<string name="search_hint">Tìm tên hoặc mô tả sự kiện…</string><string name="filter_title">Lọc sự kiện</string>
-<string name="events_section">Sự kiện</string><string name="filtered_section">Kết quả tìm kiếm</string>
-<string name="local_note">Lưu trên thiết bị</string><string name="view_details">Xem chi tiết</string>
-<string name="month_short">TH %1$d</string><string name="event_count">%1$d sự kiện</string>
-<string name="status_upcoming">Sắp diễn ra</string><string name="status_completed">Đã hoàn thành</string><string name="status_cancelled">Đã hủy</string>
-<string name="empty_search">Không tìm thấy sự kiện phù hợp.\nThử đổi từ khóa hoặc xóa bộ lọc.</string>
-<string name="back_label">Quay lại</string><string name="back_events">Sự kiện</string>
-<string name="create_title">Tạo sự kiện</string><string name="edit_title">Sửa sự kiện</string>
-<string name="form_subtitle">Bắt đầu với những thông tin quan trọng.</string>
-<string name="more_options">Thêm mô tả và thông tin khác  +</string><string name="less_options">Thu gọn thông tin bổ sung  −</string>
-<string name="review_action">Xem lại thông tin  →</string>
-<string name="about_event">Về sự kiện</string><string name="contact_heading">Thông tin liên hệ</string>
-<string name="organised_by">Tổ chức bởi %1$s</string><string name="no_description">Chưa có mô tả cho sự kiện này.</string>
-<string name="filter_date">Ngày diễn ra (không bắt buộc)</string><string name="filter_organiser">Người tổ chức (không bắt buộc)</string>
-<string name="apply_filter">Áp dụng bộ lọc</string><string name="clear_filter">Xóa bộ lọc</string>
-<string name="hint_name">Ví dụ: Một ngày sáng tạo</string><string name="hint_location">Tên địa điểm hoặc phòng</string><string name="hint_organiser">Tên cá nhân hoặc đơn vị</string>
-<string name="filter_subtitle">Chỉ giữ lại những sự kiện bạn muốn xem.</string>
-<string name="date_subtitle">Chọn ngày diễn ra sự kiện của bạn.</string>
-<string name="use_date">Dùng ngày này</string>
-<string name="review_subtitle">Kiểm tra lại thông tin trước khi lưu. Bạn vẫn có thể quay lại chỉnh sửa.</string>
-<string name="delete_subtitle">Sự kiện sẽ được xóa khỏi thiết bị. Thao tác này không thể hoàn tác.</string>
-<string name="keep_event">Giữ lại sự kiện</string>
-<string name="notice_attention">Cần kiểm tra lại</string>
-<string name="notice_success">Đã hoàn tất</string>
-<string name="saved_notice">Sự kiện đã được lưu trên thiết bị.</string>
-<string name="deleted_notice">Đã xóa sự kiện khỏi danh sách.</string>
-<string name="check_fields_notice">Một vài thông tin chưa hợp lệ. Hãy kiểm tra những ô có ghi chú bên dưới.</string>
-    <string name="event_created_at">Đã thêm lúc %1$s</string>
-    <string name="event_end_date">Ngày kết thúc</string>
-    <string name="event_end_date_optional">Ngày kết thúc (tùy chọn)</string>
-    <string name="event_end_date_hint">Cùng ngày bắt đầu</string>
-    <string name="invalid_event_end_date">Chọn ngày kết thúc hợp lệ từ ngày bắt đầu trở đi.</string>
+<string name="admin_initials">AD</string><string name="admin_role">Event administrator</string>
+<string name="search_hint">Search event names or descriptions…</string><string name="filter_title">Filter events</string>
+<string name="events_section">Events</string><string name="filtered_section">Search results</string>
+<string name="local_note">Saved on this device</string><string name="view_details">View details</string>
+<string name="event_count">Events: %1$d</string>
+<string name="status_upcoming">Upcoming</string><string name="status_completed">Completed</string><string name="status_cancelled">Cancelled</string>
+<string name="empty_search">No matching events.\nTry another search or clear the filters.</string>
+<string name="back_label">Back</string><string name="back_events">Events</string>
+<string name="create_title">Create event</string><string name="edit_title">Edit event</string>
+<string name="form_subtitle">Enter the main details of your event.</string>
+<string name="more_options">Add description and other details  +</string><string name="less_options">Hide additional details  −</string>
+<string name="review_action">Review details  →</string>
+<string name="about_event">About this event</string><string name="contact_heading">Contact details</string>
+<string name="organised_by">Organised by %1$s</string><string name="no_description">No description is available for this event.</string>
+<string name="filter_date">Event date (optional)</string><string name="filter_organiser">Organiser (optional)</string>
+<string name="apply_filter">Apply filters</string><string name="clear_filter">Clear filters</string>
+<string name="hint_name">e.g. Creative Technology Day</string><string name="hint_location">Venue or room name</string><string name="hint_organiser">Person or organisation</string>
+<string name="filter_subtitle">Filter by date, organiser or topic.</string>
+<string name="date_subtitle">Select a date for your event.</string>
+<string name="use_date">Set date</string>
+<string name="review_subtitle">Check the details before saving. You can go back to make changes.</string>
+<string name="delete_subtitle">The event will be removed from this device. This cannot be undone.</string>
+<string name="keep_event">Keep event</string>
+<string name="notice_attention">Check the details</string>
+<string name="notice_success">Done</string>
+<string name="saved_notice">Event saved on this device.</string>
+<string name="deleted_notice">Event removed from the list.</string>
+<string name="check_fields_notice">Check the highlighted fields and try again.</string>
+    <string name="event_created_at">Added on %1$s</string>
+    <string name="event_end_date">End date</string>
+    <string name="event_end_date_optional">End date (optional)</string>
+    <string name="event_end_date_hint">Same as start date</string>
+    <string name="invalid_event_end_date">Choose an end date on or after the start date.</string>
 </resources>

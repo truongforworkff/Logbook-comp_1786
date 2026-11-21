@@ -25,19 +25,19 @@ void main() {
     await tester.pumpAndSettle();
     await binding.convertFlutterSurfaceToImage();
     await tester.pumpAndSettle();
-    expect(find.text('5 sự kiện'), findsOneWidget);
+    expect(find.text('5 events'), findsOneWidget);
     await binding.takeScreenshot('01-explore');
 
     await tester.enterText(find.byKey(const Key('event-search')), 'NVIDIA');
     await tester.pumpAndSettle();
-    expect(find.text('2 sự kiện'), findsOneWidget);
+    expect(find.text('2 events'), findsOneWidget);
     await tester.tap(find.byKey(const Key('clear-search')));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('category-filter')));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('category-Technology')));
     await tester.pumpAndSettle();
-    expect(find.text('2 sự kiện'), findsOneWidget);
+    expect(find.text('2 events'), findsOneWidget);
     await binding.takeScreenshot('02-category-no-image');
     await tester.tap(find.byKey(const Key('category-filter')));
     await tester.pumpAndSettle();
@@ -46,9 +46,9 @@ void main() {
 
     await tester.tap(find.byKey(const Key('date-filter')));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Xem sự kiện'));
+    await tester.tap(find.text('Show events'));
     await tester.pumpAndSettle();
-    expect(find.text('1 sự kiện'), findsOneWidget);
+    expect(find.text('1 event'), findsOneWidget);
     await tester.scrollUntilVisible(
       find.byKey(const Key('event-ignite-2026')),
       220,

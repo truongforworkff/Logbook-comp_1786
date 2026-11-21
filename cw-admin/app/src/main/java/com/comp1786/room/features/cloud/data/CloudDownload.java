@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public final class CloudDownload {
-    private static final String UNSENT = "Thiết bị có chỉnh sửa chưa gửi. Hãy giữ lại dữ liệu này và gửi trước khi tải.";
+    private static final String UNSENT = "Upload the changes on this device before downloading the catalogue.";
     private CloudDownload() {}
 
     public static boolean restore(Context context, EventDatabase database, FirebaseFirestore firestore)
@@ -48,7 +48,7 @@ public final class CloudDownload {
         database.runInTransaction(() -> {
             FirebaseUser current = auth.getCurrentUser();
             if (current == null || !user.getUid().equals(current.getUid())) {
-                throw new IllegalStateException("Phiên Admin đã thay đổi. Đăng nhập lại rồi tải danh mục.");
+                throw new IllegalStateException("Your admin sign-in has changed. Sign in again to download the catalogue.");
             }
             restoreRows(context, database, events, sourceId, revision);
         });
@@ -63,10 +63,10 @@ public final class CloudDownload {
         if (!fresh) {
             if (local.pending()) throw new IllegalStateException(UNSENT);
             if (!local.sourceId.equals(sourceId)) {
-                throw new IllegalStateException("Danh mục Cloud thuộc bộ dữ liệu khác. Dữ liệu trên thiết bị vẫn được giữ.");
+                throw new IllegalStateException("The cloud catalogue belongs to a different dataset. Your local data has been kept.");
             }
             if (local.revision > revision) {
-                throw new IllegalStateException("Danh mục Firebase có phiên bản thấp hơn bản trên máy. Đã giữ bản trên máy.");
+                throw new IllegalStateException("Firebase has an older catalogue. Your local copy has been kept.");
             }
         }
         Map<String, Event> previousById = new HashMap<>();
@@ -194,11 +194,11 @@ public final class CloudDownload {
     }
 
     private static FirebaseFirestoreException adminRequired() {
-        return new FirebaseFirestoreException("Tài khoản chưa có quyền Admin.",
+        return new FirebaseFirestoreException("This account needs admin access.",
                 FirebaseFirestoreException.Code.PERMISSION_DENIED);
     }
 
     private static IllegalArgumentException invalidCatalog() {
-        return new IllegalArgumentException("Danh mục Firebase không hợp lệ. Dữ liệu trên thiết bị vẫn được giữ.");
+        return new IllegalArgumentException("The Firebase catalogue is invalid. Your local data has been kept.");
     }
 }

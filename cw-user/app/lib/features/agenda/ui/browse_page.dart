@@ -76,9 +76,9 @@ class _BrowsePageState extends State<BrowsePage> {
       initialDate: initial,
       firstDate: DateTime(1900),
       lastDate: DateTime(2100, 12, 31),
-      helpText: 'Bạn muốn đi ngày nào?',
-      confirmText: 'Xem sự kiện',
-      cancelText: 'Hủy',
+      helpText: 'Choose a day to attend',
+      confirmText: 'Show events',
+      cancelText: 'Cancel',
       initialEntryMode: DatePickerEntryMode.calendarOnly,
       builder: (context, child) => Theme(
         data: Theme.of(context).copyWith(
@@ -143,13 +143,13 @@ class _BrowsePageState extends State<BrowsePage> {
             spacing: 8,
             children: [
               _chip(
-                'Tất cả',
+                'All',
                 !featuredOnly,
                 () => _showFeatured(false),
                 key: const Key('browse-all'),
               ),
               _chip(
-                'Nổi bật',
+                'Featured',
                 featuredOnly,
                 () => _showFeatured(true),
                 key: const Key('browse-featured'),
@@ -167,8 +167,8 @@ class _BrowsePageState extends State<BrowsePage> {
             onSubmitted: (_) => FocusScope.of(context).unfocus(),
             decoration: InputDecoration(
               hintText: widget.savedOnly
-                  ? 'Tìm trong sự kiện đã lưu…'
-                  : 'Tìm sự kiện bạn quan tâm…',
+                  ? 'Search saved events…'
+                  : 'Search events…',
               hintStyle: const TextStyle(fontSize: 13, color: AppColors.muted),
               filled: true,
               fillColor: const Color(0xFFE9ECF3),
@@ -181,7 +181,7 @@ class _BrowsePageState extends State<BrowsePage> {
                   ? null
                   : IconButton(
                       key: const Key('clear-search'),
-                      tooltip: 'Xóa từ khóa',
+                      tooltip: 'Clear search',
                       onPressed: () => setState(query.clear),
                       icon: const Icon(Icons.close, size: 19),
                     ),
@@ -233,12 +233,12 @@ class _BrowsePageState extends State<BrowsePage> {
             Expanded(
               child: Text(
                 filtered
-                    ? 'Kết quả tìm kiếm'
+                    ? 'Search results'
                     : widget.savedOnly
-                    ? 'Đã lưu yêu thích'
+                    ? 'Saved to favourites'
                     : featuredOnly
-                    ? 'Sự kiện nổi bật'
-                    : 'Tất cả sự kiện',
+                    ? 'Featured events'
+                    : 'All events',
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -248,7 +248,7 @@ class _BrowsePageState extends State<BrowsePage> {
             Semantics(
               liveRegion: true,
               child: Text(
-                '${results.length} sự kiện',
+                '${results.length} event${results.length == 1 ? '' : 's'}',
                 key: const Key('results-count'),
                 style: const TextStyle(fontSize: 11, color: AppColors.muted),
               ),
@@ -288,11 +288,11 @@ class _BrowsePageState extends State<BrowsePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Điều bạn quan tâm',
+                    'Your favourites',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const Text(
-                    'Những sự kiện bạn muốn dành thời gian.',
+                    'Events you saved for later.',
                     style: TextStyle(fontSize: 11, color: AppColors.muted),
                   ),
                 ],
@@ -304,12 +304,12 @@ class _BrowsePageState extends State<BrowsePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Khám phá sự kiện',
+              'Explore events',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             const SizedBox(height: 7),
             const Text(
-              'Những cuộc gặp mở ra ý tưởng mới.',
+              'Find events and plan what to attend.',
               style: TextStyle(color: AppColors.muted),
             ),
             const SizedBox(height: 20),
@@ -333,7 +333,7 @@ class _BrowsePageState extends State<BrowsePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Một điều mới cho ngày sắp tới',
+                          'Explore by topic',
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
@@ -341,7 +341,7 @@ class _BrowsePageState extends State<BrowsePage> {
                         ),
                         SizedBox(height: 3),
                         Text(
-                          'AI, công nghệ và những trải nghiệm sáng tạo.',
+                          'AI, technology and design.',
                           style: TextStyle(
                             fontSize: 10,
                             color: AppColors.muted,
@@ -365,7 +365,7 @@ class _BrowsePageState extends State<BrowsePage> {
       runSpacing: 7,
       children: [
         _chip(
-          'Tất cả ngày',
+          'All dates',
           date == null && month.isEmpty,
           () => setState(() {
             date = null;
@@ -374,7 +374,7 @@ class _BrowsePageState extends State<BrowsePage> {
         ),
         for (final value in months.take(2))
           _chip(
-            'Tháng ${int.parse(value.substring(5))}',
+            MaterialLocalizations.of(context).formatMonthYear(DateTime.parse('$value-01')),
             month == value && date == null,
             () => setState(() {
               month = value;
@@ -382,7 +382,7 @@ class _BrowsePageState extends State<BrowsePage> {
             }),
           ),
         _chip(
-          date == null ? 'Chọn ngày' : shortDate(date!),
+          date == null ? 'Choose date' : shortDate(date!),
           date != null,
           _pickDate,
           icon: Icons.calendar_today_outlined,
@@ -434,20 +434,20 @@ class _BrowsePageState extends State<BrowsePage> {
         const SizedBox(height: 18),
         Text(
           noSaved
-              ? 'Dành một chỗ cho điều bạn thích'
+              ? 'No favourites yet'
               : featuredOnly && !filtered
-              ? 'Hiện chưa có sự kiện nổi bật'
-              : 'Chưa tìm thấy sự kiện phù hợp',
+              ? 'No featured events right now'
+              : 'No matching events',
           textAlign: TextAlign.center,
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 10),
         Text(
           noSaved
-              ? 'Chạm vào trái tim ở sự kiện bạn quan tâm. Bạn sẽ tìm lại chúng thật nhanh ở đây.'
+              ? 'Tap the heart on an event to save it here.'
               : featuredOnly && !filtered
-              ? 'Xem danh sách đầy đủ trong mục Tất cả.'
-              : 'Thử tên khác hoặc xóa bộ lọc để tiếp tục khám phá.',
+              ? 'Select All to see the full event list.'
+              : 'Try another search or clear the filters.',
           textAlign: TextAlign.center,
           style: const TextStyle(
             fontSize: 12,
@@ -464,10 +464,10 @@ class _BrowsePageState extends State<BrowsePage> {
               : _clearFilters,
           child: Text(
             noSaved
-                ? 'Khám phá sự kiện'
+                ? 'Explore events'
                 : featuredOnly && !filtered
-                ? 'Xem tất cả'
-                : 'Xóa bộ lọc',
+                ? 'View all'
+                : 'Clear filters',
           ),
         ),
       ],

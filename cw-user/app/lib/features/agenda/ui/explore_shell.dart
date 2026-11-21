@@ -60,10 +60,10 @@ class _ExploreShellState extends State<ExploreShell> {
                         controller.personal!.error.isNotEmpty
                             ? controller.personal!.error
                             : controller.personal!.pending
-                            ? 'Lịch & yêu thích: đang chờ gửi lên Cloud'
+                            ? 'Schedule and favourites waiting to sync'
                             : controller.personal!.fromCache
-                            ? 'Lịch & yêu thích: đang xem bản đã lưu'
-                            : 'Lịch & yêu thích: đã đồng bộ',
+                            ? 'Showing your saved schedule and favourites'
+                            : 'Schedule and favourites synced',
                         style: const TextStyle(
                           fontSize: 12,
                           color: AppColors.muted,
@@ -123,7 +123,7 @@ class _ExploreShellState extends State<ExploreShell> {
           ),
           const SizedBox(height: 15),
           const Text(
-            'Chưa mở được danh sách',
+            'Could not load events',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 10),
@@ -131,7 +131,7 @@ class _ExploreShellState extends State<ExploreShell> {
           const SizedBox(height: 20),
           FilledButton(
             onPressed: controller.load,
-            child: const Text('Thử lại'),
+            child: const Text('Try again'),
           ),
         ],
       ),

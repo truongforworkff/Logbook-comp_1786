@@ -20,10 +20,10 @@ class MySchedulePage extends StatelessWidget {
       key: const PageStorageKey('my-schedule'),
       padding: const EdgeInsets.fromLTRB(18, 14, 18, 26),
       children: [
-        Text('Lịch của tôi', style: Theme.of(context).textTheme.headlineMedium),
+        Text('My schedule', style: Theme.of(context).textTheme.headlineMedium),
         const SizedBox(height: 7),
         Text(
-          '${entries.length} session đã chọn',
+          '${agendaItemCount(entries.length)} selected',
           key: const Key('schedule-count'),
           style: const TextStyle(color: AppColors.muted),
         ),
@@ -36,7 +36,7 @@ class MySchedulePage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 12, top: 8),
               child: Text(
-                fullDate(entries[index].event.date),
+                MaterialLocalizations.of(context).formatFullDate(entries[index].event.date),
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
@@ -103,7 +103,7 @@ class MySchedulePage extends StatelessWidget {
         ),
         if (!entry.session.hasTimeRange) ...[
           const Text(
-            'Chưa có giờ kết thúc; chưa kiểm tra được trùng lịch.',
+            'No end time is available to check for overlaps.',
             style: TextStyle(fontSize: 12, color: AppColors.muted),
           ),
           const SizedBox(height: 12),
@@ -125,7 +125,7 @@ class MySchedulePage extends StatelessWidget {
                 SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'Trùng giờ với session khác trong lịch',
+                    'Overlaps with another agenda item',
                     style: TextStyle(color: Color(0xFF885419), fontSize: 12),
                   ),
                 ),
@@ -150,12 +150,12 @@ class MySchedulePage extends StatelessWidget {
         const Icon(Icons.event_note_outlined, size: 44, color: AppColors.blue),
         const SizedBox(height: 16),
         Text(
-          'Chưa có session trong lịch',
+          'Your schedule is empty',
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 10),
         const Text(
-          'Mở một sự kiện, chọn session bạn muốn tham dự rồi thêm vào lịch.',
+          'Open an event and add an agenda item you want to attend.',
           textAlign: TextAlign.center,
           style: TextStyle(color: AppColors.muted, height: 1.6),
         ),
@@ -163,7 +163,7 @@ class MySchedulePage extends StatelessWidget {
         OutlinedButton(
           key: const Key('schedule-explore'),
           onPressed: () => controller.selectTab(AgendaTab.explore),
-          child: const Text('Khám phá sự kiện'),
+          child: const Text('Explore events'),
         ),
       ],
     ),

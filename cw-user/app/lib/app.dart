@@ -14,8 +14,8 @@ class EventaApp extends StatelessWidget {
     title: 'Eventa Explore',
     debugShowCheckedModeBanner: false,
     theme: appTheme(),
-    locale: const Locale('vi'),
-    supportedLocales: const [Locale('vi'), Locale('en')],
+    locale: const Locale('en', 'GB'),
+    supportedLocales: const [Locale('en', 'GB')],
     localizationsDelegates: GlobalMaterialLocalizations.delegates,
     home: home ?? ExploreShell(controller: controller!),
   );

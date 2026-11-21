@@ -13,7 +13,7 @@ public final class CloudCover {
     public static String thumbnail(Context context, String uri) {
         if (uri.isEmpty() || uri.startsWith(PhotoDecoder.CLOUD_THUMBNAIL_PREFIX)) return uri;
         Bitmap original = PhotoDecoder.decode(context.getContentResolver(), Uri.parse(uri));
-        if (original == null) throw new IllegalArgumentException("Không đọc được ảnh bìa. Chọn lại hoặc bỏ ảnh rồi đồng bộ.");
+        if (original == null) throw new IllegalArgumentException("Could not read the cover image. Choose another image or remove it before syncing.");
         Bitmap small = original;
         try {
             for (int edge : new int[]{640, 480, 320, 160}) {
@@ -24,12 +24,12 @@ public final class CloudCover {
                 for (int quality : new int[]{75, 55, 35, 20}) {
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                     if (!small.compress(Bitmap.CompressFormat.JPEG, quality, bytes))
-                        throw new IllegalArgumentException("Không nén được ảnh bìa.");
+                        throw new IllegalArgumentException("Could not compress the cover image.");
                     if (bytes.size() <= 32 * 1024)
                         return PhotoDecoder.CLOUD_THUMBNAIL_PREFIX + Base64.encodeToString(bytes.toByteArray(), Base64.NO_WRAP);
                 }
             }
-            throw new IllegalArgumentException("Không tạo được ảnh thu nhỏ trong giới hạn đồng bộ.");
+            throw new IllegalArgumentException("The thumbnail exceeds the sync size limit.");
         } finally {
             if (small != original) small.recycle();
             original.recycle();

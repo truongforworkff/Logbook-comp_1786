@@ -74,12 +74,12 @@ class _AuthPageState extends State<AuthPage> {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      _register ? 'Tạo tài khoản Eventa' : 'Chào mừng trở lại',
+                      _register ? 'Create an Eventa account' : 'Welcome back',
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     const SizedBox(height: 10),
                     const Text(
-                      'Giữ lịch cá nhân và sự kiện yêu thích khi đổi thiết bị.',
+                      'Access your schedule and favourites across devices.',
                     ),
                     const SizedBox(height: 28),
                     if (_register) ...[
@@ -88,14 +88,14 @@ class _AuthPageState extends State<AuthPage> {
                         controller: _name,
                         enabled: !_busy,
                         decoration: const InputDecoration(
-                          labelText: 'Tên hiển thị',
+                          labelText: 'Display name',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(16)),
                           ),
                         ),
                         maxLength: 80,
                         validator: (v) => (v?.trim().isEmpty ?? true)
-                            ? 'Nhập tên của bạn.'
+                            ? 'Enter your name.'
                             : null,
                       ),
                       const SizedBox(height: 16),
@@ -126,12 +126,12 @@ class _AuthPageState extends State<AuthPage> {
                             : AutofillHints.password,
                       ],
                       decoration: InputDecoration(
-                        labelText: 'Mật khẩu',
+                        labelText: 'Password',
                         border: const OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(16)),
                         ),
                         suffixIcon: IconButton(
-                          tooltip: _obscure ? 'Hiện mật khẩu' : 'Ẩn mật khẩu',
+                          tooltip: _obscure ? 'Show password' : 'Hide password',
                           onPressed: () => setState(() => _obscure = !_obscure),
                           icon: Icon(
                             _obscure
@@ -151,14 +151,14 @@ class _AuthPageState extends State<AuthPage> {
                         enabled: !_busy,
                         obscureText: _obscure,
                         decoration: const InputDecoration(
-                          labelText: 'Nhập lại mật khẩu',
+                          labelText: 'Confirm password',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(16)),
                           ),
                         ),
                         validator: (v) => v == _password.text
                             ? null
-                            : 'Hai mật khẩu chưa khớp.',
+                            : 'Passwords do not match.',
                       ),
                     ],
                     if (_error.isNotEmpty)
@@ -178,10 +178,10 @@ class _AuthPageState extends State<AuthPage> {
                       onPressed: _busy ? null : () => _submit(),
                       child: Text(
                         _busy
-                            ? 'Đang xử lý…'
+                            ? 'Please wait…'
                             : _register
-                            ? 'Tạo tài khoản'
-                            : 'Đăng nhập',
+                            ? 'Create account'
+                            : 'Sign in',
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -189,7 +189,7 @@ class _AuthPageState extends State<AuthPage> {
                       key: const Key('auth-google'),
                       onPressed: _busy ? null : () => _submit(google: true),
                       icon: const Icon(Icons.account_circle_outlined),
-                      label: const Text('Tiếp tục với Google'),
+                      label: const Text('Continue with Google'),
                     ),
                     TextButton(
                       key: const Key('auth-switch'),
@@ -204,8 +204,8 @@ class _AuthPageState extends State<AuthPage> {
                             }),
                       child: Text(
                         _register
-                            ? 'Đã có tài khoản? Đăng nhập'
-                            : 'Chưa có tài khoản? Đăng ký',
+                            ? 'Already have an account? Sign in'
+                            : 'New to Eventa? Create an account',
                       ),
                     ),
                   ],

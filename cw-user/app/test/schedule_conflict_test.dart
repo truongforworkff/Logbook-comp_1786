@@ -213,7 +213,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(
-        find.text('Chưa có giờ kết thúc; chưa kiểm tra được trùng lịch.'),
+        find.text('No end time is available to check for overlaps.'),
         findsOneWidget,
       );
       expect(tester.takeException(), isNull);

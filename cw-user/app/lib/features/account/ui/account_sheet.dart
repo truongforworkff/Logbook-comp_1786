@@ -33,7 +33,7 @@ class _AccountSheetState extends State<AccountSheet> {
     } catch (_) {
       if (mounted) {
         setState(
-          () => _message = 'Chưa hoàn tất đồng bộ. Kết nối mạng rồi thử lại.',
+          () => _message = 'Sync is incomplete. Reconnect and try again.',
         );
       }
     } finally {
@@ -45,18 +45,18 @@ class _AccountSheetState extends State<AccountSheet> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Nhập lựa chọn cũ từ máy?'),
+        title: const Text('Import saved items from this device?'),
         content: Text(
-          'Lịch và yêu thích lưu trên máy trước đây sẽ được thêm vào tài khoản ${widget.user.email}.',
+          'Your saved schedule and favourites will be added to ${widget.user.email}.',
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Quay lại'),
+            child: const Text('Back'),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Nhập vào tài khoản'),
+            child: const Text('Import to account'),
           ),
         ],
       ),
@@ -67,7 +67,7 @@ class _AccountSheetState extends State<AccountSheet> {
         await FavouriteStore().load(),
         await ScheduleStore().load(),
       );
-      if (mounted) setState(() => _message = 'Đã nhập và đồng bộ lựa chọn cũ.');
+      if (mounted) setState(() => _message = 'Your saved items have been imported and synced.');
     });
   }
 
@@ -85,7 +85,7 @@ class _AccountSheetState extends State<AccountSheet> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'Tài khoản của tôi',
+          'My account',
           style: Theme.of(context).textTheme.titleLarge,
         ),
         const SizedBox(height: 16),
@@ -96,7 +96,7 @@ class _AccountSheetState extends State<AccountSheet> {
         Text(widget.user.email ?? ''),
         const SizedBox(height: 10),
         const Text(
-          'Lịch cá nhân và yêu thích được lưu theo tài khoản. Đăng nhập cùng tài khoản trên thiết bị khác để tiếp tục.',
+          'Your schedule and favourites are saved to your account. Sign in on another device to access them.',
         ),
         if (_message.isNotEmpty)
           Padding(
@@ -106,13 +106,13 @@ class _AccountSheetState extends State<AccountSheet> {
         const SizedBox(height: 20),
         OutlinedButton(
           onPressed: _busy ? null : _import,
-          child: const Text('Nhập lịch & yêu thích cũ từ máy'),
+          child: const Text('Import schedule and favourites from device'),
         ),
         const SizedBox(height: 12),
         FilledButton(
           key: const Key('auth-signout'),
           onPressed: _busy ? null : _logout,
-          child: Text(_busy ? 'Đang chờ đồng bộ…' : 'Đăng xuất'),
+          child: Text(_busy ? 'Waiting for sync…' : 'Sign out'),
         ),
       ],
     ),

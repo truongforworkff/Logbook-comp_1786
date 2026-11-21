@@ -5,7 +5,7 @@
     "display": "standalone",
     "background_color": "#087DFF",
     "theme_color": "#087DFF",
-    "description": "A new Flutter project.",
+    "description": "Discover events and save your favourites.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

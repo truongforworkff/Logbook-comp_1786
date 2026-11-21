@@ -27,12 +27,12 @@ public final class CloudSnapshot {
 
     public Map<String, Object> payload(Context context) {
         if (events.size() > 100 || sessions.size() > 500)
-            throw new IllegalArgumentException("Danh mục vượt giới hạn 100 sự kiện hoặc 500 session.");
+            throw new IllegalArgumentException("The catalogue exceeds the limit of 100 events or 500 agenda items.");
         Set<Long> ids = new HashSet<>();
         for (Event event : events) ids.add(event.id);
         for (Session session : sessions) {
             if (session.eventId == null || !ids.contains(session.eventId))
-                throw new IllegalArgumentException("Gắn tất cả session vào sự kiện trước khi đồng bộ.");
+                throw new IllegalArgumentException("Assign every agenda item to an event before syncing.");
         }
         List<Map<String, Object>> rows = new ArrayList<>();
         Map<String, String> covers = new HashMap<>();
@@ -44,13 +44,13 @@ public final class CloudSnapshot {
         result.put("events", rows);
         // shortcut: one atomic catalog for this coursework; split documents above 512 KiB.
         if (new JSONObject(result).toString().getBytes(StandardCharsets.UTF_8).length > 512 * 1024)
-            throw new IllegalArgumentException("Danh mục và ảnh thu nhỏ vượt 512 KB. Giảm số lượng hoặc ảnh trước khi đồng bộ.");
+            throw new IllegalArgumentException("The catalogue and thumbnails exceed 512 KB. Remove items or reduce image sizes before syncing.");
         result.put("updatedAt", FieldValue.serverTimestamp());
         return result;
     }
 
     private Map<String, Object> eventRow(Context context, Event event, Map<String, String> covers) {
-        if (event.publicId.isEmpty()) throw new IllegalArgumentException("Sự kiện thiếu ID đồng bộ.");
+        if (event.publicId.isEmpty()) throw new IllegalArgumentException("An event is missing its sync ID.");
         Map<String, Object> row = new LinkedHashMap<>();
         row.put("id", event.publicId);
         if (event.createdAt > 0) row.put("createdAt", event.createdAt);
@@ -80,7 +80,7 @@ public final class CloudSnapshot {
         for (Map.Entry<String, Object> entry : row.entrySet()) {
             if (!entry.getKey().equals("image") && entry.getValue() instanceof String
                     && ((String) entry.getValue()).length() > 16384)
-                throw new IllegalArgumentException("Nội dung quá dài để đồng bộ: " + entry.getKey());
+                throw new IllegalArgumentException("This field is too long to sync: " + entry.getKey());
         }
     }
 
@@ -95,7 +95,7 @@ public final class CloudSnapshot {
         row.put("time", session.time);
         if (!session.endTime.isEmpty()
                 && !com.comp1786.room.features.sessions.logic.SessionValidation.validRange(session.time, session.endTime))
-            throw new IllegalArgumentException("Session có khoảng giờ không hợp lệ: " + session.name);
+            throw new IllegalArgumentException("Invalid time range for agenda item: " + session.name);
         row.put("endTime", session.endTime);
         row.put("speaker", session.speaker);
         row.put("room", session.room);
