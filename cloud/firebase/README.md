@@ -4,9 +4,9 @@ Project **eventa-coursework-fpt**, số **1011104656179**, gói Spark. Firestore
 
 ## Sử dụng
 
-Admin không có tài khoản, đăng ký, đăng nhập hoặc phân quyền theo người dùng; không dùng Firebase Authentication, kể cả đăng nhập ẩn danh/ngầm. Tab Đồng bộ chỉ hiển thị trạng thái, lần thành công gần nhất và nút Đồng bộ tất cả. Thêm/sửa/xóa được ghi nhận và gửi tự động khi có mạng.
+Admin không có tài khoản, đăng ký, đăng nhập hoặc phân quyền theo người dùng; không dùng Firebase Authentication, kể cả đăng nhập ẩn danh/ngầm. Tab **Đồng bộ** có **Gửi thay đổi lên Firebase** và **Tải danh mục từ Firebase**. Thêm/sửa/xóa được ghi nhận và gửi tự động khi có mạng.
 
-SQLite vẫn là nguồn dữ liệu của Admin. WorkManager giữ hàng đợi/thử lại và lịch phục hồi 15 phút. Event/session được công bố nguyên tử trong catalogues/main; sourceId và revision chặn dữ liệu cũ hoặc bộ SQLite khác ghi đè. Cloud không kéo về ghi đè dữ liệu Admin.
+SQLite vẫn là nguồn dữ liệu của Admin. WorkManager giữ hàng đợi/thử lại và lịch phục hồi 15 phút. Event/session được công bố nguyên tử trong catalogues/main; sourceId và revision chặn dữ liệu cũ hoặc bộ SQLite khác ghi đè. Bản cài mới có SQLite trống tự tải danh mục khi kết nối, giữ ID sự kiện/session và dùng revision đã công bố làm điểm bắt đầu. Nút tải dùng để cập nhật một bản SQLite đã đồng bộ với cùng nguồn. Nếu có chỉnh sửa chưa gửi hoặc Cloud thuộc nguồn khác, app giữ dữ liệu cục bộ và báo lỗi. Mỗi lần gửi so sánh phiên bản Cloud với bản gần nhất mà máy đã đồng bộ, kể cả khi số phiên bản cục bộ cao hơn.
 
 Explore Flutter tiếp tục đọc Firestore trực tiếp, có cache và cập nhật trang chi tiết. Gỡ session/event được phản ánh trên app người tham dự. ID yêu thích giữ nguyên. Cấu trúc danh mục gồm schemaVersion, sourceId, revision, events (chứa session) và updatedAt; không còn publisherUid.
 
@@ -55,7 +55,7 @@ Cấu hình private trước khi cài bản Admin mới. Không mở allow write
 
 - Bản bỏ Authentication: build, lint và 14 unit test đạt; 6 rules test và 3 instrumentation test đồng bộ đạt trên máy ảo thử riêng.
 - Đã kiểm tra APK không chứa Firebase Authentication SDK và mã production không còn đăng nhập/đăng ký/vai trò tài khoản. Khóa build không xuất hiện trong file được Git theo dõi.
-- Trên máy ảo người dùng: phiên đăng nhập cũ đã được gỡ, màn Đồng bộ chỉ còn trạng thái và một nút gửi tất cả. Đồng bộ production không cần tài khoản đã đạt; dữ liệu vẫn đủ 5 event, 9 session, 4 ảnh bìa, giữ SQLite/yêu thích và không công bố khóa kết nối.
+- Trên máy ảo người dùng: phiên đăng nhập cũ đã được gỡ, màn Đồng bộ đã dùng cấu hình kết nối riêng. Đồng bộ production không cần tài khoản đã đạt; dữ liệu vẫn đủ 5 event, 9 session, 4 ảnh bìa, giữ SQLite/yêu thích và không công bố khóa kết nối.
 - Firebase hiện cấu hình Android/web; chưa kiểm thử iOS/desktop.
 
 Nguồn: [Firestore transaction](https://firebase.google.com/docs/firestore/manage-data/transactions), [Security Rules getAfter](https://firebase.google.com/docs/reference/rules/rules.firestore).

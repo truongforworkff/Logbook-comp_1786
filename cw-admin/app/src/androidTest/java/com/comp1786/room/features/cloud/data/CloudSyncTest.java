@@ -32,6 +32,8 @@ public class CloudSyncTest {
         cloud.useEmulator("10.0.2.2", 8086);
         EventDatabase db = Room.inMemoryDatabaseBuilder(context, EventDatabase.class)
                 .addCallback(SyncSchema.CALLBACK).build();
+        EventDatabase restored = Room.inMemoryDatabaseBuilder(context, EventDatabase.class)
+                .addCallback(SyncSchema.CALLBACK).build();
         try {
             String writeKey = String.join("", Collections.nCopies(64, "1"));
             resetEmulator();
@@ -61,11 +63,29 @@ public class CloudSyncTest {
             Map<?, ?> publishedEvent = (Map<?, ?>) published.get(0);
             Map<?, ?> publishedSession = (Map<?, ?>) ((List<?>) publishedEvent.get("sessions")).get(0);
             assertEquals("10:00", publishedSession.get("endTime"));
+            assertTrue(CloudDownload.restore(context, restored, cloud));
+            Event restoredEvent = restored.events().getAll().get(0);
+            Session restoredSession = restored.sessions().getAll().get(0);
+            assertEquals(stableId, restoredEvent.publicId);
+            assertEquals(session.id, restoredSession.id);
+            assertEquals(Long.valueOf(restoredEvent.id), restoredSession.eventId);
+            assertEquals("10:00", restoredSession.endTime);
+            assertEquals(first.state.sourceId, restored.sync().get().sourceId);
+            assertEquals(first.state.revision, restored.sync().get().uploadedRevision);
+            assertFalse(restored.sync().get().pending());
+            CloudPublisher.publish(cloud, first, first.payload(context), writeKey);
             event.name = "Updated AI workshop";
             db.events().update(event);
             assertEquals(stableId, db.events().getAll().get(0).publicId);
             CloudSnapshot second = CloudSnapshot.read(db);
-            CloudPublisher.publish(cloud, second, second.payload(context), writeKey);
+            restoredEvent.name = event.name;
+            restored.events().update(restoredEvent);
+            CloudSnapshot restoredEdit = CloudSnapshot.read(restored);
+            assertEquals(second.state.revision, restoredEdit.state.revision);
+            CloudPublisher.publish(cloud, restoredEdit, restoredEdit.payload(context), writeKey);
+            restored.sync().acknowledge(restoredEdit.state.revision, 2);
+            assertEquals(event.name, ((Map<?, ?>) ((List<?>) await(target.get(Source.SERVER))
+                    .get("events")).get(0)).get("name"));
             try {
                 CloudPublisher.publish(cloud, first, first.payload(context), writeKey);
                 fail("An older local copy must not be silently acknowledged");
@@ -73,6 +93,42 @@ public class CloudSyncTest {
                 assertEquals("LOCAL_BEHIND", expected.getCause().getMessage());
             }
             assertEquals(Long.valueOf(second.state.revision), await(target.get(Source.SERVER)).getLong("revision"));
+            assertTrue(CloudDownload.restore(context, restored, cloud));
+            Event latest = restored.events().getAll().get(0);
+            assertEquals("Updated AI workshop", latest.name);
+            assertEquals(restoredEvent.id, latest.id);
+
+            // Two devices can create the same revision with different edits.
+            latest.name = "Edited on downloaded device";
+            restored.events().update(latest);
+            try {
+                CloudDownload.restore(context, restored, cloud);
+                fail("Downloading must preserve pending edits");
+            } catch (IllegalStateException expected) {
+                assertEquals(latest.name, restored.events().getAll().get(0).name);
+            }
+            db.sync().acknowledge(second.state.revision, 2);
+            event.name = "Edited on original device";
+            db.events().update(event);
+            CloudSnapshot third = CloudSnapshot.read(db);
+            CloudPublisher.publish(cloud, third, third.payload(context), writeKey);
+            db.sync().acknowledge(third.state.revision, 3);
+            CloudSnapshot competing = CloudSnapshot.read(restored);
+            assertEquals(third.state.revision, competing.state.revision);
+            try {
+                CloudPublisher.publish(cloud, competing, competing.payload(context), writeKey);
+                fail("A different write must not be treated as a retry");
+            } catch (java.util.concurrent.ExecutionException expected) {
+                assertEquals("LOCAL_BEHIND", expected.getCause().getMessage());
+            }
+            restored.events().update(latest);
+            CloudSnapshot higher = CloudSnapshot.read(restored);
+            try {
+                CloudPublisher.publish(cloud, higher, higher.payload(context), writeKey);
+                fail("A higher local revision with an older base must not replace the catalog");
+            } catch (java.util.concurrent.ExecutionException expected) {
+                assertEquals("LOCAL_BEHIND", expected.getCause().getMessage());
+            }
             // An edit after snapshot capture cannot be acknowledged by an earlier upload.
             session.name = "New session title";
             db.sessions().update(session);
@@ -103,6 +159,7 @@ public class CloudSyncTest {
             try { CloudSnapshot.read(db).payload(context); fail("Orphans must not disappear silently"); }
             catch (IllegalArgumentException expected) { assertTrue(expected.getMessage().contains("session")); }
         } finally {
+            restored.close();
             db.close();
             await(cloud.terminate());
             app.delete();

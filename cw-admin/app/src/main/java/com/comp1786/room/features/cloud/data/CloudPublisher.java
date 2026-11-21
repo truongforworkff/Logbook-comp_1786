@@ -10,11 +10,15 @@ import java.util.concurrent.TimeUnit;
 public final class CloudPublisher {
     private CloudPublisher() {}
 
+    static DocumentReference catalog(FirebaseFirestore firestore) {
+        return firestore.document("catalogues/main");
+    }
+
     public static void publish(FirebaseFirestore firestore, CloudSnapshot snapshot,
             Map<String, Object> payload, String writeKey) throws Exception {
         if (!writeKey.matches("[0-9a-f]{64}"))
             throw new IllegalArgumentException("Bản Admin chưa có cấu hình kết nối Cloud.");
-        DocumentReference reference = firestore.document("catalogues/main");
+        DocumentReference reference = catalog(firestore);
         Tasks.await(firestore.runTransaction(transaction -> {
             DocumentSnapshot remote = transaction.get(reference);
             if (remote.exists()) {
@@ -24,10 +28,11 @@ public final class CloudPublisher {
                 Long revision = remote.getLong("revision");
                 if (revision == null) throw new FirebaseFirestoreException("INVALID_CATALOG",
                         FirebaseFirestoreException.Code.FAILED_PRECONDITION);
-                if (revision > snapshot.state.revision)
+                if (revision == snapshot.state.revision
+                        && Objects.equals(remote.get("events"), payload.get("events"))) return null;
+                if (revision != snapshot.state.uploadedRevision || revision >= snapshot.state.revision)
                     throw new FirebaseFirestoreException("LOCAL_BEHIND",
                             FirebaseFirestoreException.Code.FAILED_PRECONDITION);
-                if (revision == snapshot.state.revision) return null;
             }
             Map<String, Object> receipt = new LinkedHashMap<>();
             receipt.put("writeKey", writeKey);

@@ -11,7 +11,7 @@ public final class CloudCover {
     private CloudCover() {}
 
     public static String thumbnail(Context context, String uri) {
-        if (uri.isEmpty()) return "";
+        if (uri.isEmpty() || uri.startsWith(PhotoDecoder.CLOUD_THUMBNAIL_PREFIX)) return uri;
         Bitmap original = PhotoDecoder.decode(context.getContentResolver(), Uri.parse(uri));
         if (original == null) throw new IllegalArgumentException("Không đọc được ảnh bìa. Chọn lại hoặc bỏ ảnh rồi đồng bộ.");
         Bitmap small = original;
@@ -26,7 +26,7 @@ public final class CloudCover {
                     if (!small.compress(Bitmap.CompressFormat.JPEG, quality, bytes))
                         throw new IllegalArgumentException("Không nén được ảnh bìa.");
                     if (bytes.size() <= 32 * 1024)
-                        return "data:image/jpeg;base64," + Base64.encodeToString(bytes.toByteArray(), Base64.NO_WRAP);
+                        return PhotoDecoder.CLOUD_THUMBNAIL_PREFIX + Base64.encodeToString(bytes.toByteArray(), Base64.NO_WRAP);
                 }
             }
             throw new IllegalArgumentException("Không tạo được ảnh thu nhỏ trong giới hạn đồng bộ.");

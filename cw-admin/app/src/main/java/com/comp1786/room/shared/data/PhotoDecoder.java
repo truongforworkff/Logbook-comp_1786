@@ -10,8 +10,27 @@ import java.io.InputStream;
 import java.io.IOException;
 
 public final class PhotoDecoder {
+    public static final String CLOUD_THUMBNAIL_PREFIX = "data:image/jpeg;base64,";
+
     private PhotoDecoder() {}
+
+    public static Bitmap decodeCloudThumbnail(String value) {
+        if (!value.startsWith(CLOUD_THUMBNAIL_PREFIX) || value.length() > 43715) return null;
+        try {
+            byte[] bytes = android.util.Base64.decode(
+                    value.substring(CLOUD_THUMBNAIL_PREFIX.length()), android.util.Base64.DEFAULT);
+            BitmapFactory.Options bounds = new BitmapFactory.Options();
+            bounds.inJustDecodeBounds = true;
+            BitmapFactory.decodeByteArray(bytes, 0, bytes.length, bounds);
+            if (!"image/jpeg".equals(bounds.outMimeType) || bounds.outWidth <= 0 || bounds.outHeight <= 0
+                    || bounds.outWidth > 640 || bounds.outHeight > 640 || bytes.length > 32 * 1024) return null;
+            return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        } catch (IllegalArgumentException invalid) {
+            return null;
+        }
+    }
     public static Bitmap decode(ContentResolver resolver, Uri uri) {
+        if ("data".equals(uri.getScheme())) return decodeCloudThumbnail(uri.toString());
         try {
             BitmapFactory.Options bounds = new BitmapFactory.Options();
             bounds.inJustDecodeBounds = true;

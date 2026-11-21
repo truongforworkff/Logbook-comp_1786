@@ -21,6 +21,8 @@ public final class CloudActivity extends AppCompatActivity {
     private AppUi ui;
     private SyncState state;
     private boolean syncing;
+    private boolean downloading;
+    private String downloadMessage = "";
 
     @Override protected void onCreate(Bundle saved) {
         super.onCreate(saved);
@@ -41,28 +43,40 @@ public final class CloudActivity extends AppCompatActivity {
     private void setupActions() {
         binding.back.setOnClickListener(view -> finish());
         binding.upload.setOnClickListener(view -> model.uploadAll());
+        binding.download.setOnClickListener(view -> model.download());
     }
 
     private void observeState() {
         model.state().observe(this, value -> { state = value; render(); });
         model.work().observe(this, this::renderWork);
+        model.downloading().observe(this, value -> { downloading = value; render(); });
+        model.downloadMessage().observe(this, value -> { downloadMessage = value; render(); });
     }
 
     private void renderWork(List<WorkInfo> work) {
         syncing = false;
         if (work != null) for (WorkInfo info : work) {
-            if (!info.getState().isFinished()) syncing = true;
+            if (info.getState() == WorkInfo.State.RUNNING) syncing = true;
         }
         render();
     }
 
     private void render() {
-        binding.progress.setVisibility(syncing ? View.VISIBLE : View.GONE);
-        binding.upload.setEnabled(!syncing);
+        binding.progress.setVisibility(syncing || downloading ? View.VISIBLE : View.GONE);
+        binding.upload.setEnabled(!syncing && !downloading && state != null
+                && state.pending() && !state.isNew());
+        binding.download.setEnabled(!syncing && !downloading);
+        binding.download.setText(downloading ? R.string.cloud_downloading : R.string.cloud_download);
+        binding.downloadMessage.setText(downloadMessage);
+        binding.downloadMessage.setVisibility(downloadMessage.isEmpty() ? View.GONE : View.VISIBLE);
         int label = R.string.cloud_loading;
         if (state != null) {
-            if (state.pending()) label = !CloudSync.hasInternet(this) ? R.string.cloud_offline
-                    : syncing ? R.string.cloud_running : R.string.cloud_waiting;
+            if (downloading) label = R.string.cloud_downloading;
+            else if (syncing) label = state.isNew() ? R.string.cloud_downloading : R.string.cloud_running;
+            else if (!state.error.isEmpty()) label = R.string.cloud_needs_attention;
+            else if (state.isNew()) label = R.string.cloud_new;
+            else if (state.pending()) label = !CloudSync.hasInternet(this)
+                    ? R.string.cloud_offline : R.string.cloud_waiting;
             else label = R.string.cloud_done;
         }
         binding.status.setText(label);
