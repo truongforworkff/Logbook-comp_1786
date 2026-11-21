@@ -10,11 +10,16 @@ import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-@Database(entities = {Event.class, Session.class, com.comp1786.room.features.cloud.data.SyncState.class}, version = 6, exportSchema = true)
+@Database(entities = {Event.class, Session.class, com.comp1786.room.features.cloud.data.SyncState.class}, version = 7, exportSchema = true)
 public abstract class EventDatabase extends RoomDatabase {
     public abstract EventDao events();
     public abstract SessionDao sessions();
     public abstract com.comp1786.room.features.cloud.data.SyncStateDao sync();
+    public static final Migration MIGRATION_6_7 = new Migration(6, 7) {
+        @Override public void migrate(@NonNull SupportSQLiteDatabase db) {
+            db.execSQL("ALTER TABLE events ADD COLUMN createdAt INTEGER NOT NULL DEFAULT 0");
+        }
+    };
     public static final Migration MIGRATION_5_6 = new Migration(5, 6) {
         @Override public void migrate(@NonNull SupportSQLiteDatabase db) {
             // Existing sessions have unknown duration; never invent an end time.
@@ -51,7 +56,7 @@ public abstract class EventDatabase extends RoomDatabase {
         if (instance == null) {
             synchronized (EventDatabase.class) {
                 if (instance == null) instance = Room.databaseBuilder(context.getApplicationContext(),
-                        EventDatabase.class, "events.db").addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
+                        EventDatabase.class, "events.db").addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7)
                         .addCallback(com.comp1786.room.features.cloud.data.SyncSchema.CALLBACK).build();
             }
         }

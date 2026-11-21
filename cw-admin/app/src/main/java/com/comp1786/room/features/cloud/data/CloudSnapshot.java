@@ -53,6 +53,7 @@ public final class CloudSnapshot {
         if (event.publicId.isEmpty()) throw new IllegalArgumentException("Sự kiện thiếu ID đồng bộ.");
         Map<String, Object> row = new LinkedHashMap<>();
         row.put("id", event.publicId);
+        if (event.createdAt > 0) row.put("createdAt", event.createdAt);
         row.put("name", event.name);
         row.put("date", event.date);
         row.put("location", event.location);

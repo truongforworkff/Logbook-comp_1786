@@ -33,6 +33,8 @@ class EventDetailsPage extends StatelessWidget {
       final sessions = [...event.sessions]
         ..sort((a, b) => a.time.compareTo(b.time));
       final saved = controller.saved.contains(event.id);
+      final createdAt = event.createdAt?.toLocal();
+      final formats = MaterialLocalizations.of(context);
       return Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.canvas,
@@ -98,6 +100,18 @@ class EventDetailsPage extends StatelessWidget {
                   ],
                 ),
               ),
+              if (createdAt != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Text(
+                    'Đã thêm lúc ${formats.formatShortDate(createdAt)} '
+                    '${formats.formatTimeOfDay(TimeOfDay.fromDateTime(createdAt), alwaysUse24HourFormat: true)}',
+                    style: const TextStyle(
+                      color: AppColors.muted,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
               const SizedBox(height: 24),
               Text(
                 'Về sự kiện',

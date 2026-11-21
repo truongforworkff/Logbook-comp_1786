@@ -147,3 +147,9 @@ Chọn ngày: shared/ui/DateField.java dùng chung cho ô ngày form event và b
 - Cảnh báo trùng lịch thuộc app User, chỉ so sánh các session người tham dự đã chọn, không cấm Admin tổ chức nhiều phiên song song.
 
 Kiểm chứng 20/11/2026: build APK, 15 unit test và lint đạt (0 lỗi, còn cảnh báo có sẵn); migration v1–v5, CRUD/chọn giờ và payload đạt trên Android API 36. CloudSyncTest xác nhận endTime đọc lại qua Firestore emulator demo-eventa; không ghi dữ liệu kiểm thử lên project thật.
+
+## Thời điểm tạo sự kiện
+
+- Room v7 thêm `Event.createdAt` là Unix milliseconds. `EventDao.insert` đặt thời điểm lúc lưu và `update` giữ giá trị gốc. Bản ghi cũ có giá trị 0 để biểu thị chưa biết.
+- Danh sách dùng `createdAt DESC`. `CloudSnapshot` gửi trường khi có giá trị và `CloudDownload` giữ lại khi khôi phục. Firestore giữ schema danh mục v1 vì đây là trường tùy chọn.
+- Chi tiết event hiển thị giờ tạo. Explore cũng xếp sự kiện theo giờ tạo, rồi dùng ngày diễn ra giảm dần với dữ liệu cũ.

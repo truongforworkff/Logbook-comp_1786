@@ -12,6 +12,7 @@ public class Event {
     @NonNull @ColumnInfo(defaultValue = "''") public String publicId = "";
     @NonNull
     public String name;
+    @ColumnInfo(defaultValue = "0") public long createdAt;
     @NonNull
     public String date;
     @NonNull
@@ -42,7 +43,7 @@ public class Event {
         if (this == value) return true;
         if (!(value instanceof Event)) return false;
         Event other = (Event) value;
-        return id == other.id && Objects.equals(publicId, other.publicId) && Objects.equals(name, other.name) && Objects.equals(date, other.date) && Objects.equals(location, other.location) && Objects.equals(organiser, other.organiser) && Objects.equals(type, other.type) && Objects.equals(status, other.status) && Objects.equals(description, other.description) && Objects.equals(contactEmail, other.contactEmail) && Objects.equals(contactPhone, other.contactPhone) && Objects.equals(categoryCode, other.categoryCode) && Objects.equals(imageUri, other.imageUri);
+        return id == other.id && createdAt == other.createdAt && Objects.equals(publicId, other.publicId) && Objects.equals(name, other.name) && Objects.equals(date, other.date) && Objects.equals(location, other.location) && Objects.equals(organiser, other.organiser) && Objects.equals(type, other.type) && Objects.equals(status, other.status) && Objects.equals(description, other.description) && Objects.equals(contactEmail, other.contactEmail) && Objects.equals(contactPhone, other.contactPhone) && Objects.equals(categoryCode, other.categoryCode) && Objects.equals(imageUri, other.imageUri);
     }
-    @Override public int hashCode() { return Objects.hash(id, publicId, name, date, location, organiser, type, status, description, contactEmail, contactPhone, categoryCode, imageUri); }
+    @Override public int hashCode() { return Objects.hash(id, publicId, createdAt, name, date, location, organiser, type, status, description, contactEmail, contactPhone, categoryCode, imageUri); }
 }

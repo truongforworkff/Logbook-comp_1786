@@ -51,7 +51,7 @@ void main() {
     );
     expect(findEvents(events, query: "%_'"), isEmpty);
     expect(findEvents(events, query: '  ').length, 5);
-    expect(findEvents(events).first.id, 'ignite-2026');
+    expect(findEvents(events).first.id, 'gtc-dc-2026');
   });
   test(
     'legacy native favourite JSON is retained and invalid IDs are ignored',

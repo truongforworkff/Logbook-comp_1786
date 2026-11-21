@@ -67,4 +67,5 @@
 <string name="saved_notice">Sự kiện đã được lưu trên thiết bị.</string>
 <string name="deleted_notice">Đã xóa sự kiện khỏi danh sách.</string>
 <string name="check_fields_notice">Một vài thông tin chưa hợp lệ. Hãy kiểm tra những ô có ghi chú bên dưới.</string>
+    <string name="event_created_at">Đã thêm lúc %1$s</string>
 </resources>

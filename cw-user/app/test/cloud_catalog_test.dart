@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:eventa_user/features/agenda/data/catalog_repository.dart';
 import 'package:eventa_user/features/agenda/logic/agenda_controller.dart';
+import 'package:eventa_user/features/agenda/logic/event_search.dart';
 
 import 'support/memory_favourites.dart';
 import 'support/memory_schedule.dart';
@@ -50,6 +51,28 @@ void main() {
       expect(catalog.fromCache, isTrue);
     },
   );
+  test(
+    'creation time puts newly added events first, independent of event day',
+    () {
+      final data = document();
+      final rows = data['events'] as List<dynamic>;
+      final created = DateTime.utc(2026, 11, 20, 16);
+      rows[0]['createdAt'] = created.millisecondsSinceEpoch;
+      rows[2]['createdAt'] = created
+          .subtract(const Duration(days: 1))
+          .millisecondsSinceEpoch;
+      final catalog = CatalogData.fromDocument(data, fromCache: false);
+      final sorted = findEvents(catalog.events);
+      expect(sorted.take(2).map((event) => event.id), [
+        'gtc-2026',
+        'gtc-dc-2026',
+      ]);
+      expect(sorted.first.createdAt, created);
+      expect(sorted[2].id, 'ignite-2026');
+      expect(sorted[2].createdAt, isNull);
+    },
+  );
+
   test('end time is optional for legacy catalogs and parsed when provided', () {
     final data = document();
     final row = data['events'][0]['sessions'][0] as Map<String, dynamic>;
@@ -84,6 +107,8 @@ void main() {
       (Map<String, dynamic> d) => d['updatedAt'] = 'fake',
       (Map<String, dynamic> d) => d['events'][0]['date'] = '2026-02-31',
       (Map<String, dynamic> d) => d['events'][0]['id'] = '',
+      (Map<String, dynamic> d) => d['events'][0]['createdAt'] = '2026-11-20',
+      (Map<String, dynamic> d) => d['events'][0]['createdAt'] = -1,
       (Map<String, dynamic> d) =>
           d['events'][0]['image'] = 'file:///private/image',
       (Map<String, dynamic> d) =>

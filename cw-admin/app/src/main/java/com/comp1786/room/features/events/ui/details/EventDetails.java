@@ -50,6 +50,11 @@ public final class EventDetails {
         page.date.setText(EventValidation.displayDate(event.date));
         page.location.setText(event.location);
         page.organiser.setText(activity.getString(R.string.organised_by, event.organiser));
+        if (event.createdAt > 0) {
+            page.createdAt.setVisibility(View.VISIBLE);
+            page.createdAt.setText(activity.getString(R.string.event_created_at,
+                    android.text.format.DateFormat.format("dd/MM/yyyy HH:mm", event.createdAt)));
+        }
         page.description.setText(event.description.isEmpty()
                 ? activity.getString(R.string.no_description) : event.description);
     }
