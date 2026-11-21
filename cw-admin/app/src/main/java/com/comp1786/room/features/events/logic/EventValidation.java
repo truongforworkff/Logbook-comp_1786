@@ -12,6 +12,16 @@ public final class EventValidation {
         try { int year = LocalDate.parse(value, INPUT).getYear(); return year >= 1900 && year <= 2100; }
         catch (java.time.format.DateTimeParseException error) { return false; }
     }
+    public static boolean validEndDate(String start, String end) {
+        return end.isEmpty() || (validDate(start) && validDate(end)
+                && storageDate(start).compareTo(storageDate(end)) <= 0);
+    }
+
+    public static String displayDateRange(String start, String end) {
+        String day = displayDate(start);
+        return end.isEmpty() || end.equals(start) ? day : day + " – " + displayDate(end);
+    }
+
     public static String storageDate(String value) { return LocalDate.parse(value, INPUT).toString(); }
     public static String displayDate(String value) { return LocalDate.parse(value).format(INPUT); }
     public static boolean validEmail(String value) { return value.isEmpty() || (value.length() <= 254 && value.matches("[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)+")); }

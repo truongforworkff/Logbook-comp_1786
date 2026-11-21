@@ -153,3 +153,8 @@ Kiểm chứng 20/11/2026: build APK, 15 unit test và lint đạt (0 lỗi, cò
 - Room v7 thêm `Event.createdAt` là Unix milliseconds. `EventDao.insert` đặt thời điểm lúc lưu và `update` giữ giá trị gốc. Bản ghi cũ có giá trị 0 để biểu thị chưa biết.
 - Danh sách dùng `createdAt DESC`. `CloudSnapshot` gửi trường khi có giá trị và `CloudDownload` giữ lại khi khôi phục. Firestore giữ schema danh mục v1 vì đây là trường tùy chọn.
 - Chi tiết event hiển thị giờ tạo. Explore cũng xếp sự kiện theo giờ tạo, rồi dùng ngày diễn ra giảm dần với dữ liệu cũ.
+
+## Ngày kết thúc sự kiện
+
+- Màn tạo/sửa sự kiện dùng `DateField` cho ngày kết thúc tùy chọn. Room v8 thêm `endDate`; giá trị trống có nghĩa sự kiện kết thúc ngay trong ngày bắt đầu. Firestore gửi `endDate` dạng YYYY-MM-DD khi được chọn.
+- Explore mở danh sách **Tất cả**, xếp theo giờ tạo. **Nổi bật** chỉ hiện event chưa kết thúc theo ngày địa phương, tính cả ngày kết thúc. Event đánh dấu hoàn thành vẫn tra cứu được ở **Tất cả** và **Yêu thích**.

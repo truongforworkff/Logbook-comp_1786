@@ -47,7 +47,7 @@ public final class EventDetails {
         page.category.setText(activity.getString(R.string.category_status, category, event.type,
                 EventAdapter.statusLabel(activity, event.status)));
         EventPhoto.load(page.cover, event.imageUri, null);
-        page.date.setText(EventValidation.displayDate(event.date));
+        page.date.setText(EventValidation.displayDateRange(event.date, event.endDate));
         page.location.setText(event.location);
         page.organiser.setText(activity.getString(R.string.organised_by, event.organiser));
         if (event.createdAt > 0) {

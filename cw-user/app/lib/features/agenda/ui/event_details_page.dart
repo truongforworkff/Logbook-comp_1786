@@ -87,9 +87,11 @@ class EventDetailsPage extends StatelessWidget {
                   children: [
                     MetaRow(
                       icon: Icons.calendar_today_outlined,
-                      title: fullDate(event.date),
+                      title: event.date == event.lastDay
+                          ? fullDate(event.date)
+                          : '${shortDate(event.date)} – ${fullDate(event.lastDay)}',
                       subtitle:
-                          '${event.status == 'Completed' ? 'Đã diễn ra' : 'Sắp diễn ra'} · ${event.type}',
+                          '${event.hasEnded(DateTime.now()) ? 'Đã kết thúc' : 'Theo lịch'} · ${event.type}',
                     ),
                     const SizedBox(height: 16),
                     MetaRow(

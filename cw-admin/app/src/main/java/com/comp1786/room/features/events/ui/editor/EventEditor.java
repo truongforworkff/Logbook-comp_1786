@@ -37,6 +37,7 @@ public final class EventEditor {
             Event draft = new Event(state.getLong("eventId"), state.getString("name", ""),
                     state.getString("date", ""), state.getString("location", ""),
                     state.getString("organiser", ""), state.getString("type", ""), state.getString("status", "Upcoming"));
+            draft.endDate = state.getString("endDate", "");
             draft.categoryCode = state.getString("categoryCode", "Other");
             draft.imageUri = state.getString("imageUri", "");
             draft.description = state.getString("description", "");
@@ -63,6 +64,8 @@ public final class EventEditor {
             form.phoneInput.setText(draft.contactPhone);
             form.nameInput.setText(draft.name);
             form.dateInput.setText(draft.date.matches("\\d{4}-\\d{2}-\\d{2}") ? EventValidation.displayDate(draft.date) : draft.date);
+            form.endDateInput.setText(draft.endDate.matches("\\d{4}-\\d{2}-\\d{2}")
+                    ? EventValidation.displayDate(draft.endDate) : draft.endDate);
             form.locationInput.setText(draft.location);
             form.organiserInput.setText(draft.organiser);
             form.typeInput.setSelection(Math.max(0, Arrays.asList(activity.getResources().getStringArray(R.array.types)).indexOf(draft.type)));
@@ -72,6 +75,8 @@ public final class EventEditor {
         DateField datePicker =
                 new DateField(activity, ui, form.dateInput, false);
         form.pickDate.setOnClickListener(view -> datePicker.show());
+        new DateField(activity, ui, form.endDateInput, true);
+        form.endDateInput.setHint(R.string.event_end_date_hint);
         form.moreOptions.setOnClickListener(view -> {
             boolean expand = form.optionalFields.getVisibility() != View.VISIBLE;
             form.optionalFields.setVisibility(expand ? View.VISIBLE : View.GONE);
@@ -95,6 +100,10 @@ public final class EventEditor {
                 }
                 String date=form.dateInput.getText().toString().trim();
                 if(!ui.inlineValidation(form.dateInput,EventValidation.validDate(date),R.string.invalid_date) && firstInvalid==null) firstInvalid=form.dateInput;
+                String endDate = form.endDateInput.getText().toString().trim();
+                if (!ui.inlineValidation(form.endDateInput,
+                        EventValidation.validEndDate(date, endDate), R.string.invalid_event_end_date)
+                        && firstInvalid == null) firstInvalid = form.endDateInput;
                 String email=form.emailInput.getText().toString().trim(), phone=form.phoneInput.getText().toString().trim();
                 if(!ui.inlineValidation(form.emailInput,EventValidation.validEmail(email),R.string.invalid_email) && firstInvalid==null) firstInvalid=form.emailInput;
                 if(!ui.inlineValidation(form.phoneInput,EventValidation.validPhone(phone),R.string.invalid_phone) && firstInvalid==null) firstInvalid=form.phoneInput;
@@ -109,6 +118,7 @@ public final class EventEditor {
                         form.nameInput.getText().toString().trim(), EventValidation.storageDate(date),
                         form.locationInput.getText().toString().trim(),
                         form.organiserInput.getText().toString().trim(), form.typeInput.getSelectedItem().toString(), form.statusInput.getSelectedItem().toString());
+                event.endDate = endDate.isEmpty() ? "" : EventValidation.storageDate(endDate);
                 event.categoryCode = EventCategories.CODES.get(form.categoryInput.getSelectedItemPosition());
                 event.imageUri = imageUri;
                 event.description = form.descriptionInput.getText().toString().trim();
@@ -119,6 +129,7 @@ public final class EventEditor {
                 ui.reviewRow(panel.body,R.string.event_category,form.categoryInput.getSelectedItem().toString());
                 if (!event.imageUri.isEmpty()) ui.reviewRow(panel.body,R.string.event_cover,activity.getString(R.string.cover_selected));
                 ui.reviewRow(panel.body,R.string.name,event.name); ui.reviewRow(panel.body,R.string.date,date);
+                ui.reviewRow(panel.body, R.string.event_end_date, endDate.isEmpty() ? date : endDate);
                 ui.reviewRow(panel.body,R.string.location,event.location); ui.reviewRow(panel.body,R.string.organiser,event.organiser);
                 ui.reviewRow(panel.body,R.string.type,event.type); ui.reviewRow(panel.body,R.string.status,EventAdapter.statusLabel(activity,event.status));
                 if(!event.description.isEmpty()) ui.reviewRow(panel.body,R.string.description,event.description);
@@ -204,6 +215,7 @@ public final class EventEditor {
             state.putLong("eventId", editingEvent == null ? 0 : editingEvent.id);
             state.putString("name", fields.nameInput.getText().toString());
             state.putString("date", fields.dateInput.getText().toString());
+            state.putString("endDate", fields.endDateInput.getText().toString());
             state.putString("location", fields.locationInput.getText().toString());
             state.putString("organiser", fields.organiserInput.getText().toString());
             state.putString("type", fields.typeInput.getSelectedItem().toString());

@@ -6,6 +6,7 @@ class EventInfo {
     required this.id,
     required this.name,
     required this.date,
+    this.endDate,
     required this.location,
     required this.organiser,
     required this.type,
@@ -24,7 +25,7 @@ class EventInfo {
   final String id, name, location, organiser, type, status;
   final String categoryCode, image, description, source;
   final DateTime date;
-  final DateTime? createdAt;
+  final DateTime? createdAt, endDate;
   final Uint8List? imageBytes;
   final String contactEmail, contactPhone;
   final List<SessionInfo> sessions;
@@ -33,6 +34,7 @@ class EventInfo {
     id: json['id'] as String,
     name: json['name'] as String,
     date: DateTime.parse(json['date'] as String),
+    endDate: _parseEndDate(json['endDate'], json['date'] as String),
     createdAt: _parseCreatedAt(json['createdAt']),
     location: json['location'] as String,
     organiser: json['organiser'] as String,
@@ -51,6 +53,28 @@ class EventInfo {
       ),
     ),
   );
+
+  DateTime get lastDay => endDate ?? date;
+
+  bool hasEnded(DateTime now) =>
+      status == 'Completed' ||
+      DateTime(now.year, now.month, now.day).isAfter(lastDay);
+
+  static DateTime? _parseEndDate(Object? value, String startDate) {
+    if (value == null || value == '') return null;
+    if (value is! String || !RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(value)) {
+      throw const FormatException('Invalid event end date');
+    }
+    final end = DateTime.tryParse(value);
+    if (end == null ||
+        end.toIso8601String().substring(0, 10) != value ||
+        end.year < 1900 ||
+        end.year > 2100 ||
+        value.compareTo(startDate) < 0) {
+      throw const FormatException('Invalid event end date');
+    }
+    return end;
+  }
 
   static DateTime? _parseCreatedAt(Object? value) {
     if (value == null) return null;

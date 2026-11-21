@@ -102,6 +102,19 @@
                 android:text="@string/pick_date" />
             <TextView
                 style="@style/FieldLabel"
+                android:text="@string/event_end_date_optional"
+                android:labelFor="@id/endDateInput" />
+            <EditText
+                style="@style/EventField"
+                android:id="@+id/endDateInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:inputType="text"
+                android:maxLength="10"
+                android:hint="@string/event_end_date_hint" />
+            <TextView
+                style="@style/FieldLabel"
                 android:text="@string/location"
                 android:labelFor="@id/locationInput" />
             <EditText

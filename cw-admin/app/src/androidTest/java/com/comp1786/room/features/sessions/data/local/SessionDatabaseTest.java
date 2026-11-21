@@ -10,6 +10,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class SessionDatabaseTest {
+    @Test public void upgradeFromVersion7KeepsCreationTimeAndDefaultsToOneDay() { verifyUpgrade(7); }
     @Test public void upgradeFromVersion6KeepsExistingRowsWithUnknownCreationTime() { verifyUpgrade(6); }
     @Test public void upgradeFromVersion5KeepsSyncIdentityAndUnknownDuration() { verifyUpgrade(5); }
     @Test public void upgradeFromVersion4KeepsPhotosAndCreatesSyncState() { verifyUpgrade(4); }
@@ -46,16 +47,21 @@ public class SessionDatabaseTest {
             old.execSQL("CREATE TABLE sync_state (id INTEGER NOT NULL PRIMARY KEY, sourceId TEXT NOT NULL, revision INTEGER NOT NULL DEFAULT 0, uploadedRevision INTEGER NOT NULL DEFAULT -1, syncedAt INTEGER NOT NULL DEFAULT 0, error TEXT NOT NULL DEFAULT '')");
             old.execSQL("INSERT INTO sync_state VALUES(1, 'keep-source', 7, 6, 123, '')");
         }
-        if (version == 6) {
+        if (version >= 6) {
             old.execSQL("ALTER TABLE sessions ADD COLUMN endTime TEXT NOT NULL DEFAULT ''");
             old.execSQL("UPDATE sessions SET endTime='08:30'");
+        }
+        if (version == 7) {
+            old.execSQL("ALTER TABLE events ADD COLUMN createdAt INTEGER NOT NULL DEFAULT 0");
+            old.execSQL("UPDATE events SET createdAt=12345");
         }
         old.setVersion(version);
         old.close();
         EventDatabase db = open(context, name);
         try {
             assertEquals("Keep me", db.events().getAll().get(0).name);
-            assertEquals(0, db.events().getAll().get(0).createdAt);
+            assertEquals(version == 7 ? 12345 : 0, db.events().getAll().get(0).createdAt);
+            assertEquals("", db.events().getAll().get(0).endDate);
             assertEquals(version >= 4 ? "AI" : "Other", db.events().getAll().get(0).categoryCode);
             assertEquals(version >= 4 ? "file:///cover.jpg" : "", db.events().getAll().get(0).imageUri);
             String publicId = db.events().getAll().get(0).publicId;
@@ -70,7 +76,7 @@ public class SessionDatabaseTest {
             if (version >= 2) {
                 Session legacy = db.sessions().getAll().get(0);
                 assertEquals(42, legacy.id);
-                assertEquals(version == 6 ? "08:30" : "", legacy.endTime);
+                assertEquals(version >= 6 ? "08:30" : "", legacy.endTime);
                 if (version == 2) assertNull(legacy.eventId);
                 else assertEquals(Long.valueOf(1), legacy.eventId);
                 assertEquals("Keep all fields", legacy.description);
@@ -119,7 +125,7 @@ public class SessionDatabaseTest {
 
     private EventDatabase open(Context context, String name) {
         return Room.databaseBuilder(context, EventDatabase.class, name)
-                .addMigrations(EventDatabase.MIGRATION_1_2, EventDatabase.MIGRATION_2_3, EventDatabase.MIGRATION_3_4, EventDatabase.MIGRATION_4_5, EventDatabase.MIGRATION_5_6, EventDatabase.MIGRATION_6_7)
+                .addMigrations(EventDatabase.MIGRATION_1_2, EventDatabase.MIGRATION_2_3, EventDatabase.MIGRATION_3_4, EventDatabase.MIGRATION_4_5, EventDatabase.MIGRATION_5_6, EventDatabase.MIGRATION_6_7, EventDatabase.MIGRATION_7_8)
                 .addCallback(com.comp1786.room.features.cloud.data.SyncSchema.CALLBACK).build();
     }
 }

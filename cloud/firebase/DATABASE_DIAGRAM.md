@@ -53,6 +53,7 @@ erDiagram
         string id PK
         string name
         string date
+        string endDate "tùy chọn, mặc định cùng ngày bắt đầu"
         int createdAt "Unix milliseconds nếu biết"
         string categoryCode
         string image
