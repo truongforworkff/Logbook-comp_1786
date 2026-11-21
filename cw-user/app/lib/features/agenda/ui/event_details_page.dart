@@ -40,12 +40,12 @@ class EventDetailsPage extends StatelessWidget {
           backgroundColor: AppColors.canvas,
           surfaceTintColor: Colors.transparent,
           leading: IconButton(
-            tooltip: 'Quay lại',
+            tooltip: 'Back',
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.arrow_back, color: AppColors.blue, size: 22),
           ),
           title: const Text(
-            'Quay lại',
+            'Back',
             style: TextStyle(fontSize: 13, color: AppColors.blue),
           ),
           titleSpacing: 0,
@@ -88,10 +88,10 @@ class EventDetailsPage extends StatelessWidget {
                     MetaRow(
                       icon: Icons.calendar_today_outlined,
                       title: event.date == event.lastDay
-                          ? fullDate(event.date)
-                          : '${shortDate(event.date)} – ${fullDate(event.lastDay)}',
+                          ? formats.formatFullDate(event.date)
+                          : '${shortDate(event.date)} – ${formats.formatFullDate(event.lastDay)}',
                       subtitle:
-                          '${event.hasEnded(DateTime.now()) ? 'Đã kết thúc' : 'Theo lịch'} · ${event.type}',
+                          '${event.hasEnded(DateTime.now()) ? 'Ended' : 'Scheduled'} · ${event.type}',
                     ),
                     const SizedBox(height: 16),
                     MetaRow(
@@ -106,7 +106,7 @@ class EventDetailsPage extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 10),
                   child: Text(
-                    'Đã thêm lúc ${formats.formatShortDate(createdAt)} '
+                    'Added on ${formats.formatShortDate(createdAt)} '
                     '${formats.formatTimeOfDay(TimeOfDay.fromDateTime(createdAt), alwaysUse24HourFormat: true)}',
                     style: const TextStyle(
                       color: AppColors.muted,
@@ -116,13 +116,13 @@ class EventDetailsPage extends StatelessWidget {
                 ),
               const SizedBox(height: 24),
               Text(
-                'Về sự kiện',
+                'About this event',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 9),
               Text(
                 event.description.isEmpty
-                    ? 'Thông tin đang được cập nhật.'
+                    ? 'Details will be available soon.'
                     : event.description,
                 style: const TextStyle(
                   color: AppColors.muted,
@@ -150,17 +150,17 @@ class EventDetailsPage extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      'Lịch trình',
+                      'Agenda',
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),
-                  CategoryBadge('${sessions.length} session'),
+                  CategoryBadge(agendaItemCount(sessions.length)),
                 ],
               ),
               const SizedBox(height: 16),
               if (sessions.isEmpty)
                 const Text(
-                  'Lịch trình đang được cập nhật.',
+                  'The agenda will be available soon.',
                   style: TextStyle(color: AppColors.muted),
                 ),
               for (final session in sessions) _session(context, session),
@@ -174,11 +174,11 @@ class EventDetailsPage extends StatelessWidget {
                   saved ? Icons.favorite : Icons.favorite_border,
                   size: 19,
                 ),
-                label: Text(saved ? 'Đã lưu yêu thích' : 'Lưu sự kiện này'),
+                label: Text(saved ? 'Saved to favourites' : 'Save event'),
               ),
               const SizedBox(height: 17),
               const Text(
-                'Các phiên có tiền tố Demo là lịch minh họa. Lịch trình có thể được ban tổ chức cập nhật.',
+                'Items marked “Demo” are examples. The organiser may update the agenda.',
                 style: TextStyle(
                   fontSize: 10,
                   color: AppColors.muted,
@@ -216,7 +216,7 @@ class EventDetailsPage extends StatelessWidget {
         ),
         Expanded(
           child: Semantics(
-            label: 'Xem phiên: ${session.name}',
+            label: 'View agenda item: ${session.name}',
             button: true,
             onTap: () => _openSession(context, session),
             child: ExcludeSemantics(
@@ -253,7 +253,7 @@ class EventDetailsPage extends StatelessWidget {
                                   ? session.room
                                   : session.speaker.isNotEmpty
                                   ? session.speaker
-                                  : 'Chưa công bố địa điểm'}',
+                                  : 'Venue to be announced'}',
                               style: const TextStyle(
                                 fontSize: 11,
                                 color: AppColors.muted,

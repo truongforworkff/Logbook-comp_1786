@@ -7,7 +7,6 @@ import '../../favourites/ui/favourite_button.dart';
 import '../../schedule/ui/schedule_button.dart';
 import '../../../shared/ui/app_theme.dart';
 import '../../../shared/ui/app_widgets.dart';
-import '../../../shared/ui/event_labels.dart';
 
 class SessionDetailsPage extends StatelessWidget {
   const SessionDetailsPage({
@@ -41,13 +40,13 @@ class SessionDetailsPage extends StatelessWidget {
               backgroundColor: AppColors.canvas,
               surfaceTintColor: Colors.transparent,
               leading: IconButton(
-                tooltip: 'Chi tiết sự kiện',
+                tooltip: 'Event details',
                 onPressed: () => Navigator.pop(context),
                 icon: const Icon(Icons.arrow_back, color: AppColors.blue),
               ),
               titleSpacing: 0,
               title: const Text(
-                'Chi tiết sự kiện',
+                'Event details',
                 style: TextStyle(color: AppColors.blue, fontSize: 13),
               ),
               actions: [
@@ -119,13 +118,13 @@ class SessionDetailsPage extends StatelessWidget {
                       children: [
                         MetaRow(
                           icon: Icons.calendar_today_outlined,
-                          title: fullDate(event.date),
+                          title: MaterialLocalizations.of(context).formatFullDate(event.date),
                         ),
                         const SizedBox(height: 16),
                         MetaRow(
                           icon: Icons.location_on_outlined,
                           title: session.room.isEmpty
-                              ? 'Chưa công bố phòng'
+                              ? 'Room to be announced'
                               : session.room,
                           subtitle: event.location,
                         ),
@@ -133,7 +132,7 @@ class SessionDetailsPage extends StatelessWidget {
                         MetaRow(
                           icon: Icons.people_outline,
                           title: session.speaker.isEmpty
-                              ? 'Chưa công bố diễn giả'
+                              ? 'Speaker to be announced'
                               : session.speaker,
                         ),
                       ],
@@ -141,13 +140,13 @@ class SessionDetailsPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 25),
                   Text(
-                    'Bạn sẽ khám phá điều gì?',
+                    'About this agenda item',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 10),
                   Text(
                     session.description.isEmpty
-                        ? 'Nội dung đang được cập nhật.'
+                        ? 'Details will be available soon.'
                         : session.description,
                     style: const TextStyle(
                       color: AppColors.muted,
@@ -165,7 +164,7 @@ class SessionDetailsPage extends StatelessWidget {
                   OutlinedButton.icon(
                     onPressed: () => Navigator.pop(context),
                     icon: const Icon(Icons.arrow_back, size: 18),
-                    label: const Text('Trở lại lịch trình'),
+                    label: const Text('Back to agenda'),
                   ),
                 ],
               ),

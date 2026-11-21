@@ -16,8 +16,8 @@ public class CloudSyncWorkerTest {
         assertTrue(CloudSyncWorker.retryable(new FirebaseFirestoreException("offline",
                 FirebaseFirestoreException.Code.UNAVAILABLE)));
         assertTrue(CloudSyncWorker.message(new FirebaseFirestoreException("blocked",
-                FirebaseFirestoreException.Code.PERMISSION_DENIED)).contains("Cấu hình kết nối"));
+                FirebaseFirestoreException.Code.PERMISSION_DENIED)).contains("cloud configuration"));
         assertTrue(CloudSyncWorker.message(new FirebaseFirestoreException("SOURCE_MISMATCH",
-                FirebaseFirestoreException.Code.FAILED_PRECONDITION)).contains("bộ dữ liệu"));
+                FirebaseFirestoreException.Code.FAILED_PRECONDITION)).contains("different dataset"));
     }
 }

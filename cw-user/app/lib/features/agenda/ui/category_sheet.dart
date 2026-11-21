@@ -20,12 +20,12 @@ Future<String?> showCategorySheet(
             children: [
               const Expanded(
                 child: Text(
-                  'Khám phá theo chủ đề',
+                  'Browse by topic',
                   style: TextStyle(fontSize: 23, fontWeight: FontWeight.w700),
                 ),
               ),
               IconButton(
-                tooltip: 'Đóng bộ lọc',
+                tooltip: 'Close filters',
                 onPressed: () => Navigator.pop(context),
                 icon: const Icon(Icons.close),
               ),

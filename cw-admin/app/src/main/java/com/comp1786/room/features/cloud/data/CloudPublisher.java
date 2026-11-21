@@ -17,7 +17,7 @@ public final class CloudPublisher {
     public static void publish(FirebaseFirestore firestore, CloudSnapshot snapshot,
             Map<String, Object> payload, String writeKey) throws Exception {
         if (!writeKey.matches("[0-9a-f]{64}"))
-            throw new IllegalArgumentException("Bản Admin chưa có cấu hình kết nối Cloud.");
+            throw new IllegalArgumentException("The admin app is missing its cloud connection settings.");
         DocumentReference reference = catalog(firestore);
         Tasks.await(firestore.runTransaction(transaction -> {
             DocumentSnapshot remote = transaction.get(reference);

@@ -44,13 +44,13 @@ public final class CloudViewModel extends AndroidViewModel {
             try {
                 boolean found = CloudDownload.restore(getApplication(), EventDatabase.get(getApplication()),
                         FirebaseFirestore.getInstance());
-                message = found ? "Danh mục trên máy đã cập nhật từ Firebase."
-                        : "Firebase chưa có danh mục sự kiện.";
+                message = found ? "Local catalogue updated from Firebase."
+                        : "No event catalogue has been published to Firebase yet.";
             } catch (IllegalArgumentException | IllegalStateException error) {
                 message = error.getMessage();
             } catch (Exception error) {
                 if (error instanceof InterruptedException) Thread.currentThread().interrupt();
-                message = "Chưa tải được từ Firebase. Kiểm tra mạng rồi thử lại.";
+                message = "Could not download from Firebase. Check your connection and try again.";
             }
             downloadMessage.postValue(message);
             downloading.postValue(false);

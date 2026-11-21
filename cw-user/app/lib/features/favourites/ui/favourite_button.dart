@@ -23,7 +23,7 @@ Future<void> toggleFavourite(
   } catch (_) {
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Chưa lưu được thay đổi. Hãy thử lại.')),
+        const SnackBar(content: Text('Could not save your changes. Try again.')),
       );
     }
   }
@@ -46,7 +46,7 @@ class FavouriteButton extends StatelessWidget {
       toggled: saved,
       child: IconButton.filledTonal(
         key: Key('favourite-$eventId'),
-        tooltip: '${saved ? 'Bỏ yêu thích' : 'Lưu yêu thích'}: $eventName',
+        tooltip: '${saved ? 'Remove from favourites' : 'Add to favourites'}: $eventName',
         style: IconButton.styleFrom(
           backgroundColor: Colors.white,
           foregroundColor: saved ? AppColors.blue : const Color(0xFFA0A8B5),

@@ -28,7 +28,7 @@ public final class CloudSyncWorker extends Worker {
                 return Result.success();
             }
             if (BuildConfig.CLOUD_WRITE_KEY.isEmpty()) {
-                throw new IllegalArgumentException("Bản Admin chưa có khóa ghi Firebase. Cấu hình sync.properties rồi build lại.");
+                throw new IllegalArgumentException("The Firebase write key is missing. Configure sync.properties and rebuild the admin app.");
             }
             CloudPublisher.publish(firestore, snapshot,
                     snapshot.payload(getApplicationContext()), BuildConfig.CLOUD_WRITE_KEY);
@@ -61,14 +61,14 @@ public final class CloudSyncWorker extends Worker {
         if (error instanceof FirebaseFirestoreException) {
             FirebaseFirestoreException problem = (FirebaseFirestoreException) error;
             if (problem.getCode() == FirebaseFirestoreException.Code.PERMISSION_DENIED)
-                return "Chưa gửi được dữ liệu. Cấu hình kết nối Cloud của bản Admin cần được cập nhật.";
+                return "Could not upload changes. Update the cloud configuration for this admin app.";
             if ("LOCAL_BEHIND".equals(problem.getMessage()))
-                return "Firebase có phiên bản khác. Chỉnh sửa trên máy vẫn được giữ để xử lý xung đột.";
+                return "Firebase has a different revision. Your local changes have been kept for review.";
             if ("SOURCE_MISMATCH".equals(problem.getMessage()))
-                return "Firebase thuộc một bộ dữ liệu khác. Hãy dùng máy đã tải danh mục từ Cloud hoặc máy đã công bố trước đó.";
+                return "Firebase contains a different dataset. Use the device that downloaded or published that catalogue.";
             if (!retryable(problem))
-                return "Cấu hình Cloud chưa hợp lệ. Cập nhật bản Admin rồi đồng bộ lại.";
+                return "Cloud configuration is invalid. Update the admin app and sync again.";
         }
-        return "Chưa gửi được dữ liệu. App sẽ thử lại khi có Internet.";
+        return "Could not upload changes. The app will retry when you are online.";
     }
 }

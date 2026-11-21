@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public final class CloudDownload {
-    private static final String UNSENT = "Thiết bị có chỉnh sửa chưa gửi. Hãy giữ lại dữ liệu này và gửi trước khi tải.";
+    private static final String UNSENT = "Upload the changes on this device before downloading the catalogue.";
     private CloudDownload() {}
 
     public static boolean restore(Context context, EventDatabase database, FirebaseFirestore firestore)
@@ -47,7 +47,7 @@ public final class CloudDownload {
         if (!fresh) {
             if (local.pending()) throw new IllegalStateException(UNSENT);
             if (!local.sourceId.equals(sourceId)) {
-                throw new IllegalStateException("Danh mục Cloud thuộc bộ dữ liệu khác. Dữ liệu trên thiết bị vẫn được giữ.");
+                throw new IllegalStateException("The cloud catalogue belongs to a different dataset. Your local data has been kept.");
             }
             if (local.revision >= revision) return;
         }
@@ -176,6 +176,6 @@ public final class CloudDownload {
     }
 
     private static IllegalArgumentException invalidCatalog() {
-        return new IllegalArgumentException("Danh mục Firebase không hợp lệ. Dữ liệu trên thiết bị vẫn được giữ.");
+        return new IllegalArgumentException("The Firebase catalogue is invalid. Your local data has been kept.");
     }
 }

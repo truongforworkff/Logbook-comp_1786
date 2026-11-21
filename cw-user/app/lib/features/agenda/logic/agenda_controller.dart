@@ -65,10 +65,10 @@ class AgendaController extends ChangeNotifier {
       if (_disposed || generation != _generation) return;
       loading = false;
       error = problem is CatalogNotPublished
-          ? 'Ban quản trị chưa công bố sự kiện. Danh sách sẽ tự cập nhật khi có dữ liệu.'
+          ? 'No events have been published yet. This list updates when events are available.'
           : problem is FormatException
-          ? 'Dữ liệu Cloud chưa hợp lệ. Hãy báo ban quản trị và thử lại.'
-          : 'Chưa kết nối được Cloud. App sẽ tự cập nhật khi kết nối trở lại.';
+          ? 'The cloud catalogue is invalid. Contact the organiser and try again.'
+          : 'Could not reach Firebase. Events will refresh when you reconnect.';
       notifyListeners();
       finish();
       if (retry) _scheduleRetry(generation);
@@ -149,7 +149,7 @@ class AgendaController extends ChangeNotifier {
       if (!added) next.remove(id);
       await _favourites.save(next);
       _saved = next;
-      return added ? 'Đã lưu vào Yêu thích' : 'Đã bỏ khỏi Yêu thích';
+      return added ? 'Added to favourites' : 'Removed from favourites';
     } finally {
       saving = false;
       if (!_disposed) notifyListeners();
@@ -183,7 +183,7 @@ class AgendaController extends ChangeNotifier {
       if (!added) next.remove(selection);
       await _schedule.save(next);
       _planned = next;
-      return added ? 'Đã thêm vào Lịch của tôi' : 'Đã bỏ khỏi Lịch của tôi';
+      return added ? 'Added to my schedule' : 'Removed from my schedule';
     } finally {
       savingSchedule = false;
       if (!_disposed) notifyListeners();

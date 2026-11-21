@@ -115,7 +115,7 @@ void main() {
       try {
         await removePublishedCatalog();
         await tester.pumpWidget(EventaApp(controller: controller));
-        await until(tester, () => controller.error.contains('chưa công bố'));
+        await until(tester, () => controller.error.contains('No events have been published'));
         await publish(events);
         await until(
           tester,
@@ -173,7 +173,7 @@ void main() {
         await until(
           tester,
           () => find
-              .text('Sự kiện hoặc phiên này đã được gỡ khỏi lịch trình.')
+              .text('This event or agenda item has been removed.')
               .evaluate()
               .isNotEmpty,
         );

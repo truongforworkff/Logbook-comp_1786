@@ -4,13 +4,15 @@ Trong Android Studio, mở project cw-admin và chọn **Project** ở bảng th
 
 ## Luồng giao diện hiện tại
 
-- Tab **Sự kiện**: danh sách, tìm/lọc event, tạo event.
-- Mở event: thông tin event và **Lịch trình** nằm ngay dưới phần mô tả. Timeline chỉ hiển thị session thuộc event đó.
+Giao diện Admin và User dùng tiếng Anh. **Agenda item** là một hoạt động trong **Agenda** của sự kiện, tương ứng với entity `Session` trong đề bài và trường `sessions` trên Firebase.
+
+- Tab **Events**: danh sách, tìm/lọc event, tạo event.
+- Mở event: thông tin event và **Agenda** nằm ngay dưới phần mô tả. Timeline chỉ hiển thị session thuộc event đó.
 - Chạm một phiên trong lịch: mở màn chi tiết session chỉ đọc. Nút Chỉnh sửa riêng mới mở form.
-- **Thêm session trong event**: form tự nhận event đang mở, không phải chọn lại.
-- Tab **Session**: chọn event bằng danh sách tên + ngày, xem các session của event, nhấn + để tạo session. Chưa chọn event thì nút + bị khóa.
+- **Add agenda item**: form tự nhận event đang mở, không phải chọn lại.
+- Tab **Agenda**: chọn event bằng danh sách tên + ngày, xem các session của event, nhấn + để tạo session. Chưa chọn event thì nút + bị khóa.
 - Hai cách thêm session dùng chung form, validation và lệnh ghi SQLite.
-- Nếu có session từ bản B chưa gắn event: chọn event đích rồi Gắn session cũ → kiểm tra → Lưu.
+- Nếu có session từ bản B chưa gắn event: chọn event đích rồi Link an existing item → kiểm tra → Lưu.
 
 ## Tính năng event
 

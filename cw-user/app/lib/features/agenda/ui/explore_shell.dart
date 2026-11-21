@@ -98,7 +98,7 @@ class _ExploreShellState extends State<ExploreShell> {
           ),
           const SizedBox(height: 15),
           const Text(
-            'Chưa mở được danh sách',
+            'Could not load events',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 10),
@@ -106,7 +106,7 @@ class _ExploreShellState extends State<ExploreShell> {
           const SizedBox(height: 20),
           FilledButton(
             onPressed: controller.load,
-            child: const Text('Thử lại'),
+            child: const Text('Try again'),
           ),
         ],
       ),

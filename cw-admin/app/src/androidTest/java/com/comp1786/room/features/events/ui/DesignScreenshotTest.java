@@ -72,7 +72,7 @@ public class DesignScreenshotTest {
             awaitCards(instrumentation, activity, 3);
             instrumentation.runOnMainSync(() -> activity.findViewById(R.id.filter).performClick());
             click(instrumentation, "filterCategory");
-            clickText(instrumentation, "AI & Dữ liệu");
+            clickText(instrumentation, "AI & Data");
             click(instrumentation, "primary");
             awaitCards(instrumentation, activity, 1);
             instrumentation.runOnMainSync(() -> activity.findViewById(R.id.filter).performClick());
@@ -107,7 +107,7 @@ public class DesignScreenshotTest {
             assertTrue(com.comp1786.room.features.events.logic.EventValidation.validDate(
                     node(instrumentation,"dateInput").getText().toString()));
             click(instrumentation, "categoryInput");
-            clickText(instrumentation, "AI & Dữ liệu");
+            clickText(instrumentation, "AI & Data");
             setText(instrumentation,"nameInput","Gặp gỡ cuối năm");
             setText(instrumentation,"dateInput","25/12/2026");
             setText(instrumentation,"locationInput","Greenwich Campus");
