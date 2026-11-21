@@ -48,15 +48,10 @@ public final class CloudSync {
                 IMMEDIATE, ExistingWorkPolicy.APPEND_OR_REPLACE, work);
     }
 
-    public static void uploadAfterLogin(Context context) {
+    public static void syncAfterLogin(Context context) {
         Context app = context.getApplicationContext();
         scheduleRecovery(app);
-        java.util.concurrent.ExecutorService worker = java.util.concurrent.Executors.newSingleThreadExecutor();
-        worker.execute(() -> {
-            EventDatabase.get(app).sync().requestUpload();
-            enqueue(app);
-        });
-        worker.shutdown();
+        enqueue(app);
     }
 
     public static void cancel(Context context) {

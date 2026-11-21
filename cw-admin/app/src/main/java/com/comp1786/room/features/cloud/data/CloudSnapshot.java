@@ -82,9 +82,13 @@ public final class CloudSnapshot {
         }
     }
 
+    static String sessionPrefix(String eventId) {
+        return eventId + "-session-";
+    }
+
     private Map<String, Object> sessionRow(String eventId, Session session) {
         Map<String, Object> row = new LinkedHashMap<>();
-        row.put("id", eventId + "-session-" + session.id);
+        row.put("id", sessionPrefix(eventId) + session.id);
         row.put("name", session.name);
         row.put("time", session.time);
         if (!session.endTime.isEmpty()

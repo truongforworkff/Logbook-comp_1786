@@ -129,9 +129,9 @@ Chọn ngày: shared/ui/DateField.java dùng chung cho ô ngày form event và b
 
 ## Mục E — đồng bộ Cloud
 
-- UI: features/cloud/ui/CloudActivity.java + res/layout/cloud_screen.xml + values/cloud_strings.xml. Tab từ danh sách event/session mở trạng thái đồng bộ và nút gửi tất cả; không có form tài khoản.
-- Logic: CloudViewModel giữ trạng thái và yêu cầu gửi; CloudSync đăng ký thay đổi Room và lịch WorkManager; CloudSyncWorker chụp/gửi/ghi nhận revision, xử lý lỗi và thử lại.
-- Data: SyncState/SyncStateDao lưu trạng thái bền vững; SyncSchema migration/trigger; CloudSnapshot lấy event/session trong transaction; CloudCover dùng shared/data/PhotoDecoder; CloudPublisher ghi role_catalogues/main trong Firestore transaction, kiểm tra nguồn và revision.
+- UI: features/cloud/ui/CloudActivity.java + res/layout/cloud_screen.xml + values/cloud_strings.xml. Tab từ danh sách event/session mở trạng thái đồng bộ và các nút tải danh mục, gửi thay đổi.
+- Logic: CloudViewModel giữ trạng thái và yêu cầu tải/gửi; CloudSync đăng ký thay đổi Room và lịch WorkManager; CloudSyncWorker chụp/gửi/ghi nhận revision, xử lý lỗi và thử lại.
+- Data: SyncState/SyncStateDao lưu trạng thái bền vững; SyncSchema migration/trigger; CloudSnapshot lấy event/session trong transaction; CloudCover dùng shared/data/PhotoDecoder; CloudPublisher ghi role_catalogues/main trong Firestore transaction, kiểm tra phiên bản làm cơ sở trước khi gửi. CloudDownload kiểm tra role Admin, đọc danh mục từ máy chủ và khôi phục event, session cùng ảnh thu nhỏ trong một giao dịch SQLite.
 - EventDatabase v6 giữ toàn bộ dữ liệu; EventDao giữ publicId khi sửa. Trigger theo dõi cả xóa cascade. ID 5 event cũ khớp Flutter để giữ yêu thích.
 - `features/auth/ui/AdminLoginActivity.java` ↔ `res/layout/admin_login_screen.xml` xử lý email/mật khẩu. `AdminActivity.java` theo dõi phiên và quyền; `features/auth/data/AdminAuth.java` tra `roles/{uid}`. Firestore Rules kiểm tra lại quyền khi công bố.
 - CloudSyncTest/CloudCoverTest/CloudSyncWorkerTest chạy với Android runtime. Test Firestore tạo/xóa dữ liệu chỉ dùng demo-eventa và máy thử riêng.

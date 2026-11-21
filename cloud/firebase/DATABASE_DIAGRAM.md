@@ -82,10 +82,10 @@ erDiagram
 
 - Chưa đăng nhập: chỉ thấy màn đăng nhập của CW-auth.
 - User: đăng ký Email/Password hoặc đăng nhập Google, xem danh mục; chỉ đọc/ghi lịch và yêu thích của chính UID.
-- Admin: đăng nhập app quản trị bằng tài khoản được cấp quyền; CRUD SQLite, công bố và tự đồng bộ danh mục. Có thể dùng app User như người tham dự.
+- Admin: đăng nhập app quản trị bằng tài khoản được cấp quyền; CRUD SQLite, tải danh mục và tự gửi thay đổi. Có thể dùng app User như người tham dự.
 - Firestore Rules kiểm tra UID cho mọi truy cập dữ liệu riêng, kiểm tra roles/{uid} khi công bố. Thay role trong request/hồ sơ không nâng quyền.
 - App Admin chỉ có đăng nhập, không có tự đăng ký Admin.
-- Dữ liệu SQLite Admin vẫn là một bộ dữ liệu công bố chung, không tách database riêng theo từng Admin. Ràng buộc sourceId/revision chống đè nhầm bản Cloud vẫn giữ nguyên.
+- Dữ liệu SQLite Admin vẫn là một bộ dữ liệu công bố chung, không tách database riêng theo từng Admin. Khi tải lần đầu trên SQLite trống, app lấy dữ liệu và sourceId/revision đã công bố. Hai máy sửa từ cùng một phiên bản được kiểm tra xung đột trước khi gửi.
 
 ## Lưu và đồng bộ
 

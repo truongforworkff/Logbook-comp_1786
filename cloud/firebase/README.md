@@ -16,9 +16,11 @@ Mở [Firestore Data](https://console.firebase.google.com/project/eventa-coursew
 
 Tra UID theo email ở [Authentication → Users](https://console.firebase.google.com/project/eventa-coursework-fpt/authentication/users). Mỗi lựa chọn xuất hiện sau lần đầu người dùng lưu. Chủ project có quyền kiểm tra dữ liệu trong Console. Ứng dụng xác định người dùng bằng Firebase UID.
 
-## Công bố
+## Tải và công bố
 
 Admin quản lý event/session trong SQLite. WorkManager gửi thay đổi khi có mạng và khôi phục công việc định kỳ. Firestore kiểm tra role, UID người gửi, sourceId và revision. Danh mục có giới hạn 100 event, 500 session và 512 KiB JSON trong app. Ảnh tùy chọn được thu nhỏ trước khi gửi.
+
+Sau khi Admin đăng nhập, SQLite trống tự tải danh mục. Chọn **Đồng bộ → Tải danh mục từ Firebase** để cập nhật thủ công. Thao tác tải giữ ID của event và session, đồng thời giữ dữ liệu trên máy khi có chỉnh sửa chưa gửi hoặc danh mục thuộc nguồn khác. Thao tác gửi chỉ được ghi nhận nếu bản Cloud còn khớp phiên bản mà máy đã đồng bộ, hoặc kết quả gửi đã có trên máy chủ.
 
 Bản CW cũ vẫn dùng `catalogues/main` và biên nhận riêng. Hai danh mục được cập nhật độc lập. Khi cài Admin vào thiết bị có bộ SQLite khác, cơ chế kiểm tra sourceId bảo vệ danh mục đã được công bố.
 

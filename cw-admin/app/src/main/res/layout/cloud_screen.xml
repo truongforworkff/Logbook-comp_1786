@@ -33,6 +33,16 @@
                 android:textAllCaps="false"
                 android:background="@drawable/primary_button"
                 android:textColor="#FFFFFF"/>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/download"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="match_parent" android:layout_height="48dp"
+                android:layout_marginTop="8dp" android:text="@string/cloud_download"
+                android:textAllCaps="false" android:textColor="@color/rose"/>
+            <TextView android:id="@+id/downloadMessage"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:textColor="@color/muted" android:textSize="13sp"
+                android:accessibilityLiveRegion="polite" android:visibility="gone"/>
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/cloud_upload_note"
                 android:textSize="12sp" android:textColor="@color/muted" android:lineSpacingExtra="4dp" android:layout_marginTop="20dp"/>
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/cloud_thumbnail_note"

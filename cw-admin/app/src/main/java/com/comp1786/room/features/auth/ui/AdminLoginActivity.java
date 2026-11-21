@@ -59,7 +59,7 @@ public final class AdminLoginActivity extends AppCompatActivity {
                 showError(getString(R.string.auth_admin_required));
             } else {
                 CloudSync.start(this);
-                CloudSync.uploadAfterLogin(this);
+                CloudSync.syncAfterLogin(this);
                 startActivity(new Intent(this, MainActivity.class));
                 finish();
             }

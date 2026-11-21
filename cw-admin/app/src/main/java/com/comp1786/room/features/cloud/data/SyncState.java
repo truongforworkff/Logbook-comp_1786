@@ -15,5 +15,6 @@ public class SyncState {
     @NonNull @ColumnInfo(defaultValue = "''") public String error = "";
 
     public SyncState(@NonNull String sourceId) { this.sourceId = sourceId; }
+    public boolean isNew() { return revision == 0 && uploadedRevision < 0; }
     public boolean pending() { return revision > uploadedRevision; }
 }

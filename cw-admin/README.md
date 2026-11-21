@@ -65,8 +65,8 @@ Database v4 nâng cấp giữ nguyên event/session. Dữ liệu cũ mặc đị
 
 ## Firebase Spark
 
-Đã cấu hình project eventa-coursework-fpt, SDK Firestore và Google Services plugin. SQLite vẫn là nguồn dữ liệu. Tab Đồng bộ chỉ có trạng thái và gửi toàn bộ. Bản Admin đăng nhập Email/Password. Firebase kiểm tra quyền ở roles/{uid} và cho công bố vào role_catalogues/main. Bấm biểu tượng tài khoản trên màn sự kiện để đăng xuất. WorkManager ghi nhận/sửa/xóa và gửi lại khi có mạng. Migration v5 giữ dữ liệu và ID yêu thích cũ. Xem [thiết lập và kiểm tra kết nối](../cloud/firebase/README.md).
+Đã cấu hình project eventa-coursework-fpt, SDK Firestore và Google Services plugin. SQLite vẫn là nguồn dữ liệu. Tab **Đồng bộ** có **Tải danh mục từ Firebase** và **Gửi thay đổi lên Firebase**. Sau khi Admin đăng nhập, bản cài trống tự tải danh mục khi có mạng. Bản Admin đăng nhập Email/Password. Firebase kiểm tra quyền ở roles/{uid} và cho công bố vào role_catalogues/main. Bấm biểu tượng tài khoản trên màn sự kiện để đăng xuất. WorkManager ghi nhận/sửa/xóa và gửi lại khi có mạng. Migration v5 giữ dữ liệu và ID yêu thích cũ. Xem [thiết lập và kiểm tra kết nối](../cloud/firebase/README.md).
 
 ### Đồng bộ tự động
 
-Không cần bấm nút Đồng bộ tất cả cho mỗi lần sửa. Khi Room ghi thay đổi event/session, app tự xếp việc gửi có điều kiện mạng. Mất mạng vẫn lưu SQLite; có mạng WorkManager tiếp tục gửi. Nút Đồng bộ tất cả dùng khi muốn yêu cầu gửi lại. Android quản lý lịch chạy nền và có thể trì hoãn để tiết kiệm pin; Force stop cần mở lại app.
+Thay đổi được xếp gửi tự động. Khi Room ghi thay đổi event/session, app tự xếp việc gửi có điều kiện mạng. Mất mạng vẫn lưu SQLite; có mạng WorkManager tiếp tục gửi. Nút **Gửi thay đổi lên Firebase** thử lại các thay đổi đang chờ. App giữ chỉnh sửa chưa gửi nếu tải danh mục hoặc phát hiện hai bản sửa từ cùng một phiên bản. Android quản lý lịch chạy nền và có thể trì hoãn để tiết kiệm pin; Force stop cần mở lại app.

@@ -10,7 +10,11 @@
     <string name="cloud_done">Đã đồng bộ với Cloud</string>
     <string name="cloud_never">Chưa có lần đồng bộ thành công</string>
     <string name="cloud_last">Lần gần nhất: %1$s</string>
-    <string name="cloud_upload">Đồng bộ tất cả</string>
+    <string name="cloud_upload">Gửi thay đổi lên Firebase</string>
+    <string name="cloud_download">Tải danh mục từ Firebase</string>
+    <string name="cloud_downloading">Đang tải danh mục…</string>
+    <string name="cloud_new">Chưa có danh mục trên thiết bị</string>
+    <string name="cloud_needs_attention">Đồng bộ cần kiểm tra</string>
     <string name="cloud_upload_note">Thay đổi tự gửi khi có mạng. Mất mạng vẫn lưu trên thiết bị và tự đồng bộ khi kết nối trở lại.</string>
     <string name="cloud_thumbnail_note">Ảnh bìa được gửi dưới dạng ảnh thu nhỏ. Ảnh gốc giữ trên thiết bị.</string>
     <string name="cloud_loading">Đang đọc trạng thái…</string>
